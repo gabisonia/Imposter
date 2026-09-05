@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Imposter.CodeGenerator.Tests.Helpers;
 using Xunit;
@@ -128,15 +129,12 @@ public class SealedOverrideMemberTests
     private static async Task AssertSetupFails(string setup, string expectedId)
     {
         var context = await TestContextTask.ConfigureAwait(false);
-        foreach (
-            var imposterType in new[]
-            {
-                "SealedOverridesImposter",
-                "InheritedSealedOverridesImposter",
-            }
-        )
+        var diagnosticsByType = new[]
         {
-            var diagnostics = context.CompileSnippet( /*lang=csharp*/
+            "SealedOverridesImposter",
+            "InheritedSealedOverridesImposter",
+        }.Select(imposterType =>
+            context.CompileSnippet( /*lang=csharp*/
                 $$"""
                 using Imposter.Abstractions;
                 namespace Sample
@@ -151,8 +149,11 @@ public class SealedOverrideMemberTests
                     }
                 }
                 """
-            );
+            )
+        );
 
+        foreach (var diagnostics in diagnosticsByType)
+        {
             GeneratorTestHelper.AssertSingleDiagnostic(diagnostics, expectedId, expectedLine: 9);
         }
     }
