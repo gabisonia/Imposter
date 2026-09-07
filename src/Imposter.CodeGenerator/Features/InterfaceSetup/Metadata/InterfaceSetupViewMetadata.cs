@@ -44,23 +44,26 @@ internal readonly struct InterfaceSetupViewMetadata
                 continue;
             }
 
-            foreach (var member in members)
-            {
-                if (
-                    member.Symbol is IEventSymbol existingEvent
-                    && existingEvent.Name == eventSymbol.Name
-                    && SymbolEqualityComparer.Default.Equals(existingEvent.Type, eventSymbol.Type)
-                )
-                {
-                    declaredMembers.Add(
-                        new InterfaceSetupMemberMetadata(
-                            eventSymbol,
-                            member.SetupName,
-                            member.ReturnType
+            foreach (
+                var member in members
+                    .Where(member =>
+                        member.Symbol is IEventSymbol existingEvent
+                        && existingEvent.Name == eventSymbol.Name
+                        && SymbolEqualityComparer.Default.Equals(
+                            existingEvent.Type,
+                            eventSymbol.Type
                         )
-                    );
-                    break;
-                }
+                    )
+                    .Take(1)
+            )
+            {
+                declaredMembers.Add(
+                    new InterfaceSetupMemberMetadata(
+                        eventSymbol,
+                        member.SetupName,
+                        member.ReturnType
+                    )
+                );
             }
         }
         Members = declaredMembers;
