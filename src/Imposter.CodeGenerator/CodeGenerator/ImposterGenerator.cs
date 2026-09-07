@@ -120,8 +120,6 @@ public sealed class ImposterGenerator : IIncrementalGenerator
         BuildEventImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
         BuildIndexerImposter(imposterBuilder, imposterGenerationContext, cancellationToken);
 
-        imposterBuilder.AddMethodCallCounter(imposterGenerationContext.Imposter);
-
         Action<MemberDeclarationSyntax> AddMember;
         Func<MemberDeclarationSyntax[]> GetTopLevelMembers;
 

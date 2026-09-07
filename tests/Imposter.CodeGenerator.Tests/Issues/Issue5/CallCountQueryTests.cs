@@ -37,6 +37,9 @@ public class CallCountQueryTests
             {
                 T Echo(T value);
                 TResult Convert<TResult>(T value) where TResult : class;
+                CallCount Read<CallCount, CallCount_1>()
+                    where CallCount : CallCount_1
+                    where CallCount_1 : class;
             }
 
             public interface IQueryTypeNames<CallCount, MethodCallCounter>
@@ -69,7 +72,7 @@ public class CallCountQueryTests
         );
 
     [Fact]
-    public async Task Given_ConflictingMemberNames_When_QueryingCallCounts_Should_Compile()
+    public async Task Given_ConflictingMemberNames_When_ReadingCallCounts_Should_Compile()
     {
         var context = await TestContextTask.ConfigureAwait(false);
         var diagnostics = context.CompileSnippet( /*lang=csharp*/
@@ -83,15 +86,14 @@ public class CallCountQueryTests
                     {
                         var imposter = new IQueryNamesImposter();
                         imposter.CallCount().Returns(42);
-                        var counts = imposter.CallCount_1();
-                        int calls = counts.CallCount();
-                        calls += counts.MethodCallCounter();
-                        calls += counts.MethodCallCounter_1();
-                        calls += counts._imposter();
-                        calls += counts.Echo(Arg<int>.Any());
-                        calls += counts.Echo(Arg<string>.Any());
-                        calls += counts.Hidden();
-                        calls += counts.Hidden_1();
+                        int calls = imposter.CallCount().CallCount();
+                        calls += imposter.MethodCallCounter().CallCount();
+                        calls += imposter.MethodCallCounter_1().CallCount();
+                        calls += imposter._imposter().CallCount();
+                        calls += imposter.Echo(Arg<int>.Any()).CallCount();
+                        calls += imposter.Echo(Arg<string>.Any()).CallCount();
+                        calls += imposter.Hidden().CallCount();
+                        calls += imposter.Hidden_1().CallCount();
                     }
                 }
             }
@@ -102,7 +104,7 @@ public class CallCountQueryTests
     }
 
     [Fact]
-    public async Task Given_ConflictingTypeParameterNames_When_QueryingCallCounts_Should_Compile()
+    public async Task Given_ConflictingTypeParameterNames_When_ReadingCallCounts_Should_Compile()
     {
         var context = await TestContextTask.ConfigureAwait(false);
         var diagnostics = context.CompileSnippet( /*lang=csharp*/
@@ -114,9 +116,8 @@ public class CallCountQueryTests
                     public static void Execute()
                     {
                         var imposter = new IQueryTypeNamesImposter<int, string>();
-                        var counter = imposter.CallCount_1();
-                        int calls = counter.Accept(1, "one");
-                        calls += counter.Convert<int>(1);
+                        int calls = imposter.Accept(1, "one").CallCount();
+                        calls += imposter.Convert<int>(1).CallCount();
                     }
                 }
             }
@@ -127,7 +128,7 @@ public class CallCountQueryTests
     }
 
     [Fact]
-    public async Task Given_HiddenProperties_When_QueryingCallCounts_Should_PreserveGeneratedPropertyNames()
+    public async Task Given_HiddenProperties_When_ReadingCallCounts_Should_PreserveGeneratedPropertyNames()
     {
         var context = await TestContextTask.ConfigureAwait(false);
         var diagnostics = context.CompileSnippet( /*lang=csharp*/
@@ -143,7 +144,7 @@ public class CallCountQueryTests
                         imposter.CallCount_1.Getter().Returns(2);
                         imposter.MethodCallCounter.Getter().Returns(3);
                         imposter.MethodCallCounter_1.Getter().Returns(4);
-                        int calls = imposter.CallCount_2().Execute();
+                        int calls = imposter.Execute().CallCount();
                     }
                 }
             }
@@ -154,7 +155,7 @@ public class CallCountQueryTests
     }
 
     [Fact]
-    public async Task Given_GenericTarget_When_QueryingGenericMethods_Should_Compile()
+    public async Task Given_GenericTarget_When_ReadingGenericMethods_Should_Compile()
     {
         var context = await TestContextTask.ConfigureAwait(false);
         var diagnostics = context.CompileSnippet( /*lang=csharp*/
@@ -167,8 +168,13 @@ public class CallCountQueryTests
                     public static void Execute()
                     {
                         var imposter = new IGenericQueryImposter<string>();
-                        int calls = imposter.CallCount().Echo(Arg<string>.Any());
-                        calls += imposter.CallCount().Convert<object>(Arg<string>.Any());
+                        int calls = imposter.Echo(Arg<string>.Any()).CallCount();
+                        calls += imposter.Convert<object>(Arg<string>.Any()).CallCount();
+                        calls += imposter.Read<string, object>().CallCount();
+                        IGenericQueryImposter<string>.ReadInvocationVerifier<string, object> verifier =
+                            imposter.Read<string, object>();
+                        calls += verifier.CallCount();
+                        verifier.Called(Count.Exactly(calls));
                     }
                 }
             }
