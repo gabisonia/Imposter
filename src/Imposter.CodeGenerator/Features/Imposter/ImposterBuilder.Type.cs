@@ -5,8 +5,6 @@ using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.Imposter.Builders;
 using Imposter.CodeGenerator.Features.Imposter.ImposterInstance;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Builders.InvocationHistory;
-using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -65,20 +63,6 @@ internal readonly ref struct ImposterBuilder
     internal ImposterBuilder AddMember(MemberDeclarationSyntax? member)
     {
         _imposterBuilder.AddMember(member);
-        return this;
-    }
-
-    internal ImposterBuilder AddMethodCallCounter(in ImposterTargetMetadata target)
-    {
-        // Hidden members can acquire suffixed setup names during generation.
-        // Allocate query names only after all of those members are available.
-        var memberNames = new NameSet(MemberNamesHelper.GetNames(_imposterBuilder.Members));
-        var callCounter = new MethodCallCounterMetadata(target, memberNames);
-
-        _imposterBuilder
-            .AddMember(MethodCallCounterBuilder.Build(target, callCounter))
-            .AddMember(MethodCallCounterBuilder.BuildAccessor(callCounter));
-
         return this;
     }
 

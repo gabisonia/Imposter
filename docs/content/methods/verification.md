@@ -41,27 +41,28 @@ Verification respects the same argument matching rules used for arrangements:
 
 ## Checking for additional calls
 
-Use `imposter.CallCount().Method(...)` to read the number of recorded calls matching its arguments and generic type arguments. It returns zero if no calls match. Reading counts does not create setups, change configured behavior, or clear invocation history. You can retain the object returned by `CallCount()` and query it again after more calls.
+Use `imposter.Method(...).CallCount()` to read the number of recorded calls matching its arguments and generic type arguments. `CallCount()` is part of the existing method verification interface alongside `Called(Count.*)` and returns zero if no calls match.
 
-Each query scans the recorded calls for the selected method. The counter reads the current history on each query; retaining it does not freeze the count.
+Retain the method builder when configuring behavior and use it for subsequent count checks. Selecting a method on the imposter creates a setup, just as it does for `Called`; selecting it again can replace previously configured behavior. Calling `CallCount()` on the retained builder does not register another setup or clear history. Each count check scans the current recorded calls.
 
-Save the count before the next action, then compare it with the new count to verify that additional calls occurred:
+Save the count before the next action, then compare it with the new count:
 
 !!! example
     ```csharp
+    var increment = imposter.Increment(Arg<int>.Any());
     service.Increment(1);
-    var previousCount = imposter.CallCount().Increment(Arg<int>.Any());
+    var previousCount = increment.CallCount();
 
     service.Increment(2);
 
-    var additionalCalls = imposter.CallCount().Increment(Arg<int>.Any()) - previousCount;
+    var additionalCalls = increment.CallCount() - previousCount;
     additionalCalls.ShouldBe(1);
-    imposter.Increment(Arg<int>.Any()).Called(Count.Exactly(2));
+    increment.Called(Count.Exactly(2));
     ```
 
-`CallCount()` uses the same matching rules as `Called(Count.*)`. It counts calls to the selected method, not property, indexer, or event interactions. Await asynchronous work before checking its recorded calls, as you would with `Called`.
+For a method with a return value, retain the builder before configuring it: `var combine = imposter.Combine(1, 2); combine.Returns(3);`. You can then read `combine.CallCount()` between calls without changing its behavior.
 
-If the target already has a member or type parameter named `CallCount`, the query accessor receives a unique suffix, such as `CallCount_1()`, to preserve the existing setup API.
+`CallCount()` uses the same matching rules as `Called(Count.*)`. It counts calls to the selected method, not property, indexer, or event interactions. Await asynchronous work before checking its recorded calls, as you would with `Called`.
 
 ## Failures
 

@@ -13,24 +13,24 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void Given_NoCalls_When_ReadingCallCount_Should_ReturnZero()
         {
-            _sut.CallCount().VoidNoParams().ShouldBe(0);
-            _sut.CallCount().IntSingleParam(Arg<int>.Any()).ShouldBe(0);
+            _sut.VoidNoParams().CallCount().ShouldBe(0);
+            _sut.IntSingleParam(Arg<int>.Any()).CallCount().ShouldBe(0);
         }
 
         [Fact]
         public void Given_PreviousCalls_When_CallingAgain_Should_ExposeAdditionalCallCount()
         {
-            var counter = _sut.CallCount();
+            var verifier = _sut.VoidNoParams();
             _sut.Instance().VoidNoParams();
-            var previousCount = counter.VoidNoParams();
+            var previousCount = verifier.CallCount();
 
             _sut.Instance().VoidNoParams();
             _sut.Instance().VoidNoParams();
 
             previousCount.ShouldBe(1);
-            (counter.VoidNoParams() - previousCount).ShouldBe(2);
-            counter.VoidNoParams().ShouldBe(3);
-            _sut.VoidNoParams().Called(Count.Exactly(3));
+            (verifier.CallCount() - previousCount).ShouldBe(2);
+            verifier.CallCount().ShouldBe(3);
+            verifier.Called(Count.Exactly(3));
         }
 
         [Fact]
@@ -40,53 +40,85 @@ namespace Imposter.Tests.Features.MethodImpersonation
             _sut.Instance().IntSingleParam(2);
             _sut.Instance().IntSingleParam(2);
 
-            _sut.CallCount().IntSingleParam(Arg<int>.Any()).ShouldBe(3);
-            _sut.CallCount().IntSingleParam(2).ShouldBe(2);
-            _sut.CallCount().IntSingleParam(Arg<int>.Is(value => value > 1)).ShouldBe(2);
-            _sut.CallCount().IntSingleParam(3).ShouldBe(0);
+            _sut.IntSingleParam(Arg<int>.Any()).CallCount().ShouldBe(3);
+            _sut.IntSingleParam(2).CallCount().ShouldBe(2);
+            _sut.IntSingleParam(Arg<int>.Is(value => value > 1)).CallCount().ShouldBe(2);
+            _sut.IntSingleParam(3).CallCount().ShouldBe(0);
         }
 
         [Fact]
-        public void Given_ExplicitMode_When_ReadingCallCount_Should_NotCreateASetup()
+        public void Given_ExplicitVoidSetup_When_ReadingCallCount_Should_PreserveSetup()
         {
             var imposter = new IMethodSetupFeatureSutImposter(ImposterMode.Explicit);
 
-            imposter.CallCount().VoidNoParams().ShouldBe(0);
+            var verifier = imposter.VoidNoParams();
+            verifier.CallCount().ShouldBe(0);
 
-            Should.Throw<MissingImposterException>(() => imposter.Instance().VoidNoParams());
+            imposter.Instance().VoidNoParams();
+            verifier.CallCount().ShouldBe(1);
         }
 
         [Fact]
         public void Given_ParallelCalls_When_WorkCompletes_Should_CountAllInvocations()
         {
-            var counter = _sut.CallCount();
+            var verifier = _sut.VoidNoParams();
             Parallel.For(0, 100, _ => _sut.Instance().VoidNoParams());
 
-            counter.VoidNoParams().ShouldBe(100);
+            verifier.CallCount().ShouldBe(100);
         }
 
         [Fact]
         public void Given_ClassWithBaseImplementation_When_ReadingCallCount_Should_PreserveBehavior()
         {
             var imposter = new MethodSetupFeatureClassSutImposter();
-            imposter.IntSingleParam(Arg<int>.Any()).UseBaseImplementation();
-            var counter = imposter.CallCount();
+            var verifier = imposter.IntSingleParam(Arg<int>.Any());
+            verifier.UseBaseImplementation();
 
             imposter.Instance().IntSingleParam(5).ShouldBe(10);
-            counter.IntSingleParam(5).ShouldBe(1);
+            verifier.CallCount().ShouldBe(1);
             imposter.Instance().IntSingleParam(5).ShouldBe(10);
-            counter.IntSingleParam(5).ShouldBe(2);
+            verifier.CallCount().ShouldBe(2);
         }
 
         [Fact]
         public void Given_ReturnSetup_When_ReadingCallCount_Should_PreserveConfiguredBehavior()
         {
-            _sut.IntNoParams().Returns(42);
+            var verifier = _sut.IntNoParams();
+            verifier.Returns(42);
 
             _sut.Instance().IntNoParams().ShouldBe(42);
-            _sut.CallCount().IntNoParams().ShouldBe(1);
+            verifier.CallCount().ShouldBe(1);
             _sut.Instance().IntNoParams().ShouldBe(42);
-            _sut.CallCount().IntNoParams().ShouldBe(2);
+            verifier.CallCount().ShouldBe(2);
+        }
+
+        [Fact]
+        public void Given_SequencedSetup_When_ReadingCallCount_Should_PreserveSequenceAndCallbacks()
+        {
+            var callbackCount = 0;
+            var verifier = _sut.IntNoParams();
+            verifier.Returns(1).Callback(() => callbackCount++).Then().Returns(2);
+
+            _sut.Instance().IntNoParams().ShouldBe(1);
+            verifier.CallCount().ShouldBe(1);
+            callbackCount.ShouldBe(1);
+            _sut.Instance().IntNoParams().ShouldBe(2);
+            verifier.CallCount().ShouldBe(2);
+            verifier.Called(Count.Exactly(2));
+        }
+
+        [Fact]
+        public void Given_GenericSetup_When_ReadingCallCount_Should_PreserveConfiguredBehavior()
+        {
+            var verifier = _sut.GenericReturnType<int>();
+            verifier.Returns(42);
+
+            _sut.Instance().GenericReturnType<int>().ShouldBe(42);
+            verifier.CallCount().ShouldBe(1);
+            _sut.Instance().GenericReturnType<string>();
+            _sut.Instance().GenericReturnType<int>().ShouldBe(42);
+            verifier.CallCount().ShouldBe(2);
+            verifier.Called(Count.Exactly(2));
         }
 
         [Fact]
@@ -99,12 +131,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
             _sut.Instance().GenericReturnType<string>();
             _sut.Instance().GenericReturnType<string>();
 
-            _sut.CallCount().GenericSingleParam(Arg<int>.Any()).ShouldBe(2);
-            _sut.CallCount().GenericSingleParam<int>(42).ShouldBe(1);
-            _sut.CallCount().GenericSingleParam(Arg<string>.Any()).ShouldBe(1);
-            _sut.CallCount().GenericReturnType<int>().ShouldBe(1);
-            _sut.CallCount().GenericReturnType<string>().ShouldBe(2);
-            _sut.CallCount().GenericReturnType<bool>().ShouldBe(0);
+            _sut.GenericSingleParam(Arg<int>.Any()).CallCount().ShouldBe(2);
+            _sut.GenericSingleParam<int>(42).CallCount().ShouldBe(1);
+            _sut.GenericSingleParam(Arg<string>.Any()).CallCount().ShouldBe(1);
+            _sut.GenericReturnType<int>().CallCount().ShouldBe(1);
+            _sut.GenericReturnType<string>().CallCount().ShouldBe(2);
+            _sut.GenericReturnType<bool>().CallCount().ShouldBe(0);
         }
 
         [Fact]
@@ -114,9 +146,9 @@ namespace Imposter.Tests.Features.MethodImpersonation
             _sut.Instance().IntRefParam(ref value);
             _sut.Instance().IntOutParam(out _);
 
-            _sut.CallCount().IntRefParam(10).ShouldBe(1);
-            _sut.CallCount().IntRefParam(20).ShouldBe(0);
-            _sut.CallCount().IntOutParam(OutArg<int>.Any()).ShouldBe(1);
+            _sut.IntRefParam(10).CallCount().ShouldBe(1);
+            _sut.IntRefParam(20).CallCount().ShouldBe(0);
+            _sut.IntOutParam(OutArg<int>.Any()).CallCount().ShouldBe(1);
         }
 
         [Fact]
@@ -125,18 +157,21 @@ namespace Imposter.Tests.Features.MethodImpersonation
             await _sut.Instance().AsyncTaskIntNoParams();
             await _sut.Instance().AsyncValueTaskIntNoParams();
 
-            _sut.CallCount().AsyncTaskIntNoParams().ShouldBe(1);
-            _sut.CallCount().AsyncValueTaskIntNoParams().ShouldBe(1);
+            _sut.AsyncTaskIntNoParams().CallCount().ShouldBe(1);
+            _sut.AsyncValueTaskIntNoParams().CallCount().ShouldBe(1);
         }
 
         [Fact]
         public void Given_ThrowingMethod_When_ReadingCallCount_Should_CountFailedInvocation()
         {
-            _sut.VoidNoParams().Throws<InvalidOperationException>();
+            var verifier = _sut.VoidNoParams();
+            verifier.Throws<InvalidOperationException>();
 
             Should.Throw<InvalidOperationException>(() => _sut.Instance().VoidNoParams());
 
-            _sut.CallCount().VoidNoParams().ShouldBe(1);
+            verifier.CallCount().ShouldBe(1);
+            Should.Throw<InvalidOperationException>(() => _sut.Instance().VoidNoParams());
+            verifier.CallCount().ShouldBe(2);
         }
     }
 }
