@@ -16,7 +16,6 @@ internal static class IndexerImposterBuilderCommon
     internal const string DefaultBehaviourParameterName = "defaultBehaviour";
     internal const string InvocationBehaviorParameterName = "invocationBehavior";
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
-    internal const string BaseImplementationParameterName = "baseImplementation";
 
     internal static ArgumentSyntax BuildArgument(
         IParameterSymbol parameter,
@@ -44,11 +43,12 @@ internal static class IndexerImposterBuilderCommon
         );
 
     internal static LocalDeclarationStatementSyntax CreateArgumentsDeclaration(
-        in ImposterIndexerMetadata indexer
+        in ImposterIndexerMetadata indexer,
+        string variableName
     ) =>
         LocalVariableDeclarationSyntax(
             indexer.Arguments.TypeSyntax,
-            indexer.GetterImplementation.ArgumentsVariableName,
+            variableName,
             indexer.Arguments.TypeSyntax.New(BuildIndexerArgumentsArgumentList(indexer))
         );
 
