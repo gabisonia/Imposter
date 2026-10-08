@@ -87,17 +87,16 @@ internal static class MethodImposterAdapterBuilder
         {
             var pType = p.TypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
-            var pAdaptedName = p.Symbol.RefKind is RefKind.Ref or RefKind.Out
-                ? Identifier(adapterNames.AdaptedParameterNames[p.Name])
-                : default;
 
             switch (p.Symbol.RefKind)
             {
                 case RefKind.Ref:
+                {
+                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
                     body.Add(
                         LocalVariableDeclarationSyntax(
                             pType,
-                            pAdaptedName.Text,
+                            adaptedName,
                             TypeCasterSyntaxHelper.CastExpression(
                                 p.Name,
                                 (TypeSyntax)pTargetType,
@@ -106,14 +105,14 @@ internal static class MethodImposterAdapterBuilder
                         )
                     );
                     invokeArguments.Add(
-                        Argument(IdentifierName(pAdaptedName))
+                        Argument(IdentifierName(adaptedName))
                             .WithRefOrOutKeyword(Token(SyntaxKind.RefKeyword))
                     );
                     postInvokeActions.Add(
                         IdentifierName(p.Name)
                             .Assign(
                                 TypeCasterSyntaxHelper.CastExpression(
-                                    pAdaptedName.Text,
+                                    adaptedName,
                                     pType,
                                     (TypeSyntax)pTargetType
                                 )
@@ -121,17 +120,20 @@ internal static class MethodImposterAdapterBuilder
                             .ToStatementSyntax()
                     );
                     break;
+                }
                 case RefKind.Out:
-                    body.Add(LocalVariableDeclarationSyntax(pType, pAdaptedName.Text));
+                {
+                    var adaptedName = adapterNames.AdaptedParameterNames[p.Name];
+                    body.Add(LocalVariableDeclarationSyntax(pType, adaptedName));
                     invokeArguments.Add(
-                        Argument(IdentifierName(pAdaptedName))
+                        Argument(IdentifierName(adaptedName))
                             .WithRefOrOutKeyword(Token(SyntaxKind.OutKeyword))
                     );
                     postInvokeActions.Add(
                         IdentifierName(p.Name)
                             .Assign(
                                 TypeCasterSyntaxHelper.CastExpression(
-                                    pAdaptedName.Text,
+                                    adaptedName,
                                     pType,
                                     (TypeSyntax)pTargetType
                                 )
@@ -139,6 +141,7 @@ internal static class MethodImposterAdapterBuilder
                             .ToStatementSyntax()
                     );
                     break;
+                }
                 default:
                     invokeArguments.Add(
                         Argument(
@@ -307,10 +310,6 @@ internal static class MethodImposterAdapterBuilder
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");
             HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
-            if (method.SupportsBaseImplementation)
-            {
-                nameContext.Use(method.MethodImposter.InvokeMethod.BaseInvocationParameterName);
-            }
             AdaptedParameterNames = method
                 .Parameters.AllParameterMetadata.Where(parameter =>
                     parameter.Symbol.RefKind is RefKind.Ref or RefKind.Out
