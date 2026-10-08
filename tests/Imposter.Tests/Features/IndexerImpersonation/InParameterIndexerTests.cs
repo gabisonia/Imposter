@@ -11,7 +11,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
         private readonly IInParameterIndexerSutImposter _sut = new IInParameterIndexerSutImposter();
 
         [Fact]
-        public void Given_InParameterIndexer_When_GetterDelegatesAreConfigured_Should_PassKeyByValue()
+        public void Given_InParameterIndexer_When_GetterDelegatesAreConfigured_Should_PassKeyToCallbackAndReturns()
         {
             var observed = new List<int>();
             var getter = _sut[Arg<int>.Any()].Getter();
