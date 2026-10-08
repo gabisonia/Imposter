@@ -8,49 +8,6 @@ namespace Imposter.CodeGenerator.Tests.Issues.Issue108;
 public class NamespaceTypeCollisionTests
 {
     [Theory]
-    [InlineData("Environment", "void Do(int a);")]
-    [InlineData("Count", "void Do(int a);")]
-    [InlineData("TypeCaster", "void Do<T>(T a);")]
-    [InlineData("Exception", "int this[int key] { get; }")]
-    [InlineData("NotImplementedException", "void Do<T>(T a);")]
-    [InlineData("ArgumentNullException", "event System.Action Changed;")]
-    public async Task Given_ReportedNamespaceCollision_When_ImposterIsGenerated_Should_Compile(
-        string typeName,
-        string member
-    )
-    {
-        var source = $$"""
-            using Imposter.Abstractions;
-
-            [assembly: GenerateImposter(typeof(App.IService))]
-
-            namespace App
-            {
-                public class {{typeName}} { }
-                public interface IService { {{member}} }
-            }
-            """;
-
-        var context = await GeneratorTestHelper.CreateContext(
-            source,
-            baseSourceFileName: "ReportedNamespaceCollision.Source.cs",
-            snippetFileName: "Snippet.cs",
-            assemblyName: nameof(NamespaceTypeCollisionTests)
-        );
-
-        var diagnostics = context.CompileSnippet( /*lang=csharp*/
-            """
-            public static class Scenario
-            {
-                public static object Create() => new App.IServiceImposter();
-            }
-            """
-        );
-
-        GeneratorTestHelper.AssertNoDiagnostics(diagnostics);
-    }
-
-    [Theory]
     [InlineData("Environment")]
     [InlineData("Count")]
     [InlineData("TypeCaster")]

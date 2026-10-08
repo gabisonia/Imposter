@@ -27,17 +27,17 @@ internal static class WellKnownTypes
             IdentifierName("Exception")
         );
 
-        internal static TypeSyntax ArgumentNullException = QualifiedName(
+        internal static readonly TypeSyntax ArgumentNullException = QualifiedName(
             Namespace,
             IdentifierName("ArgumentNullException")
         );
 
-        internal static TypeSyntax NotImplementedException = QualifiedName(
+        internal static readonly TypeSyntax NotImplementedException = QualifiedName(
             Namespace,
             IdentifierName("NotImplementedException")
         );
 
-        internal static TypeSyntax Environment = QualifiedName(
+        internal static readonly TypeSyntax Environment = QualifiedName(
             Namespace,
             IdentifierName("Environment")
         );
