@@ -1694,6 +1694,11 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override int Compute(int value)
 			{
+				if (this._imposter == null)
+				{
+					return base.Compute(value);
+				}
+
 				return _imposter._computeMethodImposter.Invoke(value, base.Compute);
 			}
 
@@ -1701,11 +1706,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.Name;
+					}
+
 					return _imposter._NamePropertyBuilderField._getterImposterBuilder.Get(() => base.Name);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.Name = value;
+						return;
+					}
+
 					_imposter._NamePropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.Name = baseSetterValue;
@@ -1717,6 +1733,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						base.SomethingHappened += value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._SomethingHappened.Subscribe(value, () =>
 					{
@@ -1726,6 +1748,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						base.SomethingHappened -= value;
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._SomethingHappened.Unsubscribe(value, () =>
 					{
@@ -1738,11 +1766,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base[index];
+					}
+
 					return _imposter._IndexerIndexer.Get(index, () => base[index]);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base[index] = value;
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(index, value, () =>
 					{
 						base[index] = value;

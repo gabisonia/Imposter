@@ -2916,11 +2916,21 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			public override int Compute(int value)
 			{
+				if (this._imposter == null)
+				{
+					return default !;
+				}
+
 				return _imposter._computeMethodImposter.Invoke(value);
 			}
 
 			public override int? ComputeNullable(int value)
 			{
+				if (this._imposter == null)
+				{
+					return default !;
+				}
+
 				return _imposter._computeNullableMethodImposter.Invoke(value);
 			}
 
@@ -2928,11 +2938,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.Name;
+					}
+
 					return _imposter._NamePropertyBuilderField._getterImposterBuilder.Get(() => base.Name);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.Name = value;
+						return;
+					}
+
 					_imposter._NamePropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.Name = baseSetterValue;
@@ -2944,11 +2965,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.NameNullable;
+					}
+
 					return _imposter._NameNullablePropertyBuilderField._getterImposterBuilder.Get(() => base.NameNullable);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						base.NameNullable = value;
+						return;
+					}
+
 					_imposter._NameNullablePropertyBuilderField._setterImposter.Set(value, (baseSetterValue) =>
 					{
 						base.NameNullable = baseSetterValue;
@@ -2960,12 +2992,22 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				add
 				{
+					if (this._imposter == null)
+					{
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._StreamAdvanced.Subscribe(value);
 				}
 
 				remove
 				{
+					if (this._imposter == null)
+					{
+						return;
+					}
+
 					global::System.ArgumentNullException.ThrowIfNull(value);
 					_imposter._StreamAdvanced.Unsubscribe(value);
 				}
@@ -2975,11 +3017,21 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return default !;
+					}
+
 					return _imposter._IndexerIndexer.Get(index);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						return;
+					}
+
 					_imposter._IndexerIndexer.Set(index, value);
 				}
 			}
@@ -2988,11 +3040,21 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return default !;
+					}
+
 					return _imposter._Indexer_1Indexer.Get(index, indexNullable);
 				}
 
 				set
 				{
+					if (this._imposter == null)
+					{
+						return;
+					}
+
 					_imposter._Indexer_1Indexer.Set(index, indexNullable, value);
 				}
 			}
