@@ -87,7 +87,9 @@ internal static class MethodImposterAdapterBuilder
         {
             var pType = p.TypeSyntax;
             var pTargetType = typeParamRenamer.Visit(pType);
-            var pAdaptedName = Identifier(p.Name + "Adapted");
+            var pAdaptedName = p.Symbol.RefKind is RefKind.Ref or RefKind.Out
+                ? Identifier(adapterNames.AdaptedParameterNames[p.Name])
+                : default;
 
             switch (p.Symbol.RefKind)
             {
@@ -296,6 +298,7 @@ internal static class MethodImposterAdapterBuilder
         internal readonly string TargetConstructorParameterName;
         internal readonly string InvokeResultVariableName;
         internal readonly string HasMatchingInvocationImposterGroupArgumentsParameterName;
+        internal readonly Dictionary<string, string> AdaptedParameterNames;
 
         internal AdapterNames(in ImposterTargetMethodMetadata method)
         {
@@ -304,6 +307,18 @@ internal static class MethodImposterAdapterBuilder
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");
             HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
+            if (method.SupportsBaseImplementation)
+            {
+                nameContext.Use(method.MethodImposter.InvokeMethod.BaseInvocationParameterName);
+            }
+            AdaptedParameterNames = method
+                .Parameters.AllParameterMetadata.Where(parameter =>
+                    parameter.Symbol.RefKind is RefKind.Ref or RefKind.Out
+                )
+                .ToDictionary(
+                    parameter => parameter.Name,
+                    parameter => nameContext.Use(parameter.Name + "Adapted")
+                );
         }
     }
 }
