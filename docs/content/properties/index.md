@@ -58,11 +58,11 @@ Define the target interface and enable generation:
 Properties declared with `init` keep their init-only accessor in the generated implementation.
 Configure reads with the usual getter API:
 
-```csharp
-// Target: int Value { get; init; }
-imposter.Value.Getter().Returns(42);
-var value = imposter.Instance().Value; // 42
-```
+!!! example
+    ```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/PropertyImpersonation/InitOnlyPropertyTests.cs#L30"}
+    imposter.Value.Getter().Returns(99);
+    var value = imposter.Instance().Value; // 99
+    ```
 
 `Instance()` returns an already constructed object, so C# does not allow assigning its init-only
 properties afterward. Getter setup is the way to provide a value for code that reads such a property;

@@ -187,16 +187,17 @@ internal static class SetterImposterBuilder
             bodyStatements.Add(ReturnStatement(False));
         }
 
+        var baseImplementationParameter = setterImposter.SetMethod.BaseImplementationParameter;
+
         return new MethodDeclarationBuilder(
             setterImposter.SetMethod.ReturnType,
             setterImposter.SetMethod.Name
         )
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddParameter(ParameterSyntax(setterImposter.SetMethod.ValueParameter))
-            .AddParameter(
-                setterImposter.SetMethod.RequiresDirectBaseAssignment
-                    ? null
-                    : ParameterSyntax(setterImposter.SetMethod.BaseImplementationParameter)
+            .AddParameterIf(
+                !setterImposter.SetMethod.RequiresDirectBaseAssignment,
+                () => ParameterSyntax(baseImplementationParameter)
             )
             .WithBody(Block(bodyStatements.ToArray()))
             .Build();
