@@ -18,14 +18,17 @@ internal readonly ref struct ImposterInstanceBuilder
 {
     private readonly ClassDeclarationBuilder _imposterInstanceBuilder;
     private readonly string _imposterFieldName;
+    private readonly bool _isClass;
 
     private ImposterInstanceBuilder(
         ClassDeclarationBuilder imposterInstanceBuilder,
-        string imposterFieldName
+        string imposterFieldName,
+        bool isClass
     )
     {
         _imposterInstanceBuilder = imposterInstanceBuilder;
         _imposterFieldName = imposterFieldName;
+        _isClass = isClass;
     }
 
     internal ImposterInstanceBuilder AddImposterProperty(in ImposterPropertyMetadata property)
@@ -63,6 +66,16 @@ internal readonly ref struct ImposterInstanceBuilder
             }
 
             var getterBody = Block(ReturnStatement(getterCall));
+            getterBody = WithConstructorFallback(
+                getterBody,
+                Block(
+                    ReturnStatement(
+                        property.Core.GetterSupportsBaseImplementation
+                            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+                            : DefaultNonNullable
+                    )
+                )
+            );
 
             propertyBuilder = propertyBuilder.WithGetterBody(getterBody);
         }
@@ -101,6 +114,16 @@ internal readonly ref struct ImposterInstanceBuilder
 
             var setterBody = Block(
                 setterInvocation.Call(ArgumentListSyntax(setterArguments)).ToStatementSyntax()
+            );
+            setterBody = WithConstructorFallback(
+                setterBody,
+                ConstructorDispatchBuilder.SetterFallback(
+                    property.Core.SetterSupportsBaseImplementation
+                        ? BaseExpression()
+                            .Dot(IdentifierName(property.Core.Name))
+                            .Assign(IdentifierName("value"))
+                        : null
+                )
             );
 
             propertyBuilder = propertyBuilder.WithSetterBody(setterBody);
@@ -148,7 +171,23 @@ internal readonly ref struct ImposterInstanceBuilder
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithBody(Block(ReturnStatement(getterCall)))
+                    .WithBody(
+                        WithConstructorFallback(
+                            Block(ReturnStatement(getterCall)),
+                            Block(
+                                ReturnStatement(
+                                    indexer.Core.GetterSupportsBaseImplementation
+                                        ? ElementAccessExpression(BaseExpression())
+                                            .WithArgumentList(
+                                                BracketedArgumentList(
+                                                    SeparatedList(indexer.Core.ParameterArguments)
+                                                )
+                                            )
+                                        : DefaultNonNullable
+                                )
+                            )
+                        )
+                    )
             );
         }
 
@@ -186,7 +225,22 @@ internal readonly ref struct ImposterInstanceBuilder
 
             accessors.Add(
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithBody(Block(setterCall.ToStatementSyntax()))
+                    .WithBody(
+                        WithConstructorFallback(
+                            Block(setterCall.ToStatementSyntax()),
+                            ConstructorDispatchBuilder.SetterFallback(
+                                indexer.Core.SetterSupportsBaseImplementation
+                                    ? ElementAccessExpression(BaseExpression())
+                                        .WithArgumentList(
+                                            BracketedArgumentList(
+                                                SeparatedList(indexer.Core.ParameterArguments)
+                                            )
+                                        )
+                                        .Assign(IdentifierName("value"))
+                                    : null
+                            )
+                        )
+                    )
             );
         }
 
@@ -216,7 +270,8 @@ internal readonly ref struct ImposterInstanceBuilder
                                 BuildEventAccessorBody(
                                     @event,
                                     isSubscribe: true,
-                                    _imposterFieldName
+                                    _imposterFieldName,
+                                    _isClass
                                 )
                             ),
                         AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
@@ -224,7 +279,8 @@ internal readonly ref struct ImposterInstanceBuilder
                                 BuildEventAccessorBody(
                                     @event,
                                     isSubscribe: false,
-                                    _imposterFieldName
+                                    _imposterFieldName,
+                                    _isClass
                                 )
                             ),
                     ])
@@ -237,6 +293,11 @@ internal readonly ref struct ImposterInstanceBuilder
     }
 
     internal ClassDeclarationSyntax Build() => _imposterInstanceBuilder.Build();
+
+    private BlockSyntax WithConstructorFallback(BlockSyntax body, BlockSyntax fallback) =>
+        _isClass
+            ? ConstructorDispatchBuilder.WithFallback(body, fallback, _imposterFieldName)
+            : body;
 
     internal static ImposterInstanceBuilder Create(
         in ImposterGenerationContext imposterGenerationContext,
@@ -260,7 +321,11 @@ internal readonly ref struct ImposterInstanceBuilder
             ImposterMethods(imposterGenerationContext, imposterFieldName)
         );
 
-        return new ImposterInstanceBuilder(imposterClassBuilder, imposterFieldName);
+        return new ImposterInstanceBuilder(
+            imposterClassBuilder,
+            imposterFieldName,
+            imposterGenerationContext.Imposter.IsClass
+        );
     }
 
     private static IReadOnlyList<FieldDeclarationSyntax> GetFields(
@@ -343,6 +408,7 @@ internal readonly ref struct ImposterInstanceBuilder
         string imposterFieldName
     )
     {
+        var isClass = imposterGenerationContext.Imposter.IsClass;
         return imposterGenerationContext.Imposter.Methods.Select(imposterMethod =>
         {
             var invokeArguments = new List<ArgumentSyntax>(
@@ -364,6 +430,20 @@ internal readonly ref struct ImposterInstanceBuilder
                     .Dot(IdentifierName("Invoke"))
                     .Call(ArgumentList(SeparatedList(invokeArguments)));
 
+            var body = Block(
+                imposterMethod.HasReturnValue
+                    ? ReturnStatement(invokeMethodInvocationExpression)
+                    : invokeMethodInvocationExpression.ToStatementSyntax()
+            );
+            if (isClass)
+            {
+                body = ConstructorDispatchBuilder.WithFallback(
+                    body,
+                    ConstructorDispatchBuilder.MethodFallback(imposterMethod),
+                    imposterFieldName
+                );
+            }
+
             var methodBuilder = new MethodDeclarationBuilder(
                 TypeSyntaxIncludingNullable(imposterMethod.Model.ReturnType.Type),
                 imposterMethod.Model.Name
@@ -374,13 +454,7 @@ internal readonly ref struct ImposterInstanceBuilder
                         ParameterSyntaxWithoutDefaultValue(p)
                     )
                 )
-                .WithBody(
-                    Block(
-                        imposterMethod.HasReturnValue
-                            ? ReturnStatement(invokeMethodInvocationExpression)
-                            : invokeMethodInvocationExpression.ToStatementSyntax()
-                    )
-                )
+                .WithBody(body)
                 .AddModifiers(imposterMethod.ImposterInstanceMethodModifiers)
                 .WithExplicitInterfaceSpecifier(imposterMethod.ExplicitInterfaceSpecifier);
 
@@ -437,7 +511,8 @@ internal readonly ref struct ImposterInstanceBuilder
     private static BlockSyntax BuildEventAccessorBody(
         in ImposterEventMetadata @event,
         bool isSubscribe,
-        string imposterFieldName
+        string imposterFieldName,
+        bool isClass
     )
     {
         var builderAccess = IdentifierName(imposterFieldName)
@@ -449,7 +524,7 @@ internal readonly ref struct ImposterInstanceBuilder
             arguments.Add(Argument(BuildBaseEventAccessorLambda(@event, isSubscribe)));
         }
 
-        return Block(
+        var body = Block(
             WellKnownTypes
                 .System.ArgumentNullException.Dot(IdentifierName("ThrowIfNull"))
                 .Call(Argument(IdentifierName("value")))
@@ -459,6 +534,23 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Call(arguments)
                 .ToStatementSyntax()
         );
+        return isClass
+            ? ConstructorDispatchBuilder.WithFallback(
+                body,
+                ConstructorDispatchBuilder.SetterFallback(
+                    @event.Core.SupportsBaseImplementation
+                        ? AssignmentExpression(
+                            isSubscribe
+                                ? SyntaxKind.AddAssignmentExpression
+                                : SyntaxKind.SubtractAssignmentExpression,
+                            BaseExpression().Dot(IdentifierName(@event.Core.Name)),
+                            IdentifierName("value")
+                        )
+                        : null
+                ),
+                imposterFieldName
+            )
+            : body;
     }
 
     private static ParenthesizedLambdaExpressionSyntax BuildBaseEventAccessorLambda(
