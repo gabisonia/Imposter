@@ -403,14 +403,11 @@ internal static class SetterImposterBuilder
                                                                 new SyntaxNodeOrToken[]
                                                                 {
                                                                     Argument(
-                                                                        IdentifierName(
-                                                                                "Environment"
+                                                                        WellKnownTypes.System.Environment.Dot(
+                                                                            IdentifierName(
+                                                                                "NewLine"
                                                                             )
-                                                                            .Dot(
-                                                                                IdentifierName(
-                                                                                    "NewLine"
-                                                                                )
-                                                                            )
+                                                                        )
                                                                     ),
                                                                     Token(SyntaxKind.CommaToken),
                                                                     Argument(

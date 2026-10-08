@@ -51,8 +51,9 @@ internal static partial class InvocationHistoryCollectionBuilder
                                         new SyntaxNodeOrToken[]
                                         {
                                             Argument(
-                                                IdentifierName("Environment")
-                                                    .Dot(IdentifierName("NewLine"))
+                                                WellKnownTypes.System.Environment.Dot(
+                                                    IdentifierName("NewLine")
+                                                )
                                             ),
                                             Token(SyntaxKind.CommaToken),
                                             Argument(

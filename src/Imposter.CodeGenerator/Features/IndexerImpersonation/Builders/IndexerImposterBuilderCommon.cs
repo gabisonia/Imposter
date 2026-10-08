@@ -284,12 +284,9 @@ internal static class IndexerImposterBuilderCommon
                                                             new SyntaxNodeOrToken[]
                                                             {
                                                                 Argument(
-                                                                    IdentifierName("Environment")
-                                                                        .Dot(
-                                                                            IdentifierName(
-                                                                                "NewLine"
-                                                                            )
-                                                                        )
+                                                                    WellKnownTypes.System.Environment.Dot(
+                                                                        IdentifierName("NewLine")
+                                                                    )
                                                                 ),
                                                                 Token(SyntaxKind.CommaToken),
                                                                 Argument(

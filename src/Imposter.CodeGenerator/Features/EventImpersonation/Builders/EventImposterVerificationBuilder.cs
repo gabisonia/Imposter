@@ -448,7 +448,9 @@ internal static class EventImposterVerificationBuilder
                     SeparatedList<ArgumentSyntax>(
                         new SyntaxNodeOrToken[]
                         {
-                            Argument(IdentifierName("Environment").Dot(IdentifierName("NewLine"))),
+                            Argument(
+                                WellKnownTypes.System.Environment.Dot(IdentifierName("NewLine"))
+                            ),
                             Token(SyntaxKind.CommaToken),
                             Argument(values),
                         }
