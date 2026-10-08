@@ -18,22 +18,6 @@ internal static class IndexerImposterBuilderCommon
     internal const string PropertyDisplayNameParameterName = "propertyDisplayName";
     internal const string BaseImplementationParameterName = "baseImplementation";
 
-    internal static ArgumentSyntax BuildArgument(
-        IParameterSymbol parameter,
-        ExpressionSyntax expression
-    )
-    {
-        var modifier = parameter.RefKind switch
-        {
-            RefKind.Ref => Token(SyntaxKind.RefKeyword),
-            RefKind.Out => Token(SyntaxKind.OutKeyword),
-            RefKind.In => Token(SyntaxKind.InKeyword),
-            _ => default(SyntaxToken),
-        };
-
-        return Argument(null, modifier, expression);
-    }
-
     internal static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
     ) =>
@@ -58,7 +42,7 @@ internal static class IndexerImposterBuilderCommon
     )
     {
         var arguments = indexer.Core.Parameters.Select(parameter =>
-            BuildArgument(parameter.Symbol, source.Dot(IdentifierName(parameter.Name)))
+            Argument(source.Dot(IdentifierName(parameter.Name)))
         );
 
         return ArgumentList(SeparatedList(arguments));
