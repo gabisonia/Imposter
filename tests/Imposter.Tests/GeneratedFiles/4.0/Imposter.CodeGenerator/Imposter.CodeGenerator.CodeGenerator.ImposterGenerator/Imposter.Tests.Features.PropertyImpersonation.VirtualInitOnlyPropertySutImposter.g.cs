@@ -779,6 +779,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				init
 				{
+					if (this._imposter == null)
+					{
+						base.Throwing = value;
+						return;
+					}
+
 					if (_imposter._ThrowingPropertyBuilderField._setterImposter.Set(value))
 					{
 						base.Throwing = value;
@@ -790,11 +796,22 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return base.Value;
+					}
+
 					return _imposter._ValuePropertyBuilderField._getterImposterBuilder.Get(() => base.Value);
 				}
 
 				init
 				{
+					if (this._imposter == null)
+					{
+						base.Value = value;
+						return;
+					}
+
 					if (_imposter._ValuePropertyBuilderField._setterImposter.Set(value))
 					{
 						base.Value = value;
@@ -806,6 +823,12 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				init
 				{
+					if (this._imposter == null)
+					{
+						base.WriteOnly = value;
+						return;
+					}
+
 					if (_imposter._WriteOnlyPropertyBuilderField._setterImposter.Set(value))
 					{
 						base.WriteOnly = value;

@@ -351,11 +351,21 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			{
 				get
 				{
+					if (this._imposter == null)
+					{
+						return default !;
+					}
+
 					return _imposter._ValuePropertyBuilderField._getterImposterBuilder.Get();
 				}
 
 				init
 				{
+					if (this._imposter == null)
+					{
+						return;
+					}
+
 					_imposter._ValuePropertyBuilderField._setterImposter.Set(value);
 				}
 			}
