@@ -48,10 +48,12 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("Get"));
 
             InvocationExpressionSyntax getterCall;
+            ExpressionSyntax? baseGetterInvocation = property.Core.GetterSupportsBaseImplementation
+                ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+                : null;
 
-            if (property.Core.GetterSupportsBaseImplementation)
+            if (baseGetterInvocation is not null)
             {
-                var baseGetterInvocation = BaseExpression().Dot(IdentifierName(property.Core.Name));
                 getterCall = getterInvocation.Call(
                     ArgumentList(
                         SingletonSeparatedList(
@@ -68,13 +70,7 @@ internal readonly ref struct ImposterInstanceBuilder
             var getterBody = Block(ReturnStatement(getterCall));
             getterBody = WithConstructorFallback(
                 getterBody,
-                Block(
-                    ReturnStatement(
-                        property.Core.GetterSupportsBaseImplementation
-                            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
-                            : DefaultNonNullable
-                    )
-                )
+                Block(ReturnStatement(baseGetterInvocation ?? DefaultNonNullable))
             );
 
             propertyBuilder = propertyBuilder.WithGetterBody(getterBody);
@@ -88,14 +84,15 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Dot(IdentifierName("Set"));
 
             var setterArguments = new List<ArgumentSyntax> { Argument(IdentifierName("value")) };
+            var basePropertyAccess = property.Core.SetterSupportsBaseImplementation
+                ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+                : null;
 
-            if (property.Core.SetterSupportsBaseImplementation)
+            if (basePropertyAccess is not null)
             {
                 const string BaseSetterValueParameterName = "baseSetterValue";
                 var baseSetterValueIdentifier = IdentifierName(BaseSetterValueParameterName);
-                var baseAssignment = BaseExpression()
-                    .Dot(IdentifierName(property.Core.Name))
-                    .Assign(baseSetterValueIdentifier);
+                var baseAssignment = basePropertyAccess.Assign(baseSetterValueIdentifier);
 
                 setterArguments.Add(
                     Argument(
@@ -118,11 +115,7 @@ internal readonly ref struct ImposterInstanceBuilder
             setterBody = WithConstructorFallback(
                 setterBody,
                 ConstructorDispatchBuilder.SetterFallback(
-                    property.Core.SetterSupportsBaseImplementation
-                        ? BaseExpression()
-                            .Dot(IdentifierName(property.Core.Name))
-                            .Assign(IdentifierName("value"))
-                        : null
+                    basePropertyAccess?.Assign(IdentifierName("value"))
                 )
             );
 
@@ -148,19 +141,15 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Core.Parameters.Select(parameter => Argument(IdentifierName(parameter.Name)))
                 .ToList();
 
-            if (indexer.Core.GetterSupportsBaseImplementation)
-            {
-                var baseInvocation = ElementAccessExpression(BaseExpression())
+            ExpressionSyntax? baseInvocation = indexer.Core.GetterSupportsBaseImplementation
+                ? ElementAccessExpression(BaseExpression())
                     .WithArgumentList(
-                        BracketedArgumentList(
-                            SeparatedList(
-                                indexer.Core.Parameters.Select(parameter =>
-                                    Argument(IdentifierName(parameter.Name))
-                                )
-                            )
-                        )
-                    );
+                        BracketedArgumentList(SeparatedList(indexer.Core.ParameterArguments))
+                    )
+                : null;
 
+            if (baseInvocation is not null)
+            {
                 getterArguments.Add(Argument(EmptyParametersGoesTo(baseInvocation)));
             }
 
@@ -174,18 +163,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     .WithBody(
                         WithConstructorFallback(
                             Block(ReturnStatement(getterCall)),
-                            Block(
-                                ReturnStatement(
-                                    indexer.Core.GetterSupportsBaseImplementation
-                                        ? ElementAccessExpression(BaseExpression())
-                                            .WithArgumentList(
-                                                BracketedArgumentList(
-                                                    SeparatedList(indexer.Core.ParameterArguments)
-                                                )
-                                            )
-                                        : DefaultNonNullable
-                                )
-                            )
+                            Block(ReturnStatement(baseInvocation ?? DefaultNonNullable))
                         )
                     )
             );
@@ -198,21 +176,16 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Concat([Argument(IdentifierName("value"))])
                 .ToList();
 
-            if (indexer.Core.SetterSupportsBaseImplementation)
-            {
-                var baseIndexerAccess = ElementAccessExpression(BaseExpression())
+            var baseAssignment = indexer.Core.SetterSupportsBaseImplementation
+                ? ElementAccessExpression(BaseExpression())
                     .WithArgumentList(
-                        BracketedArgumentList(
-                            SeparatedList(
-                                indexer.Core.Parameters.Select(parameter =>
-                                    Argument(IdentifierName(parameter.Name))
-                                )
-                            )
-                        )
-                    );
+                        BracketedArgumentList(SeparatedList(indexer.Core.ParameterArguments))
+                    )
+                    .Assign(IdentifierName("value"))
+                : null;
 
-                var baseAssignment = baseIndexerAccess.Assign(IdentifierName("value"));
-
+            if (baseAssignment is not null)
+            {
                 setterArguments.Add(
                     Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
                 );
@@ -228,17 +201,7 @@ internal readonly ref struct ImposterInstanceBuilder
                     .WithBody(
                         WithConstructorFallback(
                             Block(setterCall.ToStatementSyntax()),
-                            ConstructorDispatchBuilder.SetterFallback(
-                                indexer.Core.SetterSupportsBaseImplementation
-                                    ? ElementAccessExpression(BaseExpression())
-                                        .WithArgumentList(
-                                            BracketedArgumentList(
-                                                SeparatedList(indexer.Core.ParameterArguments)
-                                            )
-                                        )
-                                        .Assign(IdentifierName("value"))
-                                    : null
-                            )
+                            ConstructorDispatchBuilder.SetterFallback(baseAssignment)
                         )
                     )
             );
@@ -256,6 +219,11 @@ internal readonly ref struct ImposterInstanceBuilder
 
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
+        var baseSubscribeAssignment = BuildBaseEventAccessorAssignment(@event, isSubscribe: true);
+        var baseUnsubscribeAssignment = BuildBaseEventAccessorAssignment(
+            @event,
+            isSubscribe: false
+        );
         var eventDeclaration = EventDeclaration(
                 @event.Core.NullableAwareHandlerTypeSyntax,
                 Identifier(@event.Core.Name)
@@ -267,20 +235,30 @@ internal readonly ref struct ImposterInstanceBuilder
                     List([
                         AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
                             .WithBody(
-                                BuildEventAccessorBody(
-                                    @event,
-                                    isSubscribe: true,
-                                    _imposterFieldName,
-                                    _isClass
+                                WithConstructorFallback(
+                                    BuildEventAccessorBody(
+                                        @event,
+                                        isSubscribe: true,
+                                        _imposterFieldName,
+                                        baseSubscribeAssignment
+                                    ),
+                                    ConstructorDispatchBuilder.SetterFallback(
+                                        baseSubscribeAssignment
+                                    )
                                 )
                             ),
                         AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
                             .WithBody(
-                                BuildEventAccessorBody(
-                                    @event,
-                                    isSubscribe: false,
-                                    _imposterFieldName,
-                                    _isClass
+                                WithConstructorFallback(
+                                    BuildEventAccessorBody(
+                                        @event,
+                                        isSubscribe: false,
+                                        _imposterFieldName,
+                                        baseUnsubscribeAssignment
+                                    ),
+                                    ConstructorDispatchBuilder.SetterFallback(
+                                        baseUnsubscribeAssignment
+                                    )
                                 )
                             ),
                     ])
@@ -512,19 +490,21 @@ internal readonly ref struct ImposterInstanceBuilder
         in ImposterEventMetadata @event,
         bool isSubscribe,
         string imposterFieldName,
-        bool isClass
+        ExpressionSyntax? baseAssignment
     )
     {
         var builderAccess = IdentifierName(imposterFieldName)
             .Dot(IdentifierName(@event.BuilderField.Name));
         var arguments = new List<ArgumentSyntax> { Argument(IdentifierName("value")) };
 
-        if (@event.Core.SupportsBaseImplementation)
+        if (baseAssignment is not null)
         {
-            arguments.Add(Argument(BuildBaseEventAccessorLambda(@event, isSubscribe)));
+            arguments.Add(
+                Argument(EmptyParametersGoesTo(Block(baseAssignment.ToStatementSyntax())))
+            );
         }
 
-        var body = Block(
+        return Block(
             WellKnownTypes
                 .System.ArgumentNullException.Dot(IdentifierName("ThrowIfNull"))
                 .Call(Argument(IdentifierName("value")))
@@ -534,38 +514,19 @@ internal readonly ref struct ImposterInstanceBuilder
                 .Call(arguments)
                 .ToStatementSyntax()
         );
-        return isClass
-            ? ConstructorDispatchBuilder.WithFallback(
-                body,
-                ConstructorDispatchBuilder.SetterFallback(
-                    @event.Core.SupportsBaseImplementation
-                        ? AssignmentExpression(
-                            isSubscribe
-                                ? SyntaxKind.AddAssignmentExpression
-                                : SyntaxKind.SubtractAssignmentExpression,
-                            BaseExpression().Dot(IdentifierName(@event.Core.Name)),
-                            IdentifierName("value")
-                        )
-                        : null
-                ),
-                imposterFieldName
-            )
-            : body;
     }
 
-    private static ParenthesizedLambdaExpressionSyntax BuildBaseEventAccessorLambda(
+    private static AssignmentExpressionSyntax? BuildBaseEventAccessorAssignment(
         in ImposterEventMetadata @event,
         bool isSubscribe
-    )
-    {
-        var assignmentExpression = AssignmentExpression(
-            isSubscribe
-                ? SyntaxKind.AddAssignmentExpression
-                : SyntaxKind.SubtractAssignmentExpression,
-            BaseExpression().Dot(IdentifierName(@event.Core.Name)),
-            IdentifierName("value")
-        );
-
-        return EmptyParametersGoesTo(Block(assignmentExpression.ToStatementSyntax()));
-    }
+    ) =>
+        @event.Core.SupportsBaseImplementation
+            ? AssignmentExpression(
+                isSubscribe
+                    ? SyntaxKind.AddAssignmentExpression
+                    : SyntaxKind.SubtractAssignmentExpression,
+                BaseExpression().Dot(IdentifierName(@event.Core.Name)),
+                IdentifierName("value")
+            )
+            : null;
 }
