@@ -1,5 +1,3 @@
-using System.Linq;
-using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -48,9 +46,7 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
-        var parameterNames = new NameSet(
-            indexer.Core.Parameters.Select(parameter => parameter.Name)
-        );
+        var parameterNames = indexer.Core.CreateParameterNameSet();
         Name = "GetterImposter";
         TypeSyntax = IdentifierName(Name);
         ArgumentsVariableName = parameterNames.Use("arguments");
