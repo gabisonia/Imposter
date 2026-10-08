@@ -260,31 +260,7 @@ internal static class IndexerImposterBuilderCommon
                                         Argument(IdentifierName("invocationCount")),
                                         Token(SyntaxKind.CommaToken),
                                         Argument(
-                                            IdentifierName("string")
-                                                .Dot(IdentifierName("Join"))
-                                                .Call(
-                                                    ArgumentList(
-                                                        SeparatedList<ArgumentSyntax>(
-                                                            new SyntaxNodeOrToken[]
-                                                            {
-                                                                Argument(
-                                                                    IdentifierName("Environment")
-                                                                        .Dot(
-                                                                            IdentifierName(
-                                                                                "NewLine"
-                                                                            )
-                                                                        )
-                                                                ),
-                                                                Token(SyntaxKind.CommaToken),
-                                                                Argument(
-                                                                    IdentifierName(
-                                                                        "performedInvocations"
-                                                                    )
-                                                                ),
-                                                            }
-                                                        )
-                                                    )
-                                                )
+                                            JoinWithNewLines(IdentifierName("performedInvocations"))
                                         ),
                                     }
                                 )
