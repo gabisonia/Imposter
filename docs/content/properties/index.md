@@ -53,6 +53,28 @@ Define the target interface and enable generation:
     imposter.Age.Setter(Arg<int>.Is(11)).Called(Count.Once());
     ```
 
+## Init-only properties
+
+Properties declared with `init` keep their init-only accessor in the generated implementation.
+Configure reads with the usual getter API:
+
+```csharp
+// Target: int Value { get; init; }
+imposter.Value.Getter().Returns(42);
+var value = imposter.Instance().Value; // 42
+```
+
+`Instance()` returns an already constructed object, so C# does not allow assigning its init-only
+properties afterward. Getter setup is the way to provide a value for code that reads such a property;
+it does not invoke the init accessor.
+
+When an init accessor is invoked, it uses the same `Setter(...)` callbacks, verification, explicit-mode
+checks, and default value storage as an ordinary setter. For virtual class properties,
+`Setter(...).UseBaseImplementation()` forwards to the base init accessor, and the property-level
+`UseBaseImplementation()` configures both available accessors. Callbacks run before base initialization;
+if a callback throws, the base accessor is not invoked. Abstract and interface accessors do not expose
+base delegation.
+
 ## Base Implementation
 
 Forward to the base implementation for overridable class members:
