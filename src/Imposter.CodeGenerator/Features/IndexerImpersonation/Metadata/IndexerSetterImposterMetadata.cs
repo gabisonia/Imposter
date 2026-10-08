@@ -36,6 +36,14 @@ internal readonly struct IndexerSetterImposterMetadata
 
     internal readonly string BaseImplementationParameterName;
 
+    internal readonly string ArgumentsVariableName;
+
+    internal readonly string MatchedCallbackVariableName;
+
+    internal readonly string RegistrationVariableName;
+
+    internal readonly string InvokedBaseImplementationVariableName;
+
     internal IndexerSetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
         Name = "SetterImposter";
@@ -84,6 +92,12 @@ internal readonly struct IndexerSetterImposterMetadata
             )
             : null;
         BaseImplementationParameterName = indexer.Core.ParameterNameSet.Use("baseImplementation");
+        ArgumentsVariableName = indexer.Core.ParameterNameSet.Use("arguments");
+        MatchedCallbackVariableName = indexer.Core.ParameterNameSet.Use("matchedCallback");
+        RegistrationVariableName = indexer.Core.ParameterNameSet.Use("registration");
+        InvokedBaseImplementationVariableName = indexer.Core.ParameterNameSet.Use(
+            "invokedBaseImplementation"
+        );
 
         Builder = new SetterBuilderMetadata();
     }

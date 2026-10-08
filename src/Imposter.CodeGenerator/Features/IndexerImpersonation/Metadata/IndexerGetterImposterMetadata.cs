@@ -1,3 +1,5 @@
+using System.Linq;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -46,14 +48,17 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal IndexerGetterImposterMetadata(in ImposterIndexerMetadata indexer)
     {
+        var parameterNames = new NameSet(
+            indexer.Core.Parameters.Select(parameter => parameter.Name)
+        );
         Name = "GetterImposter";
         TypeSyntax = IdentifierName(Name);
-        ArgumentsVariableName = "arguments";
-        SetupVariableName = "getterInvocationImposter";
+        ArgumentsVariableName = parameterNames.Use("arguments");
+        SetupVariableName = parameterNames.Use("getterInvocationImposter");
         CriteriaParameterName = "criteria";
         CountParameterName = "count";
         GetterSuffix = " (getter)";
-        BaseImplementationParameterName = "baseImplementation";
+        BaseImplementationParameterName = parameterNames.Use("baseImplementation");
 
         var returnGeneratorType = BuildReturnGeneratorType(indexer);
         ReturnHandlerType = BuildReturnHandlerType(indexer);
