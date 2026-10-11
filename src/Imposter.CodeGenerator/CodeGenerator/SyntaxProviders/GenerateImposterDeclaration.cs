@@ -34,13 +34,19 @@ internal sealed record GenerateImposterDeclaration(
     /// </summary>
     internal bool HintNameIncludesHash { get; init; }
 
+    // A closed generic registration (IMP006) generates its open type's imposter, in the open type's namespace (see
+    // ImposterTargetValidator.GeneratedTarget).
     internal static GenerateImposterDeclaration From(
-        INamedTypeSymbol target,
+        INamedTypeSymbol registeredTarget,
         bool putInTheSameNamespace,
         MemberAccess memberAccess
     )
     {
-        var (diagnostics, canGenerate) = ImposterTargetValidator.Validate(target, memberAccess);
+        var (diagnostics, canGenerate) = ImposterTargetValidator.Validate(
+            registeredTarget,
+            memberAccess
+        );
+        var target = ImposterTargetValidator.GeneratedTarget(registeredTarget);
         var imposterNamespaceName = ImposterGenerationContext.GetImposterNamespaceName(
             putInTheSameNamespace,
             TypeModel.From(target),
@@ -48,7 +54,7 @@ internal sealed record GenerateImposterDeclaration(
         );
         var declaration = new GenerateImposterDeclaration(
             putInTheSameNamespace,
-            target.ToDisplayString(),
+            registeredTarget.ToDisplayString(),
             LocationModel.From(target),
             ImposterTypeCollisions.GetImposterTypeName(target, imposterNamespaceName),
             ImposterTypeCollisions.GetImposterTypeDisplayName(target, imposterNamespaceName),
