@@ -131,7 +131,7 @@ internal static class InterfaceSetupViewBuilder
         var parameters = ArgParameters(member.Model.MatchedParameters);
         var arguments = ForwardedArguments(parameters);
         ExpressionSyntax setup = member.IsSetUpByMethod
-            ? IdentifierName(member.SetupName).Call(ArgumentList(arguments))
+            ? IdentifierName(EscapedIdentifier(member.SetupName)).Call(ArgumentList(arguments))
             : ElementAccessExpression(ThisExpression())
                 .WithArgumentList(BracketedArgumentList(arguments));
 

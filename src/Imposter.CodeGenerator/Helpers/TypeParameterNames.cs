@@ -8,6 +8,7 @@ namespace Imposter.CodeGenerator.Helpers;
 // or partial reads as a record or a partial member. A type parameter of one of these names takes another in generated
 // code, one that no name declared beside it there has. A nested type's parameters also share the imposter's scope
 // with its containing types' parameters, so names that shadow a containing parameter are renamed too.
+// A target's type parameter also cannot share the name of its generated imposter class.
 internal static class TypeParameterNames
 {
     private static readonly HashSet<string> NamesGeneratedCodeCantUse =
@@ -46,9 +47,8 @@ internal static class TypeParameterNames
         SymbolDisplayFormat format
     ) => string.Concat(type.ToDisplayParts(format).Select(InGeneratedCode));
 
-    // Namespace and file names keep the target's identity even when a parameter must be renamed in generated code.
-    // Preserve the contextual-keyword substitutions used before nested targets were supported: those names already
-    // form part of the public namespace for registrations with putInTheSameNamespace: false.
+    // Public namespaces and file names keep the target's identity independently of collision-driven renaming.
+    // Preserve the keyword substitutions already used in dedicated namespaces before this collision was handled.
     internal static string ToImposterIdentityString(this INamedTypeSymbol type) =>
         string.Concat(
             type.ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat)

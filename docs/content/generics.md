@@ -270,16 +270,19 @@ The imposter of a generic target keeps values of the target's own type parameter
 
 An open nested target's imposter takes the containing types' type parameters from outer to inner, followed by the target's own parameters. Their constraints apply to the imposter too. For example, `Outer<T>.Inner<U>` generates `InnerImposter<T, U>`:
 
-```csharp
+```csharp {data-gh-link="https://github.com/themidnightgospel/Imposter/blob/master/tests/Imposter.Tests/Features/OpenGenericImposter/NestedGenericTarget.cs#L1"}
 using Imposter.Abstractions;
+using Imposter.Tests.Features.OpenGenericImposter.NestedTargets;
 
-[assembly: GenerateImposter(typeof(Sample.Outer<>.Inner<>))]
+[assembly: GenerateImposter(typeof(Outer<>.Inner<>))]
 
-namespace Sample
+namespace Imposter.Tests.Features.OpenGenericImposter.NestedTargets
 {
-    public class Outer<T> where T : class
+    public class Outer<T>
+        where T : class
     {
-        public interface Inner<U> where U : T
+        public interface Inner<U>
+            where U : T
         {
             U Get();
         }
