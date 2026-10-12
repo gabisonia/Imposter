@@ -21,7 +21,7 @@ internal readonly ref struct PropertyImposterMembersBuilder(
         _imposterBuilder.AddMember(
             SyntaxFactoryHelper.ReadOnlyPropertyDeclarationSyntax(
                 property.ImposterBuilderInterface.Syntax,
-                property.SetupName,
+                SyntaxFactoryHelper.EscapeKeyword(property.SetupName),
                 IdentifierName(property.BuilderField.Name)
             )
         );
