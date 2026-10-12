@@ -56,18 +56,6 @@ internal readonly ref struct ImposterBuilder
         _memberNameSet = memberNameSet;
     }
 
-    internal ImposterBuilder AddMembers(IEnumerable<MemberDeclarationSyntax>? members)
-    {
-        _imposterBuilder.AddMembers(members);
-        return this;
-    }
-
-    internal ImposterBuilder AddMember(MemberDeclarationSyntax? member)
-    {
-        _imposterBuilder.AddMember(member);
-        return this;
-    }
-
     // The types a member declares, named after its unique name.
     internal ImposterBuilder AddMemberTypes(
         string uniqueName,
