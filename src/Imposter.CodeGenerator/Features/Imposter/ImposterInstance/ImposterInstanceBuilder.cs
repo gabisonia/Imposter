@@ -37,7 +37,7 @@ internal readonly ref struct ImposterInstanceBuilder
     {
         var propertyBuilder = new PropertyDeclarationBuilder(
             property.Core.NullableAwareTypeSyntax,
-            property.Core.Name
+            EscapeKeyword(property.Core.Name)
         )
             .AddModifiers(property.ImposterInstanceModifiers)
             .WithExplicitInterfaceSpecifier(property.ExplicitInterfaceSpecifier);
@@ -69,7 +69,7 @@ internal readonly ref struct ImposterInstanceBuilder
             .Dot(IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name))
             .Dot(IdentifierName(property.GetterImposterBuilder.GetMethod.Name));
         ExpressionSyntax? baseGetter = property.Core.GetterSupportsBaseImplementation
-            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+            ? BaseExpression().Dot(IdentifierName(EscapedIdentifier(property.Core.Name)))
             : null;
         var getterCall = baseGetter is null
             ? getter.Call()
@@ -86,7 +86,7 @@ internal readonly ref struct ImposterInstanceBuilder
     private BlockSyntax PropertySetterBody(in ImposterPropertyMetadata property)
     {
         var basePropertyAccess = property.Core.SetterSupportsBaseImplementation
-            ? BaseExpression().Dot(IdentifierName(property.Core.Name))
+            ? BaseExpression().Dot(IdentifierName(EscapedIdentifier(property.Core.Name)))
             : null;
         var setterArguments = new List<ArgumentSyntax>
         {
@@ -376,7 +376,7 @@ internal readonly ref struct ImposterInstanceBuilder
     internal ImposterInstanceBuilder AddEvent(in ImposterEventMetadata @event)
     {
         _imposterInstanceBuilder.AddMember(
-            EventDeclaration(@event.Core.DeclaredTypeSyntax, Identifier(@event.Core.Name))
+            EventDeclaration(@event.Core.DeclaredTypeSyntax, EscapedIdentifier(@event.Core.Name))
                 .WithModifiers(@event.ImposterInstanceModifiers)
                 .WithExplicitInterfaceSpecifier(@event.ExplicitInterfaceSpecifier)
                 .WithAccessorList(
@@ -405,7 +405,7 @@ internal readonly ref struct ImposterInstanceBuilder
                 isAdd
                     ? SyntaxKind.AddAssignmentExpression
                     : SyntaxKind.SubtractAssignmentExpression,
-                BaseExpression().Dot(IdentifierName(@event.Core.Name)),
+                BaseExpression().Dot(IdentifierName(EscapedIdentifier(@event.Core.Name))),
                 IdentifierName("value")
             )
             : null;
@@ -625,7 +625,7 @@ internal readonly ref struct ImposterInstanceBuilder
 
             var methodBuilder = new MethodDeclarationBuilder(
                 TypeSyntaxIncludingNullable(imposterMethod.Model.ReturnType.Type),
-                imposterMethod.Model.Name
+                EscapeKeyword(imposterMethod.Model.Name)
             )
                 .AddTypeParameters(TypeParametersSyntax(imposterMethod.Model.TypeParameters))
                 .AddParameters(
