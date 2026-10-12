@@ -70,7 +70,7 @@ internal sealed record ImposterTargetModel(
                 .ToEquatableArray(),
             ToTargetMembers(
                 methods,
-                isInterface ? DetectCollisions(methods, MethodKey, namesOfSeveralKinds) : null,
+                isInterface ? DetectMethodCollisions(methods, namesOfSeveralKinds) : null,
                 method =>
                     MethodModel.From(
                         method,
@@ -264,10 +264,33 @@ internal sealed record ImposterTargetModel(
             )
             .All(same => same);
 
-    // Methods collide on the instance when their type parameter counts and parameter types match, and their setups,
-    // which leave out the ref structs they only pass through, collide on the imposter.
-    private static string MethodKey(IMethodSymbol method) =>
+    // Setup and implementation signatures can collide independently: allows ref struct removes a parameter from
+    // the setup but not the implementation. Preserve numbered setups for setup collisions, and implement methods
+    // explicitly when their full signatures collide even if their setups take different matchers.
+    private static HashSet<IMethodSymbol> DetectMethodCollisions(
+        IReadOnlyCollection<IMethodSymbol> methods,
+        HashSet<string> namesOfSeveralKinds
+    )
+    {
+        var collisions = DetectCollisions(methods, MethodSetupKey, namesOfSeveralKinds);
+        collisions.UnionWith(
+            DetectCollisions(methods, MethodImplementationKey, namesOfSeveralKinds)
+        );
+        return collisions;
+    }
+
+    private static string MethodSetupKey(IMethodSymbol method) =>
         $"{method.Name}`{method.Arity}({ParameterTypesKey(ParameterModel.MatchedParameters(method.Parameters))})";
+
+    // Method type parameters compare by position. Return types and constraints cannot distinguish overloads, nor
+    // can ref, in and out from each other; passing by value can distinguish an overload from passing by reference.
+    private static string MethodImplementationKey(IMethodSymbol method)
+    {
+        var parameterTypes = method.Parameters.Select(parameter =>
+            (parameter.RefKind == RefKind.None ? "" : "&") + parameter.Type.ToSignatureKey()
+        );
+        return $"{method.Name}`{method.Arity}({string.Join(",", parameterTypes)})";
+    }
 
     // Indexers with the same parameter types collide on the instance, and their setup indexers, which take Arg<T>
     // whatever the ref kind, would collide on the imposter.
