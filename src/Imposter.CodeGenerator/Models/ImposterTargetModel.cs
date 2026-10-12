@@ -155,8 +155,9 @@ internal sealed record ImposterTargetModel(
             _ => [],
         };
 
-    // An event whose type doesn't bind, as in code being edited, is a compile error the user already sees, so the
-    // imposter leaves it out.
+    // Unlike methods and properties, events need a known delegate signature to generate their raising API.
+    // Leave events without one out, even when another generator might supply the delegate later. Keep other
+    // members with unresolved types: qualified references can bind once all generators' output is compiled.
     internal static IReadOnlyCollection<IEventSymbol> GetEvents(
         INamedTypeSymbol target,
         MemberAccess memberAccess
