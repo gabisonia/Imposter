@@ -6,7 +6,8 @@ namespace Imposter.CodeGenerator.Helpers;
 
 // Generated code declares its locals with var and its discards with _, and a member declaration that starts with record
 // or partial reads as a record or a partial member. A type parameter of one of these names takes another in generated
-// code, one that no name declared beside it there has.
+// code, one that no name declared beside it there has. A target's type parameter also cannot share the name of its
+// generated imposter class.
 internal static class TypeParameterNames
 {
     private static readonly HashSet<string> NamesGeneratedCodeCantUse =
@@ -28,13 +29,30 @@ internal static class TypeParameterNames
         SymbolDisplayFormat format
     ) => string.Concat(type.ToDisplayParts(format).Select(InGeneratedCode));
 
+    // Public namespaces and file names keep the target's identity independently of collision-driven renaming.
+    // Preserve the keyword substitutions already used in dedicated namespaces before this collision was handled.
+    internal static string ToImposterIdentityString(this INamedTypeSymbol type) =>
+        string.Concat(
+            type.ToDisplayParts(SymbolDisplayFormat.FullyQualifiedFormat)
+                .Select(part =>
+                    part.Symbol is ITypeParameterSymbol parameter
+                    && NamesGeneratedCodeCantUse.Contains(parameter.Name)
+                        ? new NameSet(NamesBeside(parameter)).Use(parameter.Name)
+                        : part.ToString()
+                )
+        );
+
     private static string InGeneratedCode(SymbolDisplayPart part) =>
         part.Symbol is ITypeParameterSymbol typeParameter && IsRenamed(typeParameter)
             ? typeParameter.NameInGeneratedCode()
             : part.ToString();
 
     private static bool IsRenamed(ITypeParameterSymbol typeParameter) =>
-        NamesGeneratedCodeCantUse.Contains(typeParameter.Name);
+        NamesGeneratedCodeCantUse.Contains(typeParameter.Name)
+        || (
+            typeParameter.DeclaringType is { } declaringType
+            && typeParameter.Name == ImposterTargetMetadata.GetImposterName(declaringType.Name)
+        );
 
     // A method's type parameter meets the method's others, its parameters and, under their names in generated code, the
     // type parameters of the types it's a member of. A type's meets the type's others, those of its containing types,

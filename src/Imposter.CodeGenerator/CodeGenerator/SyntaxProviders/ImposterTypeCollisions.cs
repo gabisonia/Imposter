@@ -124,7 +124,7 @@ internal static class ImposterTypeCollisions
 
         static string PlainHintName(GenerateImposterDeclaration declaration) =>
             ImposterGenerationContext.GetHintName(
-                declaration.Target!.Type,
+                declaration.Target!.IdentityName,
                 declaration.PutInTheSameNamespace,
                 includesHash: false
             );

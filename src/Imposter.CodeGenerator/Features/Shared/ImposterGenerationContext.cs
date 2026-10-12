@@ -42,11 +42,11 @@ internal readonly struct ImposterGenerationContext
 
         ImposterNamespaceName = GetImposterNamespaceName(
             putInTheSameNamespace,
-            Target.Type,
+            Target.IdentityName,
             Target.ContainingNamespace
         );
         HintName = GetHintName(
-            Target.Type,
+            Target.IdentityName,
             putInTheSameNamespace,
             generationTarget.HintNameIncludesHash
         );
@@ -55,12 +55,12 @@ internal readonly struct ImposterGenerationContext
     }
 
     internal static string GetHintName(
-        TypeModel target,
+        string targetIdentityName,
         bool putInTheSameNamespace,
         bool includesHash
     )
     {
-        var targetName = GetTargetName(target);
+        var targetName = GetTargetName(targetIdentityName);
         var sanitizedTargetName = SanitizeForNamespace(targetName);
         var hintName =
             $"{sanitizedTargetName}{GetHintNameSuffix(targetName, sanitizedTargetName, includesHash)}";
@@ -73,22 +73,20 @@ internal readonly struct ImposterGenerationContext
     // Null for the global namespace.
     internal static string? GetImposterNamespaceName(
         bool putInTheSameNamespace,
-        TypeModel target,
+        string targetIdentityName,
         NamespaceModel targetNamespace
     ) =>
         putInTheSameNamespace
             ? targetNamespace.DisplayName
-            : $"{DedicatedNamespacePrefix}.{SanitizeForNamespace(GetTargetName(target))}";
+            : $"{DedicatedNamespacePrefix}.{SanitizeForNamespace(GetTargetName(targetIdentityName))}";
 
     // The target's fully qualified name without `global::`, e.g. `Sample.IPair<int, string>`.
-    private static string GetTargetName(TypeModel target)
+    private static string GetTargetName(string targetIdentityName)
     {
-        var display = target.FullyQualifiedName;
-
         const string globalPrefix = "global::";
-        return display.StartsWith(globalPrefix, StringComparison.Ordinal)
-            ? display[globalPrefix.Length..]
-            : display;
+        return targetIdentityName.StartsWith(globalPrefix, StringComparison.Ordinal)
+            ? targetIdentityName[globalPrefix.Length..]
+            : targetIdentityName;
     }
 
     // Sanitizing is lossy (`IFoo<int>` and `IFoo_int_` both become `IFoo_int_`), and duplicate hint names make
