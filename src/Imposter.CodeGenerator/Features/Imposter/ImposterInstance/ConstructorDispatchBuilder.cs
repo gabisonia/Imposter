@@ -34,12 +34,7 @@ internal static class ConstructorDispatchBuilder
     {
         if (method.SupportsBaseImplementation)
         {
-            SimpleNameSyntax name = method.Model.IsGenericMethod
-                ? GenericName(
-                    Identifier(method.Model.Name),
-                    TypeArguments(method.GenericTypeArguments)
-                )
-                : IdentifierName(method.Model.Name);
+            var name = method.WithGenericArguments(method.Model.Name);
             var call = BaseExpression()
                 .Dot(name)
                 .Call(ArgumentListSyntax(method.Parameters.AllParameters, includeRefKind: true));

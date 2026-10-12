@@ -238,10 +238,10 @@ internal readonly struct ImposterTargetMethodMetadata
     internal SimpleNameSyntax WithGenericArguments(string identifier) =>
         GenericTypeArgumentListSyntax is not null
             ? SyntaxFactory.GenericName(
-                SyntaxFactory.Identifier(identifier),
+                SyntaxFactoryHelper.EscapedIdentifier(identifier),
                 GenericTypeArgumentListSyntax
             )
-            : SyntaxFactory.IdentifierName(identifier);
+            : SyntaxFactory.IdentifierName(SyntaxFactoryHelper.EscapedIdentifier(identifier));
 
     // A method another member's setup would collide with is set up by its unique name.
     internal static bool NeedsNumberedSetup(TargetMemberModel<MethodModel> method) =>
