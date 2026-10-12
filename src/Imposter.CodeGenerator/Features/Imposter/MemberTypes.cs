@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,8 +13,21 @@ internal sealed class MemberTypes
 {
     private readonly List<(string UniqueName, MemberDeclarationSyntax Type)> _types = [];
 
-    internal void Add(string uniqueName, MemberDeclarationSyntax type) =>
+    // Renaming a member must rename its types too, or the generator's clash-resolution loop cannot make progress.
+    internal void Add(string uniqueName, MemberDeclarationSyntax type)
+    {
+        foreach (var declaration in Declarations(type))
+        {
+            if (declaration.Name.IndexOf(uniqueName, StringComparison.Ordinal) < 0)
+            {
+                throw new InvalidOperationException(
+                    $"Generated type '{declaration.Name}' must contain its member's unique name '{uniqueName}' so type-clash resolution can make progress."
+                );
+            }
+        }
+
         _types.Add((uniqueName, type));
+    }
 
     // The unique names of the members whose types clash with another member of the imposter, or with a type parameter
     // they declare.
