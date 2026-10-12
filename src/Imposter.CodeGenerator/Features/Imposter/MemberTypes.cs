@@ -15,7 +15,8 @@ internal sealed class MemberTypes
     internal void Add(string uniqueName, MemberDeclarationSyntax type) =>
         _types.Add((uniqueName, type));
 
-    // The unique names of the members whose types clash with another member of the imposter.
+    // The unique names of the members whose types clash with another member of the imposter, or with a type parameter
+    // they declare.
     internal HashSet<string> UniqueNamesOfClashingTypes(ClassDeclarationSyntax imposter)
     {
         var declarations = imposter
@@ -26,10 +27,42 @@ internal sealed class MemberTypes
         return
         [
             .. _types
-                .Where(it => Declarations(it.Type).Any(type => Clashes(type, declarations)))
-                .Select(it => it.UniqueName),
+                .GroupBy(it => it.UniqueName, it => it.Type)
+                .Where(member =>
+                    DeclaresATypeParameterNamedLikeItsTypes([.. member])
+                    || member.Any(type =>
+                        Declarations(type).Any(declaration => Clashes(declaration, declarations))
+                    )
+                )
+                .Select(member => member.Key),
         ];
     }
+
+    // A generic method's types declare its type parameters, so a method type parameter named like one of its types
+    // would either be declared by that type (CS0694) or hide it from the others that refer to it.
+    private static bool DeclaresATypeParameterNamedLikeItsTypes(
+        IReadOnlyCollection<MemberDeclarationSyntax> types
+    )
+    {
+        var typeNames = new HashSet<string>(
+            types
+                .SelectMany(Declarations)
+                .Where(it => it.TypeArity is not null)
+                .Select(it => it.Name)
+        );
+
+        return types.SelectMany(TypeParameterNames).Any(typeNames.Contains);
+    }
+
+    private static IEnumerable<string> TypeParameterNames(MemberDeclarationSyntax type) =>
+        (
+            type switch
+            {
+                TypeDeclarationSyntax declaration => declaration.TypeParameterList,
+                DelegateDeclarationSyntax @delegate => @delegate.TypeParameterList,
+                _ => null,
+            }
+        )?.Parameters.Select(it => it.Identifier.Text) ?? [];
 
     // The type itself is among the declarations, so another one sharing its name means a clash.
     private static bool Clashes(Declaration type, ILookup<string, Declaration> declarations) =>
