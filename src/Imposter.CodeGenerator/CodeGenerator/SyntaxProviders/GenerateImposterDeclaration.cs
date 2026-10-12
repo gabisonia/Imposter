@@ -49,7 +49,7 @@ internal sealed record GenerateImposterDeclaration(
         var target = ImposterTargetValidator.GeneratedTarget(registeredTarget);
         var imposterNamespaceName = ImposterGenerationContext.GetImposterNamespaceName(
             putInTheSameNamespace,
-            TypeModel.From(target),
+            target.ToImposterIdentityString(),
             NamespaceModel.From(target.ContainingNamespace)
         );
         var declaration = new GenerateImposterDeclaration(
