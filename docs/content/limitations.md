@@ -66,6 +66,23 @@ explicit-mode checks apply.
 
 - Generated `.g.cs` files are implementation details and should not be edited directly; customize behavior via setups or by changing generator inputs.
 
+### Unresolved types and other source generators
+
+Imposter preserves methods, properties and indexers whose types have not resolved yet. Types emitted
+by another generator may be unavailable when Imposter runs and resolve only in the final compilation.
+For example, a method using `Gen.Other` can compile once another
+generator supplies that class. Qualify these references in the target declaration (`Gen.Other` or
+`global::Gen.Other`); Imposter does not copy the target file's `using` directives into its generated file.
+
+If the type is genuinely missing, the compiler may report errors in both the target and the generated
+code. Fix the missing type in the target; do not edit the `.g.cs` file.
+
+Events require a known delegate signature to generate their raising API. An event whose delegate type
+is unresolved is left out, even if another generator later supplies that delegate. This can leave an
+interface event or an abstract class event unimplemented. Declare the delegate in ordinary source or
+a referenced assembly so Imposter can inspect it. A known delegate such as `System.Action<Gen.Other>`
+can still work when another generator supplies the argument's class.
+
 !!! info "Next steps"
     - [Getting Started](index.md)
     - [Key API Reference](key-api-reference.md)
