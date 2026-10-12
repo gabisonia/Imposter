@@ -230,7 +230,7 @@ internal static class ImposterTargetValidator
     // or indexer's span value, an indexer's span key, and an event's span parameter (see UncopiedEventTypes). A
     // method's parameter or result, a property's or indexer's value or key, or a sync event delegate's parameter, of
     // another ref struct type isn't kept at all, only passed through, and neither is a method's value of its type
-    // parameter that allows ref structs (see IsPassedThrough, ReturnsPassedThrough, PassesValueThrough, UncopiedTypes
+    // parameter that allows ref structs (see IsPassedThrough, ReturnsPassedThrough, CanPassValueThrough, UncopiedTypes
     // and UncopiedEventTypes).
     private static (ISymbol Member, ITypeSymbol Type)? FindRefLikeMember(
         INamedTypeSymbol target,
@@ -328,7 +328,7 @@ internal static class ImposterTargetValidator
 
     private static IEnumerable<ITypeSymbol> UncopiedTypes(IPropertySymbol property)
     {
-        if (SpanModel.FromProperty(property) is null && !PassesValueThrough(property))
+        if (SpanModel.FromProperty(property) is null && !CanPassValueThrough(property))
         {
             yield return property.Type;
         }
@@ -348,7 +348,7 @@ internal static class ImposterTargetValidator
     // A class indexer's base getter is a lambda that reads the base indexer with copies of the keys. Its value could
     // refer to the copy of a key taken by in or ref readonly (CS8347), so the lambda couldn't return a value passed
     // through.
-    private static bool PassesValueThrough(IPropertySymbol property) =>
+    private static bool CanPassValueThrough(IPropertySymbol property) =>
         PropertyModel.PassesValueThrough(property)
         && !(
             property.ContainingType.TypeKind == TypeKind.Class
