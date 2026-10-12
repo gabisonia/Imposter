@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Imposter.CodeGenerator.CodeGenerator.Diagnostics;
+using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Microsoft.CodeAnalysis;
 
@@ -124,7 +125,7 @@ internal static class ImposterTypeCollisions
 
         static string PlainHintName(GenerateImposterDeclaration declaration) =>
             ImposterGenerationContext.GetHintName(
-                declaration.Target!.Type,
+                declaration.Target!.IdentityName,
                 declaration.PutInTheSameNamespace,
                 includesHash: false
             );
@@ -139,7 +140,7 @@ internal static class ImposterTypeCollisions
         string? imposterNamespaceName
     )
     {
-        var arity = target.Arity;
+        var arity = target.TypeParametersIn().Count();
         return QualifiedImposterName(
             target,
             imposterNamespaceName,
@@ -153,12 +154,12 @@ internal static class ImposterTypeCollisions
         string? imposterNamespaceName
     )
     {
-        var typeParameters = target.OriginalDefinition.TypeParameters;
+        var typeParameters = target.TypeParametersIn().ToArray();
         return QualifiedImposterName(
             target,
             imposterNamespaceName,
             typeParameters.Length > 0
-                ? $"<{string.Join(", ", typeParameters.Select(it => it.Name))}>"
+                ? $"<{string.Join(", ", typeParameters.Select(it => it.NameInGeneratedCode()))}>"
                 : ""
         );
     }

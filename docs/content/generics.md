@@ -266,6 +266,43 @@ A method's type parameter can allow ref structs (`where T : allows ref struct`, 
 
 The imposter of a generic target keeps values of the target's own type parameters, so it leaves out their anti-constraint: for a target's type parameter that allows ref structs, the imposter takes only type arguments that aren't ref structs.
 
+## Targets nested in generic types
+
+An open nested target's imposter takes the containing types' type parameters from outer to inner, followed by the target's own parameters. Their constraints apply to the imposter too. For example, `Outer<T>.Inner<U>` generates `InnerImposter<T, U>`:
+
+```csharp
+using Imposter.Abstractions;
+
+[assembly: GenerateImposter(typeof(Sample.Outer<>.Inner<>))]
+
+namespace Sample
+{
+    public class Outer<T> where T : class
+    {
+        public interface Inner<U> where U : T
+        {
+            U Get();
+        }
+    }
+
+    public static class Usage
+    {
+        public static Outer<object>.Inner<string> Create()
+        {
+            var imposter = new InnerImposter<object, string>();
+            imposter.Get().Returns("value");
+            return imposter.Instance();
+        }
+    }
+}
+```
+
+A non-generic target such as `Outer<T>.Inner` still generates a generic `InnerImposter<T>`. A closed containing type stays closed: registering `Outer<int>.Inner` generates `InnerImposter`, and registering `Outer<int>.Inner<string>` generates `InnerImposter<U>` for `Outer<int>.Inner<U>`.
+
+The imposter keeps the nested target's simple name. If two registrations would produce the same imposter name and total number of type parameters, [IMP007](diagnostics.md#imp007) reports the collision. Register one with `putInTheSameNamespace: false` to place it in a namespace derived from its full containing-type chain.
+
+Renaming a type parameter to avoid a collision does not change the imposter's namespace or file name.
+
 ## Open Generics
 
 Open generics let you register a generic interface or class once (for example, `typeof(IAsyncObservable<>)`) and then create imposters for any concrete type you close it with at call site.
