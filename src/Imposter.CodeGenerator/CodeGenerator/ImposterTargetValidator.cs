@@ -165,7 +165,7 @@ internal static class ImposterTargetValidator
 
     // The type a registration generates the imposter of: the registered type with its own type parameters open, so a
     // closed generic registration (IMP006) generates its open type's imposter. A containing type's type arguments stay
-    // as registered, since the imposter declares only the target's own type parameters.
+    // as registered; an open containing type contributes its type parameters to the imposter too.
     internal static INamedTypeSymbol GeneratedTarget(INamedTypeSymbol registeredTarget) =>
         registeredTarget.ConstructedFrom;
 

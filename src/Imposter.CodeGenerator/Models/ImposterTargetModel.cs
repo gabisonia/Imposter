@@ -14,6 +14,8 @@ namespace Imposter.CodeGenerator.Models;
 /// imposter's assembly can override or implement are included.
 /// <see cref="HasRequiredMembers"/> is true for a class with C# 11 required members, which the imposter's
 /// <c>new</c> of its instance can skip only through <c>[SetsRequiredMembers]</c>.
+/// <see cref="TypeParameters"/> includes the open parameters of containing types, from outer to inner, followed by
+/// the target's own parameters.
 /// <see cref="IdentityName"/> names the namespace and file independently of parameter renaming in generated code.
 /// </summary>
 internal sealed record ImposterTargetModel(
@@ -65,7 +67,7 @@ internal sealed record ImposterTargetModel(
             target.TypeKind is TypeKind.Class,
             target.TypeKind is TypeKind.Class && target.HasRequiredMembers(),
             target.DeclaredAccessibility,
-            target.TypeParameters.Select(TypeParameterModel.From).ToEquatableArray(),
+            target.TypeParametersIn().Select(TypeParameterModel.From).ToEquatableArray(),
             target
                 .GetMembers()
                 .Select(member => member.Name)

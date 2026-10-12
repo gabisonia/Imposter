@@ -16,7 +16,8 @@ internal sealed record InterfaceSetupTargetModel(
     internal static InterfaceSetupTargetModel From(INamedTypeSymbol target) =>
         new(
             target
-                .TypeParameters.Select(parameter => parameter.NameInGeneratedCode())
+                .TypeParametersIn()
+                .Select(parameter => parameter.NameInGeneratedCode())
                 .ToEquatableArray(),
             target
                 .AllInterfaces.Prepend(target)
