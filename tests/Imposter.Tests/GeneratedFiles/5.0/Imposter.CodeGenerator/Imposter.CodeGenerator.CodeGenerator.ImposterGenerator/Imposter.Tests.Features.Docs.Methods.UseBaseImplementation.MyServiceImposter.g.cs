@@ -315,7 +315,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AddMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AddMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AddMethodInvocationImposterGroup>();
 			private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -720,7 +720,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class MightFailMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<MightFailMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<MightFailMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<MightFailMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<MightFailMethodInvocationImposterGroup>();
 			private readonly MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public MightFailMethodImposter(MightFailMethodInvocationHistoryCollection _mightFailMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1135,7 +1135,7 @@ namespace Imposter.Tests.Features.Docs.Methods.UseBaseImplementation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProcessAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProcessAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProcessAsyncMethodInvocationImposterGroup>();
 			private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProcessAsyncMethodImposter(ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

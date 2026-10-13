@@ -306,7 +306,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CopyMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<CopyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CopyMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<CopyMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CopyMethodInvocationImposterGroup>();
 			private readonly CopyMethodInvocationHistoryCollection _copyMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public CopyMethodImposter(CopyMethodInvocationHistoryCollection _copyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -689,7 +689,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class FirstMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<FirstMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<FirstMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<FirstMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<FirstMethodInvocationImposterGroup>();
 			private readonly FirstMethodInvocationHistoryCollection _firstMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public FirstMethodImposter(FirstMethodInvocationHistoryCollection _firstMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1072,7 +1072,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NameMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<NameMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<NameMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup>();
 			private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public NameMethodImposter(NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1455,7 +1455,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SliceMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SliceMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SliceMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SliceMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SliceMethodInvocationImposterGroup>();
 			private readonly SliceMethodInvocationHistoryCollection _sliceMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SliceMethodImposter(SliceMethodInvocationHistoryCollection _sliceMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

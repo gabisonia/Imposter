@@ -273,7 +273,7 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadProtectedMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ReadProtectedMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ReadProtectedMethodInvocationImposterGroup>();
 			private readonly ReadProtectedMethodInvocationHistoryCollection _readProtectedMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ReadProtectedMethodImposter(ReadProtectedMethodInvocationHistoryCollection _readProtectedMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -656,7 +656,7 @@ namespace Imposter.Tests.Docs.Properties
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class WriteProtectedMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<WriteProtectedMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<WriteProtectedMethodInvocationImposterGroup>();
 			private readonly WriteProtectedMethodInvocationHistoryCollection _writeProtectedMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public WriteProtectedMethodImposter(WriteProtectedMethodInvocationHistoryCollection _writeProtectedMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

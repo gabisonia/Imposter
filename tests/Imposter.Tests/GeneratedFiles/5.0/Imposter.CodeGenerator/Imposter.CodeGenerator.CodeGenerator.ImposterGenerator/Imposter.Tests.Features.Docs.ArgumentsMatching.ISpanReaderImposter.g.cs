@@ -257,7 +257,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TryReadMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<TryReadMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<TryReadMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<TryReadMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<TryReadMethodInvocationImposterGroup>();
 			private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public TryReadMethodImposter(TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

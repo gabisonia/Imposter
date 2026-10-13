@@ -264,7 +264,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetMethodInvocationImposterGroup>();
 			private readonly GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetMethodImposter(GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -641,7 +641,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Get_2MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<Get_2MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Get_2MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<Get_2MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<Get_2MethodInvocationImposterGroup>();
 			private readonly Get_2MethodInvocationHistoryCollection _get_2MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public Get_2MethodImposter(Get_2MethodInvocationHistoryCollection _get_2MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -993,7 +993,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Get_1MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<Get_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Get_1MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<Get_1MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<Get_1MethodInvocationImposterGroup>();
 			private readonly Get_1MethodInvocationHistoryCollection _get_1MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public Get_1MethodImposter(Get_1MethodInvocationHistoryCollection _get_1MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

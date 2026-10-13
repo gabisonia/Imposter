@@ -169,7 +169,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -745,7 +745,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1326,7 +1326,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexer_2IndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_2IndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_2IndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;

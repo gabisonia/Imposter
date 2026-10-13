@@ -281,7 +281,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ParseMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ParseMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ParseMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ParseMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ParseMethodInvocationImposterGroup>();
 			private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ParseMethodImposter(ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

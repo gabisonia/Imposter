@@ -266,7 +266,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NameMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<NameMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<NameMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NameMethodInvocationImposterGroup>();
 			private readonly NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public NameMethodImposter(NameMethodInvocationHistoryCollection _nameMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

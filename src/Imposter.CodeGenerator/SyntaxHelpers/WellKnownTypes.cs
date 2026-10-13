@@ -222,6 +222,9 @@ internal static class WellKnownTypes
             internal static NameSyntax IHaveImposterInstance(TypeSyntax instanceType) =>
                 GenericType(Namespace, nameof(IHaveImposterInstance), instanceType);
 
+            internal static NameSyntax SetupCollection(TypeSyntax itemType) =>
+                GenericType(Namespace, nameof(SetupCollection), itemType);
+
             internal static NameSyntax OutArg(TypeSyntax type) =>
                 GenericType(Namespace, nameof(OutArg), type);
 

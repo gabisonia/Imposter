@@ -290,7 +290,7 @@ internal static partial class IndexerGetterBuilder
                         )
                     ),
                     IdentifierName(getter.SetupsField.Name)
-                        .Dot(ConcurrentStackSyntaxHelper.Push)
+                        .Dot(SetupCollectionSyntaxHelper.Push)
                         .Call(Argument(setup))
                         .ToStatementSyntax(),
                     ReturnStatement(setup)

@@ -250,7 +250,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetMethodInvocationImposterGroup>();
 			private readonly GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetMethodImposter(GetMethodInvocationHistoryCollection _getMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

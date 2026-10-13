@@ -288,7 +288,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Write_1MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<Write_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Write_1MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<Write_1MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<Write_1MethodInvocationImposterGroup>();
 			private readonly Write_1MethodInvocationHistoryCollection _write_1MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public Write_1MethodImposter(Write_1MethodInvocationHistoryCollection _write_1MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -671,7 +671,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class WriteMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<WriteMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<WriteMethodInvocationImposterGroup>();
 			private readonly WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public WriteMethodImposter(WriteMethodInvocationHistoryCollection _writeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

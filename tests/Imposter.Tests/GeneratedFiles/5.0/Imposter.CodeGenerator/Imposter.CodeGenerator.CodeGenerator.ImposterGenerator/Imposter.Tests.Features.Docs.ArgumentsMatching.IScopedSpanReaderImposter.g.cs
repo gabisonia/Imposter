@@ -281,7 +281,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TrimMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<TrimMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<TrimMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<TrimMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<TrimMethodInvocationImposterGroup>();
 			private readonly TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public TrimMethodImposter(TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

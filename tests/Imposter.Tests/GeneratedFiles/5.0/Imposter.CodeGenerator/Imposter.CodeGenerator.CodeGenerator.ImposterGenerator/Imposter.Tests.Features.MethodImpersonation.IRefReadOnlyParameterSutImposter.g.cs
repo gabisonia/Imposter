@@ -140,7 +140,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IAcceptsMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IAcceptsMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IAcceptsMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAcceptsMethodImposter>();
 			internal AcceptsMethodImposter<T> AddNew<T>()
 			{
 				var imposter = new AcceptsMethodImposter<T>(_acceptsMethodInvocationHistoryCollection, _invocationBehavior);
@@ -343,7 +343,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AcceptsMethodImposter<T> : IAcceptsMethodImposter<T>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AcceptsMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AcceptsMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AcceptsMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AcceptsMethodInvocationImposterGroup<T>>();
 			private readonly AcceptsMethodInvocationHistoryCollection _acceptsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AcceptsMethodImposter(AcceptsMethodInvocationHistoryCollection _acceptsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -769,7 +769,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ReadMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ReadMethodInvocationImposterGroup>();
 			private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ReadMethodImposter(ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

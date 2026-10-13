@@ -16,16 +16,866 @@ namespace Imposter.Tests.Features.CallAllocations
 	public sealed class ICallAllocationSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut>, ICallAllocationSutImposter.ICallAllocationSutSetup
 	{
 		private readonly SquareMethodImposter _squareMethodImposter;
+		private readonly LogMethodImposter _logMethodImposter;
+		private readonly EchoMethodImposterCollection _echoMethodImposterCollection;
 		private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection = new SquareMethodInvocationHistoryCollection();
+		private readonly LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection = new LogMethodInvocationHistoryCollection();
+		private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection = new EchoMethodInvocationHistoryCollection();
 		public ISquareMethodImposterBuilder Square(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return new SquareMethodImposter.Builder(_squareMethodImposter, _squareMethodInvocationHistoryCollection, new SquareArgumentsCriteria(value));
+		}
+
+		public ILogMethodImposterBuilder Log(global::Imposter.Abstractions.Arg<string> message)
+		{
+			return new LogMethodImposter.Builder(_logMethodImposter, _logMethodInvocationHistoryCollection, new LogArgumentsCriteria(message));
+		}
+
+		public IEchoMethodImposterBuilder<T> Echo<T>(global::Imposter.Abstractions.Arg<T> value)
+		{
+			return new EchoMethodImposter<T>.Builder(_echoMethodImposterCollection, _echoMethodInvocationHistoryCollection, new EchoArgumentsCriteria<T>(value));
 		}
 
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.CallAllocations.ICallAllocationSut>.Instance()
 		{
 			return _imposterInstance;
+		}
+
+		public delegate T EchoDelegate<T>(T value);
+		public delegate void EchoCallbackDelegate<T>(T value);
+		public delegate global::System.Exception EchoExceptionGeneratorDelegate<T>(T value);
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public class EchoArguments<T>
+		{
+			public T value;
+			internal EchoArguments(T value)
+			{
+				this.value = value;
+			}
+
+			public EchoArguments<TTarget> As<TTarget>()
+			{
+				return new EchoArguments<TTarget>(global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(value));
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public class EchoArgumentsCriteria<T>
+		{
+			public global::Imposter.Abstractions.Arg<T> value { get; }
+
+			public EchoArgumentsCriteria(global::Imposter.Abstractions.Arg<T> value)
+			{
+				this.value = value;
+			}
+
+			public bool Matches(EchoArguments<T> arguments)
+			{
+				return value.Matches(arguments.value);
+			}
+
+			public EchoArgumentsCriteria<TTarget> As<TTarget>()
+			{
+				return new EchoArgumentsCriteria<TTarget>(global::Imposter.Abstractions.Arg<TTarget>.Is(it => global::Imposter.Abstractions.TypeCaster.TryCast<TTarget, T>(it, out T valueTarget) && value.Matches(valueTarget)));
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IEchoMethodInvocationHistory
+		{
+			bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class EchoMethodInvocationHistory<T> : IEchoMethodInvocationHistory
+		{
+			internal EchoArguments<T> Arguments;
+			internal T? Result;
+			internal global::System.Exception? Exception;
+			public EchoMethodInvocationHistory(EchoArguments<T> Arguments, T? Result, global::System.Exception? Exception)
+			{
+				this.Arguments = Arguments;
+				this.Result = Result;
+				this.Exception = Exception;
+			}
+
+			public bool Matches<TTarget>(EchoArgumentsCriteria<TTarget> criteria)
+			{
+				return ((typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget))) && criteria.As<T>().Matches(Arguments);
+			}
+
+			public override string ToString()
+			{
+				return "Echo(" + global::System.String.Join(", ", new[] { "value: " + FormatValue(Arguments.value) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+			}
+
+			private static string FormatValue(object? value)
+			{
+				return "<" + (value?.ToString() ?? "null") + ">";
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class EchoMethodInvocationHistoryCollection
+		{
+			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodInvocationHistory>();
+			internal void Add(IEchoMethodInvocationHistory invocationHistory)
+			{
+				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal int Count<T>(EchoArgumentsCriteria<T> argumentsCriteria)
+			{
+				return _invocationHistory.Count(it => it.Matches<T>(argumentsCriteria));
+			}
+
+			public override string ToString()
+			{
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class EchoMethodImposterCollection
+		{
+			private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+			public EchoMethodImposterCollection(EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+			{
+				this._echoMethodInvocationHistoryCollection = _echoMethodInvocationHistoryCollection;
+				this._invocationBehavior = _invocationBehavior;
+			}
+
+			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter>();
+			internal EchoMethodImposter<T> AddNew<T>()
+			{
+				var imposter = new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
+				_imposters.Push(imposter);
+				return imposter;
+			}
+
+			internal IEchoMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>(EchoArguments<T> arguments)
+			{
+				foreach (var storedImposter in _imposters)
+				{
+					var typedImposter = storedImposter.As<T>();
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
+						return typedImposter;
+				}
+
+				return new EchoMethodImposter<T>(_echoMethodInvocationHistoryCollection, _invocationBehavior);
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		class EchoMethodInvocationImposterGroup<T>
+		{
+			internal static EchoMethodInvocationImposterGroup<T> Default = new EchoMethodInvocationImposterGroup<T>(new EchoArgumentsCriteria<T>(global::Imposter.Abstractions.Arg<T>.Any()));
+			internal EchoArgumentsCriteria<T> ArgumentsCriteria { get; }
+
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			public EchoMethodInvocationImposterGroup(EchoArgumentsCriteria<T> argumentsCriteria)
+			{
+				ArgumentsCriteria = argumentsCriteria;
+			}
+
+			internal MethodInvocationImposter AddInvocationImposter()
+			{
+				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+				_invocationImposters.Enqueue(invocationImposter);
+				return invocationImposter;
+			}
+
+			private MethodInvocationImposter? GetInvocationImposter()
+			{
+				if (_invocationImposters.IsEmpty)
+				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
+					if (!invocationImposter.IsEmpty)
+					{
+						_lastestInvocationImposter = invocationImposter;
+					}
+
+					_invocationImposters.TryDequeue(out _);
+					return invocationImposter;
+				}
+			}
+
+			public T Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, T value)
+			{
+				var invocationImposter = GetInvocationImposter();
+				if (invocationImposter == null)
+				{
+					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					{
+						throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+					}
+
+					invocationImposter = MethodInvocationImposter.Default;
+				}
+
+				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, value);
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class MethodInvocationImposter
+			{
+				internal static MethodInvocationImposter Default;
+				static MethodInvocationImposter()
+				{
+					Default = new MethodInvocationImposter();
+					Default.Returns(DefaultResultGenerator);
+				}
+
+				private EchoDelegate<T>? _resultGenerator;
+				private readonly global::System.Collections.Concurrent.ConcurrentQueue<EchoCallbackDelegate<T>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<EchoCallbackDelegate<T>>();
+				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
+
+				public T Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, T value)
+				{
+					if (_resultGenerator == null)
+					{
+						if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+						{
+							throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+						}
+
+						_resultGenerator = DefaultResultGenerator;
+					}
+
+					T result = _resultGenerator.Invoke(value);
+					if (!_callbacks.IsEmpty)
+					{
+						foreach (var callback in _callbacks)
+						{
+							callback(value);
+						}
+					}
+
+					return result;
+				}
+
+				internal void Callback(EchoCallbackDelegate<T> callback)
+				{
+					_callbacks.Enqueue(callback);
+				}
+
+				internal void Returns(EchoDelegate<T> resultGenerator)
+				{
+					_resultGenerator = resultGenerator;
+				}
+
+				internal void Returns(T value_1)
+				{
+					_resultGenerator = (T value) =>
+					{
+						return value_1;
+					};
+				}
+
+				internal void Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				{
+					_resultGenerator = (T value) =>
+					{
+						throw exceptionGenerator(value);
+					};
+				}
+
+				internal static T DefaultResultGenerator(T value)
+				{
+					return default !;
+				}
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IEchoMethodInvocationImposterGroupCallback<T>
+		{
+			IEchoMethodInvocationImposterGroupContinuation<T> Callback(EchoCallbackDelegate<T> callback);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IEchoMethodInvocationImposterGroupContinuation<T> : IEchoMethodInvocationImposterGroupCallback<T>
+		{
+			IEchoMethodInvocationImposterGroup<T> Then();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IEchoMethodInvocationImposterGroup<T> : IEchoMethodInvocationImposterGroupCallback<T>
+		{
+			IEchoMethodInvocationImposterGroupContinuation<T> Throws<TException>()
+				where TException : global::System.Exception, new();
+			IEchoMethodInvocationImposterGroupContinuation<T> Throws(global::System.Exception exception);
+			IEchoMethodInvocationImposterGroupContinuation<T> Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator);
+			IEchoMethodInvocationImposterGroupContinuation<T> Returns(EchoDelegate<T> resultGenerator);
+			IEchoMethodInvocationImposterGroupContinuation<T> Returns(T value);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal interface IEchoMethodImposter
+		{
+			IEchoMethodImposter<TTarget>? As<TTarget>();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal interface IEchoMethodImposter<T> : IEchoMethodImposter
+		{
+			T Invoke(T value);
+			bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface EchoInvocationVerifier<T>
+		{
+			int CallCount();
+			void Called(global::Imposter.Abstractions.Count count);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface IEchoMethodImposterBuilder<T> : IEchoMethodInvocationImposterGroup<T>, IEchoMethodInvocationImposterGroupCallback<T>, EchoInvocationVerifier<T>
+		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class EchoMethodImposter<T> : IEchoMethodImposter<T>
+		{
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>>();
+			private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+			public EchoMethodImposter(EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+			{
+				this._echoMethodInvocationHistoryCollection = _echoMethodInvocationHistoryCollection;
+				this._invocationBehavior = _invocationBehavior;
+			}
+
+			IEchoMethodImposter<TTarget>? IEchoMethodImposter.As<TTarget>()
+			{
+				if (typeof(T).IsAssignableFrom(typeof(TTarget)) && typeof(TTarget).IsAssignableFrom(typeof(T)))
+				{
+					return new Adapter<TTarget>(this);
+				}
+
+				return null;
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			private class Adapter<TTarget> : IEchoMethodImposter<TTarget>
+			{
+				private readonly EchoMethodImposter<T> _target;
+				public Adapter(EchoMethodImposter<T> target)
+				{
+					_target = target;
+				}
+
+				public TTarget Invoke(TTarget value)
+				{
+					var result = _target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<TTarget, T>(value));
+					return global::Imposter.Abstractions.TypeCaster.Cast<T, TTarget>(result);
+				}
+
+				public bool HasMatchingInvocationImposterGroup(EchoArguments<TTarget> arguments)
+				{
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<T>());
+				}
+
+				IEchoMethodImposter<TTarget1>? IEchoMethodImposter.As<TTarget1>()
+				{
+					throw new global::System.NotImplementedException();
+				}
+			}
+
+			public bool HasMatchingInvocationImposterGroup(EchoArguments<T> arguments)
+			{
+				return FindMatchingInvocationImposterGroup(arguments) != null;
+			}
+
+			private EchoMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup(EchoArguments<T> arguments)
+			{
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
+				}
+
+				return null;
+			}
+
+			public T Invoke(T value)
+			{
+				var arguments = new EchoArguments<T>(value);
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				if (matchingInvocationImposterGroup == default)
+				{
+					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					{
+						throw new global::Imposter.Abstractions.MissingImposterException("T ICallAllocationSut.Echo<T>(T value)");
+					}
+
+					matchingInvocationImposterGroup = EchoMethodInvocationImposterGroup<T>.Default;
+				}
+
+				try
+				{
+					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "T ICallAllocationSut.Echo<T>(T value)", value);
+					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, result, default));
+					return result;
+				}
+				catch (global::System.Exception ex)
+				{
+					_echoMethodInvocationHistoryCollection.Add(new EchoMethodInvocationHistory<T>(arguments, default !, ex));
+					throw;
+				}
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class Builder : IEchoMethodImposterBuilder<T>, IEchoMethodInvocationImposterGroupContinuation<T>
+			{
+				private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
+				private readonly EchoArgumentsCriteria<T> _argumentsCriteria;
+				private readonly EchoMethodInvocationImposterGroup<T> _invocationImposterGroup;
+				private EchoMethodInvocationImposterGroup<T>.MethodInvocationImposter _currentInvocationImposter;
+				public Builder(EchoMethodImposterCollection imposterCollection, EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, EchoArgumentsCriteria<T> _argumentsCriteria)
+				{
+					this._echoMethodInvocationHistoryCollection = _echoMethodInvocationHistoryCollection;
+					this._argumentsCriteria = _argumentsCriteria;
+					this._invocationImposterGroup = new EchoMethodInvocationImposterGroup<T>(_argumentsCriteria);
+					EchoMethodImposter<T> methodImposter = imposterCollection.AddNew<T>();
+					methodImposter._invocationImposters.Push(_invocationImposterGroup);
+					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroup<T>.Throws<TException>()
+				{
+					_currentInvocationImposter.Throws((T value) =>
+					{
+						throw new TException();
+					});
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroup<T>.Throws(global::System.Exception exception)
+				{
+					_currentInvocationImposter.Throws((T value) =>
+					{
+						throw exception;
+					});
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroup<T>.Throws(EchoExceptionGeneratorDelegate<T> exceptionGenerator)
+				{
+					_currentInvocationImposter.Throws((T value) =>
+					{
+						throw exceptionGenerator.Invoke(value);
+					});
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroupCallback<T>.Callback(EchoCallbackDelegate<T> callback)
+				{
+					_currentInvocationImposter.Callback(callback);
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroup<T>.Returns(EchoDelegate<T> resultGenerator)
+				{
+					_currentInvocationImposter.Returns(resultGenerator);
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroupContinuation<T> IEchoMethodInvocationImposterGroup<T>.Returns(T value_1)
+				{
+					_currentInvocationImposter.Returns(value_1);
+					return this;
+				}
+
+				IEchoMethodInvocationImposterGroup<T> IEchoMethodInvocationImposterGroupContinuation<T>.Then()
+				{
+					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					return this;
+				}
+
+				void EchoInvocationVerifier<T>.Called(global::Imposter.Abstractions.Count count)
+				{
+					var invocationCount = _echoMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _echoMethodInvocationHistoryCollection.ToString());
+					}
+				}
+
+				int EchoInvocationVerifier<T>.CallCount()
+				{
+					return _echoMethodInvocationHistoryCollection.Count<T>(_argumentsCriteria);
+				}
+			}
+		}
+
+		public delegate void LogDelegate(string message);
+		public delegate void LogCallbackDelegate(string message);
+		public delegate global::System.Exception LogExceptionGeneratorDelegate(string message);
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public class LogArguments
+		{
+			public string message;
+			internal LogArguments(string message)
+			{
+				this.message = message;
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public class LogArgumentsCriteria
+		{
+			public global::Imposter.Abstractions.Arg<string> message { get; }
+
+			public LogArgumentsCriteria(global::Imposter.Abstractions.Arg<string> message)
+			{
+				this.message = message;
+			}
+
+			public bool Matches(LogArguments arguments)
+			{
+				return message.Matches(arguments.message);
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface ILogMethodInvocationHistory
+		{
+			bool Matches(LogArgumentsCriteria criteria);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class LogMethodInvocationHistory : ILogMethodInvocationHistory
+		{
+			internal LogArguments Arguments;
+			internal global::System.Exception? Exception;
+			public LogMethodInvocationHistory(LogArguments Arguments, global::System.Exception? Exception)
+			{
+				this.Arguments = Arguments;
+				this.Exception = Exception;
+			}
+
+			public bool Matches(LogArgumentsCriteria criteria)
+			{
+				return criteria.Matches(Arguments);
+			}
+
+			public override string ToString()
+			{
+				return "Log(" + global::System.String.Join(", ", new[] { "message: " + FormatValue(Arguments.message) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+			}
+
+			private static string FormatValue(object? value)
+			{
+				return "<" + (value?.ToString() ?? "null") + ">";
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class LogMethodInvocationHistoryCollection
+		{
+			private readonly global::System.Collections.Concurrent.ConcurrentStack<ILogMethodInvocationHistory> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<ILogMethodInvocationHistory>();
+			internal void Add(ILogMethodInvocationHistory invocationHistory)
+			{
+				_invocationHistory.Push(invocationHistory);
+			}
+
+			internal int Count(LogArgumentsCriteria argumentsCriteria)
+			{
+				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
+			}
+
+			public override string ToString()
+			{
+				return string.Join(global::System.Environment.NewLine, _invocationHistory.Select(invocation => invocation.ToString()));
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		class LogMethodInvocationImposterGroup
+		{
+			internal static LogMethodInvocationImposterGroup Default = new LogMethodInvocationImposterGroup(new LogArgumentsCriteria(global::Imposter.Abstractions.Arg<string>.Any()));
+			internal LogArgumentsCriteria ArgumentsCriteria { get; }
+
+			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
+			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			public LogMethodInvocationImposterGroup(LogArgumentsCriteria argumentsCriteria)
+			{
+				ArgumentsCriteria = argumentsCriteria;
+			}
+
+			internal MethodInvocationImposter AddInvocationImposter()
+			{
+				MethodInvocationImposter invocationImposter = new MethodInvocationImposter();
+				invocationImposter.UseDefaultResultGenerator();
+				_invocationImposters.Enqueue(invocationImposter);
+				return invocationImposter;
+			}
+
+			private MethodInvocationImposter? GetInvocationImposter()
+			{
+				if (_invocationImposters.IsEmpty)
+				{
+					return _lastestInvocationImposter;
+				}
+
+				lock (_invocationImposters)
+				{
+					if (!_invocationImposters.TryPeek(out var invocationImposter))
+					{
+						return _lastestInvocationImposter;
+					}
+
+					if (!invocationImposter.IsEmpty)
+					{
+						_lastestInvocationImposter = invocationImposter;
+					}
+
+					_invocationImposters.TryDequeue(out _);
+					return invocationImposter;
+				}
+			}
+
+			public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string message)
+			{
+				var invocationImposter = GetInvocationImposter();
+				if (invocationImposter == null)
+				{
+					if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					{
+						throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+					}
+
+					invocationImposter = MethodInvocationImposter.Default;
+				}
+
+				invocationImposter.Invoke(invocationBehavior, methodDisplayName, message);
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class MethodInvocationImposter
+			{
+				internal static MethodInvocationImposter Default;
+				static MethodInvocationImposter()
+				{
+					Default = new MethodInvocationImposter();
+					Default._resultGenerator = DefaultResultGenerator;
+				}
+
+				private LogDelegate? _resultGenerator;
+				private readonly global::System.Collections.Concurrent.ConcurrentQueue<LogCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<LogCallbackDelegate>();
+				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
+
+				public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string message)
+				{
+					if (_resultGenerator == null)
+					{
+						if (invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+						{
+							throw new global::Imposter.Abstractions.MissingImposterException(methodDisplayName);
+						}
+
+						_resultGenerator = DefaultResultGenerator;
+					}
+
+					_resultGenerator.Invoke(message);
+					if (!_callbacks.IsEmpty)
+					{
+						foreach (var callback in _callbacks)
+						{
+							callback(message);
+						}
+					}
+				}
+
+				internal void Callback(LogCallbackDelegate callback)
+				{
+					_callbacks.Enqueue(callback);
+				}
+
+				internal void Throws(LogExceptionGeneratorDelegate exceptionGenerator)
+				{
+					_resultGenerator = (string message) =>
+					{
+						throw exceptionGenerator(message);
+					};
+				}
+
+				internal void UseDefaultResultGenerator()
+				{
+					_resultGenerator = DefaultResultGenerator;
+				}
+
+				internal static void DefaultResultGenerator(string message)
+				{
+				}
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface ILogMethodInvocationImposterGroupCallback
+		{
+			ILogMethodInvocationImposterGroupContinuation Callback(LogCallbackDelegate callback);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface ILogMethodInvocationImposterGroupContinuation : ILogMethodInvocationImposterGroupCallback
+		{
+			ILogMethodInvocationImposterGroup Then();
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface ILogMethodInvocationImposterGroup : ILogMethodInvocationImposterGroupCallback
+		{
+			ILogMethodInvocationImposterGroupContinuation Throws<TException>()
+				where TException : global::System.Exception, new();
+			ILogMethodInvocationImposterGroupContinuation Throws(global::System.Exception exception);
+			ILogMethodInvocationImposterGroupContinuation Throws(LogExceptionGeneratorDelegate exceptionGenerator);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface LogInvocationVerifier
+		{
+			int CallCount();
+			void Called(global::Imposter.Abstractions.Count count);
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public interface ILogMethodImposterBuilder : ILogMethodInvocationImposterGroup, ILogMethodInvocationImposterGroupCallback, LogInvocationVerifier
+		{
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		internal class LogMethodImposter
+		{
+			private readonly global::Imposter.Abstractions.SetupCollection<LogMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<LogMethodInvocationImposterGroup>();
+			private readonly LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection;
+			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
+			public LogMethodImposter(LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
+			{
+				this._logMethodInvocationHistoryCollection = _logMethodInvocationHistoryCollection;
+				this._invocationBehavior = _invocationBehavior;
+			}
+
+			private LogMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(LogArguments arguments)
+			{
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
+						return invocationImposterGroup;
+				}
+
+				return null;
+			}
+
+			public void Invoke(string message)
+			{
+				var arguments = new LogArguments(message);
+				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				if (matchingInvocationImposterGroup == default)
+				{
+					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+					{
+						throw new global::Imposter.Abstractions.MissingImposterException("void ICallAllocationSut.Log(string message)");
+					}
+
+					matchingInvocationImposterGroup = LogMethodInvocationImposterGroup.Default;
+				}
+
+				try
+				{
+					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void ICallAllocationSut.Log(string message)", message);
+					_logMethodInvocationHistoryCollection.Add(new LogMethodInvocationHistory(arguments, default));
+				}
+				catch (global::System.Exception ex)
+				{
+					_logMethodInvocationHistoryCollection.Add(new LogMethodInvocationHistory(arguments, ex));
+					throw;
+				}
+			}
+
+			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+			internal class Builder : ILogMethodImposterBuilder, ILogMethodInvocationImposterGroupContinuation
+			{
+				private readonly LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection;
+				private readonly LogArgumentsCriteria _argumentsCriteria;
+				private readonly LogMethodInvocationImposterGroup _invocationImposterGroup;
+				private LogMethodInvocationImposterGroup.MethodInvocationImposter _currentInvocationImposter;
+				public Builder(LogMethodImposter imposter, LogMethodInvocationHistoryCollection _logMethodInvocationHistoryCollection, LogArgumentsCriteria _argumentsCriteria)
+				{
+					this._logMethodInvocationHistoryCollection = _logMethodInvocationHistoryCollection;
+					this._argumentsCriteria = _argumentsCriteria;
+					this._invocationImposterGroup = new LogMethodInvocationImposterGroup(_argumentsCriteria);
+					imposter._invocationImposters.Push(_invocationImposterGroup);
+					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+				}
+
+				ILogMethodInvocationImposterGroupContinuation ILogMethodInvocationImposterGroup.Throws<TException>()
+				{
+					_currentInvocationImposter.Throws((string message) =>
+					{
+						throw new TException();
+					});
+					return this;
+				}
+
+				ILogMethodInvocationImposterGroupContinuation ILogMethodInvocationImposterGroup.Throws(global::System.Exception exception)
+				{
+					_currentInvocationImposter.Throws((string message) =>
+					{
+						throw exception;
+					});
+					return this;
+				}
+
+				ILogMethodInvocationImposterGroupContinuation ILogMethodInvocationImposterGroup.Throws(LogExceptionGeneratorDelegate exceptionGenerator)
+				{
+					_currentInvocationImposter.Throws((string message) =>
+					{
+						throw exceptionGenerator.Invoke(message);
+					});
+					return this;
+				}
+
+				ILogMethodInvocationImposterGroupContinuation ILogMethodInvocationImposterGroupCallback.Callback(LogCallbackDelegate callback)
+				{
+					_currentInvocationImposter.Callback(callback);
+					return this;
+				}
+
+				ILogMethodInvocationImposterGroup ILogMethodInvocationImposterGroupContinuation.Then()
+				{
+					this._currentInvocationImposter = _invocationImposterGroup.AddInvocationImposter();
+					return this;
+				}
+
+				void LogInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
+				{
+					var invocationCount = _logMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _logMethodInvocationHistoryCollection.ToString());
+					}
+				}
+
+				int LogInvocationVerifier.CallCount()
+				{
+					return _logMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+				}
+			}
 		}
 
 		public delegate int SquareDelegate(int value);
@@ -281,7 +1131,7 @@ namespace Imposter.Tests.Features.CallAllocations
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SquareMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SquareMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SquareMethodInvocationImposterGroup>();
 			private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SquareMethodImposter(SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -890,7 +1740,7 @@ namespace Imposter.Tests.Features.CallAllocations
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -1322,6 +2172,8 @@ namespace Imposter.Tests.Features.CallAllocations
 		public interface ICallAllocationSutSetup
 		{
 			ISquareMethodImposterBuilder Square(global::Imposter.Abstractions.Arg<int> value);
+			ILogMethodImposterBuilder Log(global::Imposter.Abstractions.Arg<string> message);
+			IEchoMethodImposterBuilder<T> Echo<T>(global::Imposter.Abstractions.Arg<T> value);
 			IValuePropertyBuilder Value { get; }
 
 			IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> key] { get; }
@@ -1330,6 +2182,16 @@ namespace Imposter.Tests.Features.CallAllocations
 		ISquareMethodImposterBuilder ICallAllocationSutSetup.Square(global::Imposter.Abstractions.Arg<int> value)
 		{
 			return this.Square(value);
+		}
+
+		ILogMethodImposterBuilder ICallAllocationSutSetup.Log(global::Imposter.Abstractions.Arg<string> message)
+		{
+			return this.Log(message);
+		}
+
+		IEchoMethodImposterBuilder<T> ICallAllocationSutSetup.Echo<T>(global::Imposter.Abstractions.Arg<T> value)
+		{
+			return this.Echo<T>(value);
 		}
 
 		IValuePropertyBuilder ICallAllocationSutSetup.Value => this.Value;
@@ -1343,6 +2205,8 @@ namespace Imposter.Tests.Features.CallAllocations
 		public ICallAllocationSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
 			this._squareMethodImposter = new SquareMethodImposter(_squareMethodInvocationHistoryCollection, invocationBehavior);
+			this._logMethodImposter = new LogMethodImposter(_logMethodInvocationHistoryCollection, invocationBehavior);
+			this._echoMethodImposterCollection = new EchoMethodImposterCollection(_echoMethodInvocationHistoryCollection, invocationBehavior);
 			this._ValuePropertyBuilderField = new ValuePropertyBuilder(invocationBehavior);
 			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.CallAllocations.ICallAllocationSut.this[int key]");
 			this._imposterInstance = new ImposterTargetInstance(this);
@@ -1360,6 +2224,16 @@ namespace Imposter.Tests.Features.CallAllocations
 			public int Square(int value)
 			{
 				return _imposter._squareMethodImposter.Invoke(value);
+			}
+
+			public void Log(string message)
+			{
+				_imposter._logMethodImposter.Invoke(message);
+			}
+
+			public T Echo<T>(T value)
+			{
+				return _imposter._echoMethodImposterCollection.GetImposterWithMatchingInvocationImposterGroup<T>(new EchoArguments<T>(value)).Invoke(value);
 			}
 
 			public int Value

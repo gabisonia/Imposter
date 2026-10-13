@@ -51,7 +51,7 @@ internal static partial class MethodImposterCollectionBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var impostersFieldType = WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+        var impostersFieldType = WellKnownTypes.Imposter.Abstractions.SetupCollection(
             method.MethodImposter.Interface.Syntax
         );
 

@@ -295,7 +295,7 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class DisposeMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<DisposeMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<DisposeMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<DisposeMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<DisposeMethodInvocationImposterGroup>();
 			private readonly DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public DisposeMethodImposter(DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -691,7 +691,7 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SendMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SendMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SendMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SendMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SendMethodInvocationImposterGroup>();
 			private readonly SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SendMethodImposter(SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1102,7 +1102,7 @@ namespace System.Net.Http
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SendAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SendAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SendAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SendAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SendAsyncMethodInvocationImposterGroup>();
 			private readonly SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SendAsyncMethodImposter(SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

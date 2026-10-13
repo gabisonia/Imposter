@@ -30,7 +30,7 @@ internal static partial class MethodImposterCollectionBuilder
                         NewMethodImposterExpression(method)
                     ),
                     IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName)
-                        .Dot(ConcurrentStackSyntaxHelper.Push)
+                        .Dot(SetupCollectionSyntaxHelper.Push)
                         .Call(Argument(imposter))
                         .ToStatementSyntax(),
                     ReturnStatement(imposter)

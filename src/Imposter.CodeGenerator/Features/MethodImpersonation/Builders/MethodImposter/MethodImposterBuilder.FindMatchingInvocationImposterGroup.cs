@@ -67,7 +67,7 @@ internal partial class MethodImposterBuilder
                 Block(
                     IfStatement(
                         IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name)
-                            .Dot(ConcurrentStackSyntaxHelper.TryPeek)
+                            .Dot(SetupCollectionSyntaxHelper.TryPeek)
                             .Call(
                                 OutVarArgument(
                                     method

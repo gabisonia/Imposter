@@ -356,7 +356,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class BuildLabelAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<BuildLabelAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<BuildLabelAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<BuildLabelAsyncMethodInvocationImposterGroup>();
 			private readonly BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public BuildLabelAsyncMethodImposter(BuildLabelAsyncMethodInvocationHistoryCollection _buildLabelAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -773,7 +773,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntSingleParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntSingleParamMethodInvocationImposterGroup>();
 			private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1191,7 +1191,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RefOutWithParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RefOutWithParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<RefOutWithParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RefOutWithParamsMethodInvocationImposterGroup>();
 			private readonly RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public RefOutWithParamsMethodImposter(RefOutWithParamsMethodInvocationHistoryCollection _refOutWithParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1620,7 +1620,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SumAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SumAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SumAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SumAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SumAsyncMethodInvocationImposterGroup>();
 			private readonly SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SumAsyncMethodImposter(SumAsyncMethodInvocationHistoryCollection _sumAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2037,7 +2037,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ThrowingCalculationMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ThrowingCalculationMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ThrowingCalculationMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ThrowingCalculationMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ThrowingCalculationMethodInvocationImposterGroup>();
 			private readonly ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ThrowingCalculationMethodImposter(ThrowingCalculationMethodInvocationHistoryCollection _throwingCalculationMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2426,7 +2426,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class VoidWithSideEffectMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<VoidWithSideEffectMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<VoidWithSideEffectMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<VoidWithSideEffectMethodInvocationImposterGroup>();
 			private readonly VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public VoidWithSideEffectMethodImposter(VoidWithSideEffectMethodInvocationHistoryCollection _voidWithSideEffectMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

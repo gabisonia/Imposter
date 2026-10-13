@@ -266,7 +266,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetNumberMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetNumberMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetNumberMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetNumberMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetNumberMethodInvocationImposterGroup>();
 			private readonly GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetNumberMethodImposter(GetNumberMethodInvocationHistoryCollection _getNumberMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

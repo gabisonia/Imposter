@@ -11,6 +11,15 @@ var config = DefaultConfig
     .Instance.AddJob(Job.Default.WithArguments([new MsBuildArgument("/p:ROSLYN_VERSION=5.0")]))
     .WithOption(ConfigOptions.DisableOptimizationsValidator, true);
 
-BenchmarkRunner.Run<SimpleMethodMockingBenchmarks>(config);
+if (args.Length == 0)
+{
+    BenchmarkRunner.Run<SimpleMethodMockingBenchmarks>(config);
+}
+else
+{
+    BenchmarkSwitcher
+        .FromAssembly(typeof(SimpleMethodMockingBenchmarks).Assembly)
+        .Run(args, config);
+}
 // BenchmarkRunner.Run<ComplexMethodMockingBenchmark>(config);
 //BenchmarkRunner.Run<ReadonlyStructBenchmarks>(config);

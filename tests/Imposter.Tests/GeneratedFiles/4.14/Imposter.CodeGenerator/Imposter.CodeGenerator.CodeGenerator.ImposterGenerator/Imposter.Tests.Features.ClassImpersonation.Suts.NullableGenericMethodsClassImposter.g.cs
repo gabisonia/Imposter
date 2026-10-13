@@ -141,7 +141,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMaybeDefaultMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMaybeDefaultMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMaybeDefaultMethodImposter>();
 			internal EchoMaybeDefaultMethodImposter<T> AddNew<T>()
 			{
 				var imposter = new EchoMaybeDefaultMethodImposter<T>(_echoMaybeDefaultMethodInvocationHistoryCollection, _invocationBehavior);
@@ -360,7 +360,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoMaybeDefaultMethodImposter<T> : IEchoMaybeDefaultMethodImposter<T>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMaybeDefaultMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMaybeDefaultMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoMaybeDefaultMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoMaybeDefaultMethodInvocationImposterGroup<T>>();
 			private readonly EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public EchoMaybeDefaultMethodImposter(EchoMaybeDefaultMethodInvocationHistoryCollection _echoMaybeDefaultMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -653,7 +653,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoNullableReferenceMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IEchoNullableReferenceMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IEchoNullableReferenceMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoNullableReferenceMethodImposter>();
 			internal EchoNullableReferenceMethodImposter<T> AddNew<T>()
 				where T : class ?, global::System.IDisposable?
 			{
@@ -878,7 +878,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoNullableReferenceMethodImposter<T> : IEchoNullableReferenceMethodImposter<T> where T : class ?, global::System.IDisposable?
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoNullableReferenceMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoNullableReferenceMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoNullableReferenceMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoNullableReferenceMethodInvocationImposterGroup<T>>();
 			private readonly EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public EchoNullableReferenceMethodImposter(EchoNullableReferenceMethodInvocationHistoryCollection _echoNullableReferenceMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

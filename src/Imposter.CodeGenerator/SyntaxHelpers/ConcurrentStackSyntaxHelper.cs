@@ -6,6 +6,4 @@ namespace Imposter.CodeGenerator.SyntaxHelpers;
 internal static class ConcurrentStackSyntaxHelper
 {
     internal static readonly IdentifierNameSyntax Push = IdentifierName("Push");
-
-    internal static readonly IdentifierNameSyntax TryPeek = IdentifierName("TryPeek");
 }

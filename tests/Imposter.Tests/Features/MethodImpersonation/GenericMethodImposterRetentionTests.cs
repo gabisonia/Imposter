@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Reflection;
 using Imposter.Abstractions;
 using Shouldly;
@@ -88,10 +87,25 @@ namespace Imposter.Tests.Features.MethodImpersonation
                 .GetField("_imposters", BindingFlags.Instance | BindingFlags.NonPublic)
                 .ShouldNotBeNull()
                 .GetValue(collection)
-                .ShouldBeAssignableTo<ICollection>()
                 .ShouldNotBeNull();
 
-            return imposters.Count;
+            var enumerator = imposters
+                .GetType()
+                .GetMethod(nameof(SetupCollection<object>.GetEnumerator))
+                .ShouldNotBeNull()
+                .Invoke(imposters, null)
+                .ShouldNotBeNull();
+            var moveNext = enumerator
+                .GetType()
+                .GetMethod(nameof(SetupCollection<object>.Enumerator.MoveNext))
+                .ShouldNotBeNull();
+            var count = 0;
+            while ((bool)moveNext.Invoke(enumerator, null)!)
+            {
+                count++;
+            }
+
+            return count;
         }
     }
 }

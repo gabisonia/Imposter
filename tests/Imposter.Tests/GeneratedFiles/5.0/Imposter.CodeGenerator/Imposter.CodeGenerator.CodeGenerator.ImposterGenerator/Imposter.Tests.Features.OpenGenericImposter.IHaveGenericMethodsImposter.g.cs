@@ -152,7 +152,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IAddItemMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IAddItemMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IAddItemMethodImposter>();
 			internal AddItemMethodImposter<TItem> AddNew<TItem>()
 			{
 				var imposter = new AddItemMethodImposter<TItem>(_addItemMethodInvocationHistoryCollection, _invocationBehavior);
@@ -343,7 +343,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AddItemMethodImposter<TItem> : IAddItemMethodImposter<TItem>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AddItemMethodInvocationImposterGroup<TItem>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AddItemMethodInvocationImposterGroup<TItem>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AddItemMethodInvocationImposterGroup<TItem>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AddItemMethodInvocationImposterGroup<TItem>>();
 			private readonly AddItemMethodInvocationHistoryCollection _addItemMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AddItemMethodImposter(AddItemMethodInvocationHistoryCollection _addItemMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -568,7 +568,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGetValueMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGetValueMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGetValueMethodImposter>();
 			internal GetValueMethodImposter<TResult> AddNew<TResult>()
 			{
 				var imposter = new GetValueMethodImposter<TResult>(_getValueMethodInvocationHistoryCollection, _invocationBehavior);
@@ -768,7 +768,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetValueMethodImposter<TResult> : IGetValueMethodImposter<TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetValueMethodInvocationImposterGroup<TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetValueMethodInvocationImposterGroup<TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetValueMethodInvocationImposterGroup<TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetValueMethodInvocationImposterGroup<TResult>>();
 			private readonly GetValueMethodInvocationHistoryCollection _getValueMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetValueMethodImposter(GetValueMethodInvocationHistoryCollection _getValueMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1039,7 +1039,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IProcessAsyncMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IProcessAsyncMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessAsyncMethodImposter>();
 			internal ProcessAsyncMethodImposter<TItem> AddNew<TItem>()
 			{
 				var imposter = new ProcessAsyncMethodImposter<TItem>(_processAsyncMethodInvocationHistoryCollection, _invocationBehavior);
@@ -1260,7 +1260,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProcessAsyncMethodImposter<TItem> : IProcessAsyncMethodImposter<TItem>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup<TItem>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProcessAsyncMethodInvocationImposterGroup<TItem>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProcessAsyncMethodInvocationImposterGroup<TItem>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProcessAsyncMethodInvocationImposterGroup<TItem>>();
 			private readonly ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProcessAsyncMethodImposter(ProcessAsyncMethodInvocationHistoryCollection _processAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1549,7 +1549,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IProcessComplexAsyncMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IProcessComplexAsyncMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IProcessComplexAsyncMethodImposter>();
 			internal ProcessComplexAsyncMethodImposter<TItem, TResult> AddNew<TItem, TResult>()
 			{
 				var imposter = new ProcessComplexAsyncMethodImposter<TItem, TResult>(_processComplexAsyncMethodInvocationHistoryCollection, _invocationBehavior);
@@ -1770,7 +1770,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProcessComplexAsyncMethodImposter<TItem, TResult> : IProcessComplexAsyncMethodImposter<TItem, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProcessComplexAsyncMethodInvocationImposterGroup<TItem, TResult>>();
 			private readonly ProcessComplexAsyncMethodInvocationHistoryCollection _processComplexAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProcessComplexAsyncMethodImposter(ProcessComplexAsyncMethodInvocationHistoryCollection _processComplexAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
