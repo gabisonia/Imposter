@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -16,6 +17,11 @@ namespace Imposter.CodeGenerator.Helpers;
 // A method's type parameters cannot share the fixed member names of the helper types that repeat them.
 internal static class TypeParameterNames
 {
+    // Names depend only on the immutable symbol graph. Weak keys let compilations be collected between edits;
+    // the table also supports concurrent generator runs without retaining symbols in the cached values.
+    private static readonly ConditionalWeakTable<ITypeParameterSymbol, string> GeneratedNames =
+        new();
+
     // Imposter identities, which name dedicated namespaces and files, rename only these, as they have since these were
     // first renamed. The other names stay in the identities, so their imposters' namespaces don't change.
     private static readonly HashSet<string> NamesRenamedInImposterIdentity =
@@ -26,7 +32,10 @@ internal static class TypeParameterNames
         "partial",
     ];
 
-    internal static string NameInGeneratedCode(this ITypeParameterSymbol typeParameter)
+    internal static string NameInGeneratedCode(this ITypeParameterSymbol typeParameter) =>
+        GeneratedNames.GetValue(typeParameter, ComputeNameInGeneratedCode);
+
+    private static string ComputeNameInGeneratedCode(ITypeParameterSymbol typeParameter)
     {
         var containingType =
             typeParameter.DeclaringMethod?.ContainingType
@@ -63,7 +72,44 @@ internal static class TypeParameterNames
     internal static string ToGeneratedCodeString(
         this ITypeSymbol type,
         SymbolDisplayFormat format
-    ) => string.Concat(type.ToDisplayParts(format).Select(InGeneratedCode));
+    ) =>
+        ContainsRenamedTypeParameter(type)
+            ? string.Concat(type.ToDisplayParts(format).Select(InGeneratedCode))
+            : type.ToDisplayString(format);
+
+    // Walk the same type shapes as TypeParametersIn without materializing its iterators. Function pointer
+    // signatures can also contain parameters in display parts, even though they are not supported targets.
+    private static bool ContainsRenamedTypeParameter(ITypeSymbol type)
+    {
+        switch (type)
+        {
+            case ITypeParameterSymbol parameter:
+                return parameter.NameInGeneratedCode() != parameter.Name;
+            case IArrayTypeSymbol array:
+                return ContainsRenamedTypeParameter(array.ElementType);
+            case IPointerTypeSymbol pointer:
+                return ContainsRenamedTypeParameter(pointer.PointedAtType);
+            case INamedTypeSymbol named:
+                if (
+                    named.ContainingType is { } containing
+                    && ContainsRenamedTypeParameter(containing)
+                )
+                    return true;
+                foreach (var argument in named.TypeArguments)
+                    if (ContainsRenamedTypeParameter(argument))
+                        return true;
+                return false;
+            case IFunctionPointerTypeSymbol pointer:
+                if (ContainsRenamedTypeParameter(pointer.Signature.ReturnType))
+                    return true;
+                foreach (var parameter in pointer.Signature.Parameters)
+                    if (ContainsRenamedTypeParameter(parameter.Type))
+                        return true;
+                return false;
+            default:
+                return false;
+        }
+    }
 
     // Public namespaces and file names keep the target's identity independently of collision-driven renaming.
     // Preserve the keyword substitutions already used in dedicated namespaces before this collision was handled.
