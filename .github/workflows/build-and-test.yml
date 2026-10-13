@@ -105,7 +105,9 @@ jobs:
       # Imposter.slnx excludes the benchmarks, and they only build against Roslyn 5.0.
       - name: Build benchmarks (Roslyn 5.0)
         if: matrix.roslynVersion == '5.0'
-        run: dotnet build benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION=5.0 -p:VERIFICATION_BUILD=true
+        run: |
+          dotnet build benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION=5.0 -p:VERIFICATION_BUILD=true
+          dotnet build benchmarks/Imposter.GeneratorBenchmarks/Imposter.GeneratorBenchmarks.csproj -c $BUILD_CONFIGURATION -p:ROSLYN_VERSION=5.0
 
       # The verification builds above refresh the generated-file snapshots of this Roslyn version.
       - name: Check generated-file snapshots (Roslyn ${{ matrix.roslynVersion }})
