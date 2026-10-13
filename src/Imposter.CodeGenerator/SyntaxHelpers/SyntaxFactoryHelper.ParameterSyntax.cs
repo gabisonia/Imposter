@@ -103,10 +103,6 @@ internal static partial class SyntaxFactoryHelper
             .WithDefaultValue(parameterMetadata.DefaultValue)
             .Build();
 
-    internal static ParameterListSyntax ToSingleParameterListSyntax(
-        this ParameterSyntax parameterSyntax
-    ) => ParameterList(SingletonSeparatedList(parameterSyntax));
-
     internal static ParameterSyntax ParameterSyntax(
         ParameterModel parameter,
         bool includeRefKind
