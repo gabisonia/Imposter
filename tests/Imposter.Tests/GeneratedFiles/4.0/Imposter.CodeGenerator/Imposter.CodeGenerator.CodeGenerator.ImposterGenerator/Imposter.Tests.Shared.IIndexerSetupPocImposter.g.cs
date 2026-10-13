@@ -289,7 +289,7 @@ namespace Imposter.Tests.Shared
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerMethodMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IndexerMethodMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IndexerMethodMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IndexerMethodMethodInvocationImposterGroup>();
 			private readonly IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IndexerMethodMethodImposter(IndexerMethodMethodInvocationHistoryCollection _indexerMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

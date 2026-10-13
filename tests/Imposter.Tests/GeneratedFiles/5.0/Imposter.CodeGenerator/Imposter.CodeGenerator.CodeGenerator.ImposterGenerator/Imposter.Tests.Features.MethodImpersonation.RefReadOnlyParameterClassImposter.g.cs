@@ -304,7 +304,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProtectedReadMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProtectedReadMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProtectedReadMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProtectedReadMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProtectedReadMethodInvocationImposterGroup>();
 			private readonly ProtectedReadMethodInvocationHistoryCollection _protectedReadMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProtectedReadMethodImposter(ProtectedReadMethodInvocationHistoryCollection _protectedReadMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -709,7 +709,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ReadMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ReadMethodInvocationImposterGroup>();
 			private readonly ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ReadMethodImposter(ReadMethodInvocationHistoryCollection _readMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

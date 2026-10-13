@@ -61,7 +61,7 @@ internal static partial class MethodImposterBuilderBuilder
         statements.Add(
             methodImposterAccess
                 .Dot(IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name))
-                .Dot(ConcurrentStackSyntaxHelper.Push)
+                .Dot(SetupCollectionSyntaxHelper.Push)
                 .Call(
                     Argument(
                         IdentifierName(

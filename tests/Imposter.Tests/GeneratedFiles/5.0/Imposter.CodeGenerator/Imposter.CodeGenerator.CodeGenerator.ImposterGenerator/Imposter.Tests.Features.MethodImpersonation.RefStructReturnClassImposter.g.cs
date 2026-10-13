@@ -285,7 +285,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RentMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<RentMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RentMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup>();
 			private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public RentMethodImposter(RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

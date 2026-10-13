@@ -124,7 +124,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ICreateMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ICreateMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ICreateMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ICreateMethodImposter>();
 			internal CreateMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
@@ -321,7 +321,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CreateMethodImposter<T> : ICreateMethodImposter<T> where T : allows ref struct
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<CreateMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CreateMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<CreateMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CreateMethodInvocationImposterGroup<T>>();
 			private readonly CreateMethodInvocationHistoryCollection _createMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public CreateMethodImposter(CreateMethodInvocationHistoryCollection _createMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -521,7 +521,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter>();
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
@@ -718,7 +718,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoMethodImposter<T> : IEchoMethodImposter<T> where T : allows ref struct
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>>();
 			private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public EchoMethodImposter(EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -956,7 +956,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IMeasureMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IMeasureMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IMeasureMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IMeasureMethodImposter>();
 			internal MeasureMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
@@ -1165,7 +1165,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class MeasureMethodImposter<T> : IMeasureMethodImposter<T> where T : allows ref struct
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<MeasureMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<MeasureMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<MeasureMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<MeasureMethodInvocationImposterGroup<T>>();
 			private readonly MeasureMethodInvocationHistoryCollection _measureMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public MeasureMethodImposter(MeasureMethodInvocationHistoryCollection _measureMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1377,7 +1377,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IResetMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IResetMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IResetMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IResetMethodImposter>();
 			internal ResetMethodImposter<T> AddNew<T>()
 				where T : allows ref struct
 			{
@@ -1571,7 +1571,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ResetMethodImposter<T> : IResetMethodImposter<T> where T : allows ref struct
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ResetMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ResetMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ResetMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ResetMethodInvocationImposterGroup<T>>();
 			private readonly ResetMethodInvocationHistoryCollection _resetMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ResetMethodImposter(ResetMethodInvocationHistoryCollection _resetMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

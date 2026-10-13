@@ -145,7 +145,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IDoSomethingMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IDoSomethingMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IDoSomethingMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IDoSomethingMethodImposter>();
 			internal DoSomethingMethodImposter<TArg> AddNew<TArg>()
 			{
 				var imposter = new DoSomethingMethodImposter<TArg>(_doSomethingMethodInvocationHistoryCollection, _invocationBehavior);
@@ -336,7 +336,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class DoSomethingMethodImposter<TArg> : IDoSomethingMethodImposter<TArg>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<DoSomethingMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<DoSomethingMethodInvocationImposterGroup<TArg>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<DoSomethingMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<DoSomethingMethodInvocationImposterGroup<TArg>>();
 			private readonly DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public DoSomethingMethodImposter(DoSomethingMethodInvocationHistoryCollection _doSomethingMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -599,7 +599,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IMapMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IMapMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IMapMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IMapMethodImposter>();
 			internal MapMethodImposter<TSource, TResult> AddNew<TSource, TResult>()
 			{
 				var imposter = new MapMethodImposter<TSource, TResult>(_mapMethodInvocationHistoryCollection, _invocationBehavior);
@@ -802,7 +802,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class MapMethodImposter<TSource, TResult> : IMapMethodImposter<TSource, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<MapMethodInvocationImposterGroup<TSource, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<MapMethodInvocationImposterGroup<TSource, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<MapMethodInvocationImposterGroup<TSource, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<MapMethodInvocationImposterGroup<TSource, TResult>>();
 			private readonly MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public MapMethodImposter(MapMethodInvocationHistoryCollection _mapMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1079,7 +1079,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ITransformMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ITransformMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ITransformMethodImposter>();
 			internal TransformMethodImposter<TArg> AddNew<TArg>()
 			{
 				var imposter = new TransformMethodImposter<TArg>(_transformMethodInvocationHistoryCollection, _invocationBehavior);
@@ -1282,7 +1282,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TransformMethodImposter<TArg> : ITransformMethodImposter<TArg>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<TransformMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<TransformMethodInvocationImposterGroup<TArg>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<TransformMethodInvocationImposterGroup<TArg>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<TransformMethodInvocationImposterGroup<TArg>>();
 			private readonly TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public TransformMethodImposter(TransformMethodInvocationHistoryCollection _transformMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

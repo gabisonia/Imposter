@@ -288,7 +288,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class FindMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<FindMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<FindMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<FindMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<FindMethodInvocationImposterGroup>();
 			private readonly FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public FindMethodImposter(FindMethodInvocationHistoryCollection _findMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -689,7 +689,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class FindAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<FindAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<FindAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<FindAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<FindAsyncMethodInvocationImposterGroup>();
 			private readonly FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public FindAsyncMethodImposter(FindAsyncMethodInvocationHistoryCollection _findAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

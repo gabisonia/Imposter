@@ -288,7 +288,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup>();
 			private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public EchoMethodImposter(EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -525,7 +525,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IUseMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IUseMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IUseMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IUseMethodImposter>();
 			internal UseMethodImposter<T> AddNew<T>()
 			{
 				var imposter = new UseMethodImposter<T>(_useMethodInvocationHistoryCollection, _invocationBehavior);
@@ -716,7 +716,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class UseMethodImposter<T> : IUseMethodImposter<T>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<UseMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<UseMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<UseMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<UseMethodInvocationImposterGroup<T>>();
 			private readonly UseMethodInvocationHistoryCollection _useMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public UseMethodImposter(UseMethodInvocationHistoryCollection _useMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

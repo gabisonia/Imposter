@@ -292,7 +292,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CombineMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<CombineMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CombineMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<CombineMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CombineMethodInvocationImposterGroup>();
 			private readonly CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public CombineMethodImposter(CombineMethodInvocationHistoryCollection _combineMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -661,7 +661,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Verification
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IncrementMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IncrementMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IncrementMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IncrementMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IncrementMethodInvocationImposterGroup>();
 			private readonly IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IncrementMethodImposter(IncrementMethodInvocationHistoryCollection _incrementMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

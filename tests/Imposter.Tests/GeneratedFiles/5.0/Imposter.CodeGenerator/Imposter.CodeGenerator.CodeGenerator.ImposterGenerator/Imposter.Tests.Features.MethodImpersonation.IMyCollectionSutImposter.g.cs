@@ -281,7 +281,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AddMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AddMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AddMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AddMethodInvocationImposterGroup>();
 			private readonly AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AddMethodImposter(AddMethodInvocationHistoryCollection _addMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -620,7 +620,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetEnumerator_1MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetEnumerator_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetEnumerator_1MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetEnumerator_1MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetEnumerator_1MethodInvocationImposterGroup>();
 			private readonly GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetEnumerator_1MethodImposter(GetEnumerator_1MethodInvocationHistoryCollection _getEnumerator_1MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -966,7 +966,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetEnumeratorMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetEnumeratorMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetEnumeratorMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetEnumeratorMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetEnumeratorMethodInvocationImposterGroup>();
 			private readonly GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetEnumeratorMethodImposter(GetEnumeratorMethodInvocationHistoryCollection _getEnumeratorMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

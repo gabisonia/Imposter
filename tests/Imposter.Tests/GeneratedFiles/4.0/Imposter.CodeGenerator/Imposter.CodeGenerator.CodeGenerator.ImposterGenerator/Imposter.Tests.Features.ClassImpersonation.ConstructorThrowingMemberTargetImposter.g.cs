@@ -250,7 +250,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RunMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<RunMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RunMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<RunMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RunMethodInvocationImposterGroup>();
 			private readonly RunMethodInvocationHistoryCollection _runMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public RunMethodImposter(RunMethodInvocationHistoryCollection _runMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

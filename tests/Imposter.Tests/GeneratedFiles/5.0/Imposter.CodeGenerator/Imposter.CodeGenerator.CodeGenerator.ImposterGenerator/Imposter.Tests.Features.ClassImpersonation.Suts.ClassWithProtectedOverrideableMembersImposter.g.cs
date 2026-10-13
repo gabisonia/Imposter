@@ -339,7 +339,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class InvokeProtectedMethodMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<InvokeProtectedMethodMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<InvokeProtectedMethodMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<InvokeProtectedMethodMethodInvocationImposterGroup>();
 			private readonly InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public InvokeProtectedMethodMethodImposter(InvokeProtectedMethodMethodInvocationHistoryCollection _invokeProtectedMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -744,7 +744,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProtectedVirtualMethodMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProtectedVirtualMethodMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProtectedVirtualMethodMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProtectedVirtualMethodMethodInvocationImposterGroup>();
 			private readonly ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProtectedVirtualMethodMethodImposter(ProtectedVirtualMethodMethodInvocationHistoryCollection _protectedVirtualMethodMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1118,7 +1118,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadProtectedPropertyMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedPropertyMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ReadProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ReadProtectedPropertyMethodInvocationImposterGroup>();
 			private readonly ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ReadProtectedPropertyMethodImposter(ReadProtectedPropertyMethodInvocationHistoryCollection _readProtectedPropertyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1517,7 +1517,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ReadProtectedValueMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ReadProtectedValueMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ReadProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ReadProtectedValueMethodInvocationImposterGroup>();
 			private readonly ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ReadProtectedValueMethodImposter(ReadProtectedValueMethodInvocationHistoryCollection _readProtectedValueMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1906,7 +1906,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SubscribeToProtectedEventMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SubscribeToProtectedEventMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SubscribeToProtectedEventMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SubscribeToProtectedEventMethodInvocationImposterGroup>();
 			private readonly SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SubscribeToProtectedEventMethodImposter(SubscribeToProtectedEventMethodInvocationHistoryCollection _subscribeToProtectedEventMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2282,7 +2282,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class WriteProtectedPropertyMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedPropertyMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<WriteProtectedPropertyMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<WriteProtectedPropertyMethodInvocationImposterGroup>();
 			private readonly WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public WriteProtectedPropertyMethodImposter(WriteProtectedPropertyMethodInvocationHistoryCollection _writeProtectedPropertyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2662,7 +2662,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class WriteProtectedValueMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<WriteProtectedValueMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<WriteProtectedValueMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<WriteProtectedValueMethodInvocationImposterGroup>();
 			private readonly WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public WriteProtectedValueMethodImposter(WriteProtectedValueMethodInvocationHistoryCollection _writeProtectedValueMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -3663,7 +3663,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;

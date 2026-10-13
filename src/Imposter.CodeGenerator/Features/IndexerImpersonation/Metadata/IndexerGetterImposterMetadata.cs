@@ -92,7 +92,7 @@ internal readonly struct IndexerGetterImposterMetadata
         );
         SetupsField = new FieldMetadata(
             names.Use("_getterInvocationImposters"),
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(Invocation.TypeSyntax)
+            WellKnownTypes.Imposter.Abstractions.SetupCollection(Invocation.TypeSyntax)
         );
         SetupLookupField = new FieldMetadata(
             names.Use("_setupLookup"),

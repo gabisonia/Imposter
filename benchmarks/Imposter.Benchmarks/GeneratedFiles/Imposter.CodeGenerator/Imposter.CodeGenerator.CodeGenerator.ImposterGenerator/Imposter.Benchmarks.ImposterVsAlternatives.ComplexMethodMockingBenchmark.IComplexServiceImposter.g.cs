@@ -289,7 +289,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ProcessMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ProcessMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ProcessMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ProcessMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ProcessMethodInvocationImposterGroup>();
 			private readonly ProcessMethodInvocationHistoryCollection _processMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ProcessMethodImposter(ProcessMethodInvocationHistoryCollection _processMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

@@ -295,7 +295,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RentMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<RentMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RentMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup>();
 			private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public RentMethodImposter(RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -534,7 +534,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IRepeatMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IRepeatMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IRepeatMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IRepeatMethodImposter>();
 			internal RepeatMethodImposter<T> AddNew<T>()
 			{
 				var imposter = new RepeatMethodImposter<T>(_repeatMethodInvocationHistoryCollection, _invocationBehavior);
@@ -737,7 +737,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class RepeatMethodImposter<T> : IRepeatMethodImposter<T>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<RepeatMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<RepeatMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<RepeatMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RepeatMethodInvocationImposterGroup<T>>();
 			private readonly RepeatMethodInvocationHistoryCollection _repeatMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public RepeatMethodImposter(RepeatMethodInvocationHistoryCollection _repeatMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1162,7 +1162,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class TrimMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<TrimMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<TrimMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<TrimMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<TrimMethodInvocationImposterGroup>();
 			private readonly TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public TrimMethodImposter(TrimMethodInvocationHistoryCollection _trimMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

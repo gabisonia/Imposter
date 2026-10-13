@@ -281,7 +281,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SquareMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SquareMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SquareMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SquareMethodInvocationImposterGroup>();
 			private readonly SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SquareMethodImposter(SquareMethodInvocationHistoryCollection _squareMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

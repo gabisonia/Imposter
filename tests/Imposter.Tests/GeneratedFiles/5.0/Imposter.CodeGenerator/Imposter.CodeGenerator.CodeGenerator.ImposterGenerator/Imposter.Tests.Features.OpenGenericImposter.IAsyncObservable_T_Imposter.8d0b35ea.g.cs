@@ -267,7 +267,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class OnNextMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<OnNextMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<OnNextMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<OnNextMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<OnNextMethodInvocationImposterGroup>();
 			private readonly OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public OnNextMethodImposter(OnNextMethodInvocationHistoryCollection _onNextMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

@@ -31,26 +31,47 @@ namespace Imposter.Tests.Features.CallAllocations
             AllocatedBytesPerCall(() => instance.Value = 1).ShouldBeLessThanOrEqualTo(32);
         }
 
-        // The arguments (24 bytes), the history entry (40) and its stack node (32), and the enumerator that looks for
-        // the setup the arguments match (48).
+        // The arguments (24 bytes), the history entry (40) and its stack node (32).
         [Fact]
-        public void GivenMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsHistoryAndSetupLookup()
+        public void GivenMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut.Square(Arg<int>.Any()).Returns(4);
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(144);
+            AllocatedBytesPerCall(() => instance.Square(2)).ShouldBeLessThanOrEqualTo(96);
         }
 
-        // The arguments (24 bytes), their history stack node (32), and the enumerator that looks for the getter setup
-        // the arguments match (48).
+        // The arguments (24 bytes), the void history entry (32) and its stack node (32).
         [Fact]
-        public void GivenIndexerGetterWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsHistoryAndSetupLookup()
+        public void GivenVoidMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
+        {
+            _sut.Log(Arg<string>.Any());
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance.Log("value")).ShouldBeLessThanOrEqualTo(88);
+        }
+
+        // The arguments and history (96 bytes), an argument conversion for invocation (24), and an adapter plus
+        // converted matching arguments per candidate (48 each, with two candidates here).
+        // Checking candidate setups must not allocate enumerators, even when the newest setup does not match.
+        [Fact]
+        public void GivenGenericMethodWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsHistoryAndAdapters()
+        {
+            _sut.Echo<string>("match").Returns("result");
+            _sut.Echo<string>("miss").Returns("other");
+            var instance = _sut.Instance();
+
+            AllocatedBytesPerCall(() => instance.Echo("match")).ShouldBeLessThanOrEqualTo(216);
+        }
+
+        // The arguments (24 bytes) and their history stack node (32).
+        [Fact]
+        public void GivenIndexerGetterWithoutCallbacks_WhenCalled_ShouldOnlyAllocateItsArgumentsAndHistory()
         {
             _sut[Arg<int>.Any()].Getter().Returns(5);
             var instance = _sut.Instance();
 
-            AllocatedBytesPerCall(() => _ = instance[1]).ShouldBeLessThanOrEqualTo(104);
+            AllocatedBytesPerCall(() => _ = instance[1]).ShouldBeLessThanOrEqualTo(56);
         }
 
         // The arguments (24 bytes) and the history stack node that keeps them with the value (40).

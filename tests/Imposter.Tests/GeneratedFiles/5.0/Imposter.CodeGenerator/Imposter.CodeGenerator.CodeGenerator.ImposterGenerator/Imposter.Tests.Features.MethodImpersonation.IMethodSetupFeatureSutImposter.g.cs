@@ -422,7 +422,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AsyncTaskIntNoParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AsyncTaskIntNoParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AsyncTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AsyncTaskIntNoParamsMethodInvocationImposterGroup>();
 			private readonly AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AsyncTaskIntNoParamsMethodImposter(AsyncTaskIntNoParamsMethodInvocationHistoryCollection _asyncTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -798,7 +798,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class AsyncValueTaskIntNoParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<AsyncValueTaskIntNoParamsMethodInvocationImposterGroup>();
 			private readonly AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public AsyncValueTaskIntNoParamsMethodImposter(AsyncValueTaskIntNoParamsMethodInvocationHistoryCollection _asyncValueTaskIntNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1049,7 +1049,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericAllRefKindMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericAllRefKindMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericAllRefKindMethodImposter>();
 			internal GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> AddNew<TOut, TRef, TIn, TParams, TResult>()
 			{
 				var imposter = new GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>(_genericAllRefKindMethodInvocationHistoryCollection, _invocationBehavior);
@@ -1259,7 +1259,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult> : IGenericAllRefKindMethodImposter<TOut, TRef, TIn, TParams, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericAllRefKindMethodInvocationImposterGroup<TOut, TRef, TIn, TParams, TResult>>();
 			private readonly GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericAllRefKindMethodImposter(GenericAllRefKindMethodInvocationHistoryCollection _genericAllRefKindMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1502,7 +1502,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerOutParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerOutParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerOutParamMethodImposter>();
 			internal GenericInnerOutParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericInnerOutParamMethodImposter<TValue, TResult>(_genericInnerOutParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -1709,7 +1709,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericInnerOutParamMethodImposter<TValue, TResult> : IGenericInnerOutParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericInnerOutParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericInnerOutParamMethodImposter(GenericInnerOutParamMethodInvocationHistoryCollection _genericInnerOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1982,7 +1982,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerParamsParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerParamsParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerParamsParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerParamsParamMethodImposter>();
 			internal GenericInnerParamsParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericInnerParamsParamMethodImposter<TValue, TResult>(_genericInnerParamsParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -2185,7 +2185,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericInnerParamsParamMethodImposter<TValue, TResult> : IGenericInnerParamsParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericInnerParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericInnerParamsParamMethodImposter(GenericInnerParamsParamMethodInvocationHistoryCollection _genericInnerParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2462,7 +2462,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerRefParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerRefParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerRefParamMethodImposter>();
 			internal GenericInnerRefParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericInnerRefParamMethodImposter<TValue, TResult>(_genericInnerRefParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -2665,7 +2665,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericInnerRefParamMethodImposter<TValue, TResult> : IGenericInnerRefParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericInnerRefParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericInnerRefParamMethodImposter(GenericInnerRefParamMethodInvocationHistoryCollection _genericInnerRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2942,7 +2942,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerSingleParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericInnerSingleParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericInnerSingleParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericInnerSingleParamMethodImposter>();
 			internal GenericInnerSingleParamMethodImposter<TValue> AddNew<TValue>()
 			{
 				var imposter = new GenericInnerSingleParamMethodImposter<TValue>(_genericInnerSingleParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -3133,7 +3133,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericInnerSingleParamMethodImposter<TValue> : IGenericInnerSingleParamMethodImposter<TValue>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericInnerSingleParamMethodInvocationImposterGroup<TValue>>();
 			private readonly GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericInnerSingleParamMethodImposter(GenericInnerSingleParamMethodInvocationHistoryCollection _genericInnerSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -3358,7 +3358,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericOutParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericOutParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericOutParamMethodImposter>();
 			internal GenericOutParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericOutParamMethodImposter<TValue, TResult>(_genericOutParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -3565,7 +3565,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericOutParamMethodImposter<TValue, TResult> : IGenericOutParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericOutParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericOutParamMethodImposter(GenericOutParamMethodInvocationHistoryCollection _genericOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -3838,7 +3838,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericParamsParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericParamsParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericParamsParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericParamsParamMethodImposter>();
 			internal GenericParamsParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericParamsParamMethodImposter<TValue, TResult>(_genericParamsParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -4041,7 +4041,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericParamsParamMethodImposter<TValue, TResult> : IGenericParamsParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericParamsParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericParamsParamMethodImposter(GenericParamsParamMethodInvocationHistoryCollection _genericParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -4318,7 +4318,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericRefParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericRefParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericRefParamMethodImposter>();
 			internal GenericRefParamMethodImposter<TValue, TResult> AddNew<TValue, TResult>()
 			{
 				var imposter = new GenericRefParamMethodImposter<TValue, TResult>(_genericRefParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -4521,7 +4521,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericRefParamMethodImposter<TValue, TResult> : IGenericRefParamMethodImposter<TValue, TResult>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericRefParamMethodInvocationImposterGroup<TValue, TResult>>();
 			private readonly GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericRefParamMethodImposter(GenericRefParamMethodInvocationHistoryCollection _genericRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -4762,7 +4762,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericReturnTypeMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericReturnTypeMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericReturnTypeMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericReturnTypeMethodImposter>();
 			internal GenericReturnTypeMethodImposter<TValue> AddNew<TValue>()
 			{
 				var imposter = new GenericReturnTypeMethodImposter<TValue>(_genericReturnTypeMethodInvocationHistoryCollection, _invocationBehavior);
@@ -4962,7 +4962,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericReturnTypeMethodImposter<TValue> : IGenericReturnTypeMethodImposter<TValue>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericReturnTypeMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericReturnTypeMethodInvocationImposterGroup<TValue>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericReturnTypeMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericReturnTypeMethodInvocationImposterGroup<TValue>>();
 			private readonly GenericReturnTypeMethodInvocationHistoryCollection _genericReturnTypeMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericReturnTypeMethodImposter(GenericReturnTypeMethodInvocationHistoryCollection _genericReturnTypeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -5193,7 +5193,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleOutParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleOutParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleOutParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleOutParamMethodImposter>();
 			internal GenericSingleOutParamMethodImposter<TValue> AddNew<TValue>()
 			{
 				var imposter = new GenericSingleOutParamMethodImposter<TValue>(_genericSingleOutParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -5387,7 +5387,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericSingleOutParamMethodImposter<TValue> : IGenericSingleOutParamMethodImposter<TValue>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericSingleOutParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericSingleOutParamMethodInvocationImposterGroup<TValue>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericSingleOutParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericSingleOutParamMethodInvocationImposterGroup<TValue>>();
 			private readonly GenericSingleOutParamMethodInvocationHistoryCollection _genericSingleOutParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericSingleOutParamMethodImposter(GenericSingleOutParamMethodInvocationHistoryCollection _genericSingleOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -5644,7 +5644,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleParamMethodImposter>();
 			internal GenericSingleParamMethodImposter<TValue> AddNew<TValue>()
 			{
 				var imposter = new GenericSingleParamMethodImposter<TValue>(_genericSingleParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -5835,7 +5835,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericSingleParamMethodImposter<TValue> : IGenericSingleParamMethodImposter<TValue>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericSingleParamMethodInvocationImposterGroup<TValue>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericSingleParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericSingleParamMethodInvocationImposterGroup<TValue>>();
 			private readonly GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericSingleParamMethodImposter(GenericSingleParamMethodInvocationHistoryCollection _genericSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -6096,7 +6096,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleRefParamMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IGenericSingleRefParamMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IGenericSingleRefParamMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IGenericSingleRefParamMethodImposter>();
 			internal GenericSingleRefParamMethodImposter<TValue> AddNew<TValue>()
 			{
 				var imposter = new GenericSingleRefParamMethodImposter<TValue>(_genericSingleRefParamMethodInvocationHistoryCollection, _invocationBehavior);
@@ -6287,7 +6287,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GenericSingleRefParamMethodImposter<TValue> : IGenericSingleRefParamMethodImposter<TValue>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GenericSingleRefParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GenericSingleRefParamMethodInvocationImposterGroup<TValue>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GenericSingleRefParamMethodInvocationImposterGroup<TValue>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GenericSingleRefParamMethodInvocationImposterGroup<TValue>>();
 			private readonly GenericSingleRefParamMethodInvocationHistoryCollection _genericSingleRefParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GenericSingleRefParamMethodImposter(GenericSingleRefParamMethodInvocationHistoryCollection _genericSingleRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -6721,7 +6721,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntAllRefKindsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntAllRefKindsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntAllRefKindsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntAllRefKindsMethodInvocationImposterGroup>();
 			private readonly IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntAllRefKindsMethodImposter(IntAllRefKindsMethodInvocationHistoryCollection _intAllRefKindsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -7104,7 +7104,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntInParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntInParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntInParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntInParamMethodInvocationImposterGroup>();
 			private readonly IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntInParamMethodImposter(IntInParamMethodInvocationHistoryCollection _intInParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -7456,7 +7456,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntNoParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntNoParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntNoParamsMethodInvocationImposterGroup>();
 			private readonly IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntNoParamsMethodImposter(IntNoParamsMethodInvocationHistoryCollection _intNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -7809,7 +7809,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntOutParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntOutParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntOutParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntOutParamMethodInvocationImposterGroup>();
 			private readonly IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntOutParamMethodImposter(IntOutParamMethodInvocationHistoryCollection _intOutParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -8194,7 +8194,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntParamsMethodInvocationImposterGroup>();
 			private readonly IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntParamsMethodImposter(IntParamsMethodInvocationHistoryCollection _intParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -8577,7 +8577,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntParamsParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntParamsParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntParamsParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntParamsParamMethodInvocationImposterGroup>();
 			private readonly IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntParamsParamMethodImposter(IntParamsParamMethodInvocationHistoryCollection _intParamsParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -8960,7 +8960,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntRefParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntRefParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntRefParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntRefParamMethodInvocationImposterGroup>();
 			private readonly IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntRefParamMethodImposter(IntRefParamMethodInvocationHistoryCollection _intRefParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -9343,7 +9343,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IntSingleParamMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<IntSingleParamMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IntSingleParamMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<IntSingleParamMethodInvocationImposterGroup>();
 			private readonly IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public IntSingleParamMethodImposter(IntSingleParamMethodInvocationHistoryCollection _intSingleParamMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -9681,7 +9681,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class VoidNoParamsMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<VoidNoParamsMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<VoidNoParamsMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<VoidNoParamsMethodInvocationImposterGroup>();
 			private readonly VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public VoidNoParamsMethodImposter(VoidNoParamsMethodInvocationHistoryCollection _voidNoParamsMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

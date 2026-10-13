@@ -281,7 +281,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class DoubleMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<DoubleMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<DoubleMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<DoubleMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<DoubleMethodInvocationImposterGroup>();
 			private readonly DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public DoubleMethodImposter(DoubleMethodInvocationHistoryCollection _doubleMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

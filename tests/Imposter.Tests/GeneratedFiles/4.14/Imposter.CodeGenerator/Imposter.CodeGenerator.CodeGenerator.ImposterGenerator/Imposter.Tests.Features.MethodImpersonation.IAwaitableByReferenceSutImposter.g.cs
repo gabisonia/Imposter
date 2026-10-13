@@ -303,7 +303,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class GetAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<GetAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<GetAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<GetAsyncMethodInvocationImposterGroup>();
 			private readonly GetAsyncMethodInvocationHistoryCollection _getAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public GetAsyncMethodImposter(GetAsyncMethodInvocationHistoryCollection _getAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -722,7 +722,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NextAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<NextAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<NextAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<NextAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NextAsyncMethodInvocationImposterGroup>();
 			private readonly NextAsyncMethodInvocationHistoryCollection _nextAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public NextAsyncMethodImposter(NextAsyncMethodInvocationHistoryCollection _nextAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1147,7 +1147,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class PeekAsyncMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<PeekAsyncMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<PeekAsyncMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<PeekAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<PeekAsyncMethodInvocationImposterGroup>();
 			private readonly PeekAsyncMethodInvocationHistoryCollection _peekAsyncMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public PeekAsyncMethodImposter(PeekAsyncMethodInvocationHistoryCollection _peekAsyncMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

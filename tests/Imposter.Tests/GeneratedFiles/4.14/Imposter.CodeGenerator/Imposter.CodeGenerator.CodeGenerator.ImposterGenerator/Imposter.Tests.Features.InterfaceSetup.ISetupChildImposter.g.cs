@@ -179,7 +179,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<IEchoMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<IEchoMethodImposter>();
 			internal EchoMethodImposter<T> AddNew<T>()
 				where T : class
 			{
@@ -388,7 +388,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class EchoMethodImposter<T> : IEchoMethodImposter<T> where T : class
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<EchoMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<EchoMethodInvocationImposterGroup<T>>();
 			private readonly EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public EchoMethodImposter(EchoMethodInvocationHistoryCollection _echoMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -813,7 +813,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class ExecuteMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ExecuteMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<ExecuteMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ExecuteMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ExecuteMethodInvocationImposterGroup>();
 			private readonly ExecuteMethodInvocationHistoryCollection _executeMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public ExecuteMethodImposter(ExecuteMethodInvocationHistoryCollection _executeMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1196,7 +1196,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Execute_1MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<Execute_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Execute_1MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<Execute_1MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<Execute_1MethodInvocationImposterGroup>();
 			private readonly Execute_1MethodInvocationHistoryCollection _execute_1MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public Execute_1MethodImposter(Execute_1MethodInvocationHistoryCollection _execute_1MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1534,7 +1534,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NoOpMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<NoOpMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<NoOpMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<NoOpMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NoOpMethodInvocationImposterGroup>();
 			private readonly NoOpMethodInvocationHistoryCollection _noOpMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public NoOpMethodImposter(NoOpMethodInvocationHistoryCollection _noOpMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -1884,7 +1884,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class NotifyMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<NotifyMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<NotifyMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<NotifyMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<NotifyMethodInvocationImposterGroup>();
 			private readonly NotifyMethodInvocationHistoryCollection _notifyMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public NotifyMethodImposter(NotifyMethodInvocationHistoryCollection _notifyMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -2240,7 +2240,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class Notify_1MethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<Notify_1MethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<Notify_1MethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<Notify_1MethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<Notify_1MethodInvocationImposterGroup>();
 			private readonly Notify_1MethodInvocationHistoryCollection _notify_1MethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public Notify_1MethodImposter(Notify_1MethodInvocationHistoryCollection _notify_1MethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -4035,7 +4035,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
@@ -4611,7 +4611,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			private sealed class GetterImposter
 			{
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter> _getterInvocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<GetterInvocationImposter>();
+				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter> _setupLookup = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArgumentsCriteria, GetterInvocationImposter>();
 				private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;

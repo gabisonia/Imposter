@@ -12,7 +12,7 @@ internal static partial class MethodImposterBuilder
     )
     {
         var invocationImposterGroupsFieldType =
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(
+            WellKnownTypes.Imposter.Abstractions.SetupCollection(
                 method.MethodInvocationImposterGroup.Syntax
             );
 

@@ -288,7 +288,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CountMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<CountMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CountMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<CountMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CountMethodInvocationImposterGroup>();
 			private readonly CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public CountMethodImposter(CountMethodInvocationHistoryCollection _countMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
@@ -523,7 +523,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				this._invocationBehavior = _invocationBehavior;
 			}
 
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<ISumMethodImposter> _imposters = new global::System.Collections.Concurrent.ConcurrentStack<ISumMethodImposter>();
+			private readonly global::Imposter.Abstractions.SetupCollection<ISumMethodImposter> _imposters = new global::Imposter.Abstractions.SetupCollection<ISumMethodImposter>();
 			internal SumMethodImposter<T> AddNew<T>()
 			{
 				var imposter = new SumMethodImposter<T>(_sumMethodInvocationHistoryCollection, _invocationBehavior);
@@ -726,7 +726,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class SumMethodImposter<T> : ISumMethodImposter<T>
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<SumMethodInvocationImposterGroup<T>> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<SumMethodInvocationImposterGroup<T>>();
+			private readonly global::Imposter.Abstractions.SetupCollection<SumMethodInvocationImposterGroup<T>> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SumMethodInvocationImposterGroup<T>>();
 			private readonly SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public SumMethodImposter(SumMethodInvocationHistoryCollection _sumMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)

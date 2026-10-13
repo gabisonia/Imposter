@@ -285,7 +285,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CalculateMethodImposter
 		{
-			private readonly global::System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentStack<CalculateMethodInvocationImposterGroup>();
+			private readonly global::Imposter.Abstractions.SetupCollection<CalculateMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<CalculateMethodInvocationImposterGroup>();
 			private readonly CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			public CalculateMethodImposter(CalculateMethodInvocationHistoryCollection _calculateMethodInvocationHistoryCollection, global::Imposter.Abstractions.ImposterMode _invocationBehavior)
