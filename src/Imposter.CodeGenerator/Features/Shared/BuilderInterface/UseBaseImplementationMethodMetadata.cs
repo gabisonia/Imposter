@@ -5,7 +5,9 @@ namespace Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 // A builder's UseBaseImplementation(), for a class member with a base implementation.
 internal readonly struct UseBaseImplementationMethodMetadata
 {
-    internal readonly string Name = "UseBaseImplementation";
+    internal const string BaseName = "UseBaseImplementation";
+
+    internal readonly string Name = BaseName;
 
     internal readonly TypeSyntax ReturnType;
 

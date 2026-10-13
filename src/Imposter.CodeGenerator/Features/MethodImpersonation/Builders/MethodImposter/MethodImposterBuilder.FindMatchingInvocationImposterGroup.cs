@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -40,7 +41,11 @@ internal partial class MethodImposterBuilder
                             Block(
                                 IfStatement(
                                     groupIdentifierName
-                                        .Dot(IdentifierName("ArgumentsCriteria"))
+                                        .Dot(
+                                            IdentifierName(
+                                                MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                                            )
+                                        )
                                         .Dot(
                                             IdentifierName(
                                                 method.ArgumentsCriteria.MatchesMethod.Name

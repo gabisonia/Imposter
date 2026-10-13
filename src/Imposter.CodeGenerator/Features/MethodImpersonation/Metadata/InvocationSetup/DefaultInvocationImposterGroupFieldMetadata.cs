@@ -2,10 +2,12 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct DefaultInvocationImposterGroupFieldMetadata
 {
+    internal const string BaseName = "Default";
+
     internal readonly string Name;
 
     public DefaultInvocationImposterGroupFieldMetadata()
     {
-        Name = "Default";
+        Name = BaseName;
     }
 }

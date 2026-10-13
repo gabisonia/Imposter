@@ -33,7 +33,11 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
             argumentsCriteriaName
         );
 
-        var nameContext = new NameSet(method.Model.Parameters.Select(p => p.Name));
+        var nameContext = new NameSet(
+            method
+                .Model.Parameters.Select(p => p.Name)
+                .Concat(method.Model.TypeParameters.Select(p => p.Name))
+        );
         MatchesMethod = new MatchesMethodMetadata(nameContext);
         AsMethod = new AsMethodMetadata(nameContext, method.ReservedParameterNames);
     }
@@ -41,7 +45,7 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
     // A generic method's criteria convert themselves to the target type arguments with this method.
     internal readonly struct AsMethodMetadata
     {
-        private const string BaseName = "As";
+        internal const string BaseName = "As";
 
         internal readonly string Name;
 
@@ -60,7 +64,7 @@ internal readonly record struct ArgumentCriteriaTypeMetadata
 
     internal readonly struct MatchesMethodMetadata
     {
-        private const string BaseName = "Matches";
+        internal const string BaseName = "Matches";
         private const string ParameterBaseName = "arguments";
 
         internal readonly string Name;

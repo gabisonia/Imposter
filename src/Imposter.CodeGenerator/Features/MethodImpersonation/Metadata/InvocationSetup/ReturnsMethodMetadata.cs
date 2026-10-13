@@ -4,7 +4,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct ReturnsMethodMetadata
 {
-    internal readonly string Name = "Returns";
+    internal const string BaseName = "Returns";
+
+    internal readonly string Name = BaseName;
 
     internal readonly ParameterMetadata ValueParameter;
 

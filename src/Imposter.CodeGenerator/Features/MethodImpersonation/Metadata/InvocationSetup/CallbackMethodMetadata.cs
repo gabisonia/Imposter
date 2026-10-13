@@ -4,7 +4,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct CallbackMethodMetadata
 {
-    internal readonly string Name = "Callback";
+    internal const string BaseName = "Callback";
+
+    internal readonly string Name = BaseName;
 
     internal readonly TypeSyntax ReturnType;
 

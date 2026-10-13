@@ -1,4 +1,5 @@
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationSetup;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
@@ -35,7 +36,10 @@ internal static partial class InvocationImposterGroupBuilder
     private static PropertyDeclarationSyntax ArgumentsCriteriaProperty(
         in ImposterTargetMethodMetadata method
     ) =>
-        PropertyDeclaration(method.ArgumentsCriteria.Syntax, Identifier("ArgumentsCriteria"))
+        PropertyDeclaration(
+                method.ArgumentsCriteria.Syntax,
+                Identifier(MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName)
+            )
             .AddModifiers(Token(SyntaxKind.InternalKeyword))
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
@@ -59,7 +63,9 @@ internal static partial class InvocationImposterGroupBuilder
                 )
                 .WithBody(
                     Block(
-                        IdentifierName("ArgumentsCriteria")
+                        IdentifierName(
+                                MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                            )
                             .Assign(IdentifierName("argumentsCriteria"))
                             .ToStatementSyntax()
                     )

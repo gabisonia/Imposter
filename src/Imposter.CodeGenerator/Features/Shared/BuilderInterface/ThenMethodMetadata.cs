@@ -5,7 +5,9 @@ namespace Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 // A builder's Then(), which continues the chain with the builder interface it returns.
 internal readonly struct ThenMethodMetadata
 {
-    internal readonly string Name = "Then";
+    internal const string BaseName = "Then";
+
+    internal readonly string Name = BaseName;
 
     internal readonly TypeSyntax ReturnType;
 

@@ -7,6 +7,8 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
 {
     internal readonly TypeSyntax ReturnType;
 
+    internal const string BaseName = "HasMatchingInvocationImposterGroup";
+
     internal readonly string Name;
 
     internal readonly string ArgumentsParameterName;
@@ -16,7 +18,7 @@ internal readonly struct HasMatchingInvocationImposterGroupMethodMetadata
     )
     {
         ReturnType = WellKnownTypes.Bool;
-        Name = "HasMatchingInvocationImposterGroup";
+        Name = BaseName;
         var nameContext = reservedParameterNames.CreateNameSet();
         ArgumentsParameterName = nameContext.Use("arguments");
     }

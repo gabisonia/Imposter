@@ -24,7 +24,7 @@ internal static partial class InvocationImposterGroupBuilder
 
         return SinglePrivateReadonlyVariableField(
             queueType,
-            "_invocationImposters",
+            MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName,
             queueType.New(ArgumentList())
         );
     }
@@ -35,7 +35,7 @@ internal static partial class InvocationImposterGroupBuilder
         SingleVariableField(
             IdentifierName(method.MethodInvocationImposterGroup.MethodInvocationImposterTypeName)
                 .ToNullableType(),
-            "_lastestInvocationImposter",
+            MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName,
             TokenList(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.VolatileKeyword))
         );
 
@@ -67,7 +67,7 @@ internal static partial class InvocationImposterGroupBuilder
 
         bodyBuilder
             .AddStatement(
-                IdentifierName("_invocationImposters")
+                IdentifierName(MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName)
                     .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                     .Call(Argument(IdentifierName("invocationImposter")))
                     .ToStatementSyntax()
@@ -98,8 +98,12 @@ internal static partial class InvocationImposterGroupBuilder
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(
                 NextOutcomeSyntaxHelper.TakeNextOutcomeBody(
-                    IdentifierName("_invocationImposters"),
-                    IdentifierName("_lastestInvocationImposter"),
+                    IdentifierName(
+                        MethodInvocationImposterGroupMetadata.InvocationImpostersFieldName
+                    ),
+                    IdentifierName(
+                        MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName
+                    ),
                     IdentifierName("invocationImposter"),
                     // An invocation imposter without an outcome applies to its own call but never repeats.
                     Not(IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty")))

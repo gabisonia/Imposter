@@ -4,7 +4,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct ReturnsAsyncMethodMetadata
 {
-    internal readonly string Name = "ReturnsAsync";
+    internal const string BaseName = "ReturnsAsync";
+
+    internal readonly string Name = BaseName;
 
     internal readonly TypeSyntax ReturnType;
 
