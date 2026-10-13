@@ -1,5 +1,8 @@
 <Solution>
     <Folder Name="/benchmarks/">
+        <Project Path="benchmarks/Imposter.GeneratorBenchmarks/Imposter.GeneratorBenchmarks.csproj">
+            <Build Project="false"/>
+        </Project>
         <Project Path="benchmarks/Imposter.Benchmarks/Imposter.Benchmarks.csproj">
             <Build Project="false"/>
         </Project>
