@@ -9,6 +9,7 @@ namespace Imposter.CodeGenerator.Helpers;
 // code, one that no name declared beside it there has. A nested type's parameters also share the imposter's scope
 // with its containing types' parameters, so names that shadow a containing parameter are renamed too.
 // A target's type parameter also cannot share the name of its generated imposter class.
+// A method's type parameters cannot share the fixed member names of the helper types that repeat them.
 internal static class TypeParameterNames
 {
     private static readonly HashSet<string> NamesGeneratedCodeCantUse =
@@ -30,13 +31,24 @@ internal static class TypeParameterNames
         var imposterNames = typeParameter.DeclaringType is { } declaringType
             ? NamesInImposters(declaringType).ToArray()
             : [];
+        var clashesWithMethodMember =
+            typeParameter.DeclaringMethod is not null
+            && GeneratedMethodMemberNames.Reserved.Contains(typeParameter.Name);
 
         return
             NamesGeneratedCodeCantUse.Contains(typeParameter.Name)
             || containingNames.Contains(typeParameter.Name)
             || imposterNames.Contains(typeParameter.Name)
+            || clashesWithMethodMember
             ? new NameSet(
-                NamesBeside(typeParameter).Concat(containingNames).Concat(imposterNames)
+                NamesBeside(typeParameter)
+                    .Concat(containingNames)
+                    .Concat(imposterNames)
+                    .Concat(
+                        typeParameter.DeclaringMethod is not null
+                            ? GeneratedMethodMemberNames.Reserved
+                            : Enumerable.Empty<string>()
+                    )
             ).Use(typeParameter.Name)
             : typeParameter.Name;
     }

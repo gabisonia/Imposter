@@ -10,6 +10,12 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 {
     internal const string AddInvocationImposterMethodName = "AddInvocationImposter";
 
+    internal const string InvocationImpostersFieldName = "_invocationImposters";
+
+    internal const string LatestInvocationImposterFieldName = "_lastestInvocationImposter";
+
+    internal const string ArgumentsCriteriaPropertyName = "ArgumentsCriteria";
+
     internal readonly string Name;
 
     internal readonly string MethodInvocationImposterTypeName;

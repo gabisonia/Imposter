@@ -1,12 +1,13 @@
+using Imposter.CodeGenerator.Helpers;
+
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.MethodImposter;
 
 internal readonly struct InvocationImposterGroupsFieldMetadata
 {
     internal readonly string Name;
 
-    internal InvocationImposterGroupsFieldMetadata(in ReservedParameterNames reservedParameterNames)
+    internal InvocationImposterGroupsFieldMetadata(NameSet memberNames)
     {
-        var nameContext = reservedParameterNames.CreateNameSet();
-        Name = nameContext.Use("_invocationImposters");
+        Name = memberNames.Use("_invocationImposters");
     }
 }

@@ -7,7 +7,9 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct ThrowsMethodMetadata
 {
-    internal readonly string Name = "Throws";
+    internal const string BaseName = "Throws";
+
+    internal readonly string Name = BaseName;
 
     internal readonly ExceptionTypeParameterMetadata ExceptionTypeParameter;
 

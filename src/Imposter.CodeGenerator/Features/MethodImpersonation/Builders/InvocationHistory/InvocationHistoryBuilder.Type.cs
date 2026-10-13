@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
 using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.InvocationHistory;
 using Imposter.CodeGenerator.Features.Shared.Builders;
@@ -41,7 +41,7 @@ internal static partial class InvocationHistoryBuilder
     private static MethodDeclarationSyntax BuildToStringMethod(
         in ImposterTargetMethodMetadata method
     ) =>
-        new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
+        new MethodDeclarationBuilder(WellKnownTypes.String, nameof(ToString))
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddModifier(Token(SyntaxKind.OverrideKeyword))
             .WithBody(Block(ReturnStatement(BuildInvocationDescription(method))))

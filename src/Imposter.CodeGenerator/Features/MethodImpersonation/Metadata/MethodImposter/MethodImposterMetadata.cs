@@ -72,7 +72,7 @@ internal readonly struct MethodImposterMetadata
         HasMatchingInvocationImposterGroupMethod =
             new HasMatchingInvocationImposterGroupMethodMetadata(method.ReservedParameterNames);
         InvocationImposterGroupsField = new InvocationImposterGroupsFieldMetadata(
-            method.ReservedParameterNames
+            method.MemberNames
         );
         // A generic method's imposter declares the method's type parameters, which its nested classes can't be named
         // after.

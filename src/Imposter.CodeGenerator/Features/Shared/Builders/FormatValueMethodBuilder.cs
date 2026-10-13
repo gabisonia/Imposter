@@ -9,6 +9,8 @@ namespace Imposter.CodeGenerator.Features.Shared.Builders;
 
 internal static class FormatValueMethodBuilder
 {
+    internal const string Name = "FormatValue";
+
     internal static MethodDeclarationSyntax Build()
     {
         var valueParameter = ParameterSyntax(
@@ -18,7 +20,7 @@ internal static class FormatValueMethodBuilder
 
         var valueToString = MemberBindingExpression(IdentifierName("ToString")).Call();
 
-        return new MethodDeclarationBuilder(WellKnownTypes.String, "FormatValue")
+        return new MethodDeclarationBuilder(WellKnownTypes.String, Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.StaticKeyword))
             .AddParameter(valueParameter)
@@ -47,5 +49,5 @@ internal static class FormatValueMethodBuilder
     }
 
     internal static InvocationExpressionSyntax Invocation(ExpressionSyntax value) =>
-        IdentifierName("FormatValue").Call(Argument(value));
+        IdentifierName(Name).Call(Argument(value));
 }
