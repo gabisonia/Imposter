@@ -171,7 +171,22 @@ If verification fails, a `VerificationFailedException` is thrown with a clear me
       - [Protected Methods](protected-members.md)
       - [Imposter Modes](../implicit-vs-explicit.md)
 
+## Overlapping setups
+
+The newest matching setup with a configured outcome wins. `Returns`, `ReturnsAsync`, `Throws`, `ThrowsAsync`, `Callback`, and `UseBaseImplementation` configure outcomes. A newer bare setup, including one created for `Called` or `CallCount`, does not replace an older configured outcome.
+
+When no configured setup matches, the newest bare match supplies the usual default behavior. In particular, a bare void setup still allows a call in `Explicit` mode. To override an older void `Throws` or `Callback` with a no-op, configure an empty callback explicitly:
+
+```csharp
+imposter.Log(Arg<string>.Any()).Throws<InvalidOperationException>();
+imposter.Log(Arg<string>.Is("health")).Callback(_ => { });
+```
+
 ## Concurrency Notes
+
+While a new matching setup is being configured, calls can continue using an older configured setup. Creating a builder alone does not displace that outcome. An unfinished `Then()` step stays pending: calls repeat the previous outcome until the next step is configured. Use `Then().Callback(...)` with an empty callback for an explicit void no-op step.
+
+If the first non-void setup is still pending, calls return the usual default in implicit mode or throw `MissingImposterException` in explicit mode. Those calls do not consume the pending setup; configuring it later still takes effect.
 
 Sequenced outcomes are consumed in order under concurrency; the implementation avoids races that would otherwise reorder or drop planned outcomes. If a sequence is exhausted, the last outcome is repeated (when applicable) or default behavior applies.
 

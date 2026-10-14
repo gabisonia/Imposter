@@ -15,77 +15,62 @@ internal partial class MethodImposterBuilder
         in ImposterTargetMethodMetadata method
     )
     {
-        var groupIdentifier = Identifier(
-            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.GroupVariableName
+        var lookup = method.MethodImposter.FindMatchingInvocationImposterGroupMethod;
+        var group = IdentifierName(lookup.GroupVariableName);
+        var bareMatch = IdentifierName(lookup.BareMatchVariableName);
+        var matchingBody = Block(
+            IfStatement(
+                group.Dot(
+                    IdentifierName(
+                        method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName
+                    )
+                ),
+                ReturnStatement(group)
+            ),
+            IfStatement(bareMatch.IsNull(), bareMatch.Assign(group).ToStatementSyntax())
         );
-        var groupIdentifierName = IdentifierName(groupIdentifier);
-
-        var findMatchingGroupMethod = new MethodDeclarationBuilder(
-            NullableType(method.MethodInvocationImposterGroup.Syntax),
-            method.MethodImposter.FindMatchingInvocationImposterGroupMethod.Name
-        )
-            .AddModifier(Token(SyntaxKind.PrivateKeyword))
-            .AddParameter(GetArgumentsParameter(method));
-
+        StatementSyntax candidateBody = matchingBody;
         if (method.Parameters.HasInputParameters)
         {
-            return findMatchingGroupMethod
-                .WithBody(
-                    Block(
-                        ForEachStatement(
-                            Var,
-                            groupIdentifier,
-                            IdentifierName(
-                                method.MethodImposter.InvocationImposterGroupsField.Name
-                            ),
-                            Block(
-                                IfStatement(
-                                    groupIdentifierName
-                                        .Dot(
-                                            IdentifierName(
-                                                MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
-                                            )
-                                        )
-                                        .Dot(
-                                            IdentifierName(
-                                                method.ArgumentsCriteria.MatchesMethod.Name
-                                            )
-                                        )
-                                        .Call(Argument(IdentifierName("arguments"))),
-                                    ReturnStatement(groupIdentifierName)
-                                )
-                            )
-                        ),
-                        ReturnStatement(Null)
+            candidateBody = IfStatement(
+                group
+                    .Dot(
+                        IdentifierName(
+                            MethodInvocationImposterGroupMetadata.ArgumentsCriteriaPropertyName
+                        )
                     )
-                )
-                .Build();
+                    .Dot(IdentifierName(method.ArgumentsCriteria.MatchesMethod.Name))
+                    .Call(Argument(IdentifierName("arguments"))),
+                matchingBody
+            );
         }
 
-        return findMatchingGroupMethod
+        return new MethodDeclarationBuilder(
+            NullableType(method.MethodInvocationImposterGroup.Syntax),
+            lookup.Name
+        )
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
+            .AddParameter(
+                method.Parameters.HasInputParameters
+                    ? ParameterSyntax(method.Arguments.Syntax, "arguments")
+                    : null
+            )
             .WithBody(
                 Block(
-                    IfStatement(
-                        IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name)
-                            .Dot(SetupCollectionSyntaxHelper.TryPeek)
-                            .Call(
-                                OutVarArgument(
-                                    method
-                                        .MethodImposter
-                                        .FindMatchingInvocationImposterGroupMethod
-                                        .GroupVariableName
-                                )
-                            ),
-                        ReturnStatement(groupIdentifierName),
-                        ElseClause(ReturnStatement(Null))
-                    )
+                    LocalVariableDeclarationSyntax(
+                        NullableType(method.MethodInvocationImposterGroup.Syntax),
+                        bareMatch.Identifier.Text,
+                        Null
+                    ),
+                    ForEachStatement(
+                        Var,
+                        group.Identifier,
+                        IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name),
+                        candidateBody is BlockSyntax body ? body : Block(candidateBody)
+                    ),
+                    ReturnStatement(bareMatch)
                 )
             )
             .Build();
-
-        static ParameterSyntax? GetArgumentsParameter(in ImposterTargetMethodMetadata method) =>
-            method.Parameters.HasInputParameters
-                ? ParameterSyntax(method.Arguments.Syntax, "arguments")
-                : null;
     }
 }

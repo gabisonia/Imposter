@@ -4,6 +4,8 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.Invocatio
 
 internal readonly struct MethodInvocationImposterMetadata
 {
+    internal readonly string IsConfiguredFieldName;
+
     internal readonly string ResultVariableName;
 
     internal readonly string ResultGeneratorFieldName;
@@ -26,6 +28,7 @@ internal readonly struct MethodInvocationImposterMetadata
         var nameContext = reservedParameterNames.CreateNameSet();
         ResultVariableName = nameContext.Use("result");
         AsyncResultFunctionName = nameContext.Use("AsyncResult");
+        IsConfiguredFieldName = memberNames.Use("IsConfigured");
         ResultGeneratorFieldName = memberNames.Use("_resultGenerator");
         CallbacksFieldName = memberNames.Use("_callbacks");
         UseBaseImplementationFieldName = memberNames.Use("_useBaseImplementation");

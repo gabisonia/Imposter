@@ -157,14 +157,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IConvertMethodImposter<TInput, TResult> GetImposterWithMatchingInvocationImposterGroup<TInput, TResult>(ConvertArguments<TInput, TResult> arguments)
 			{
+				IConvertMethodImposter<TInput, TResult>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<TInput, TResult>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments))
-						return typedImposter;
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(arguments, out var hasConfiguredOutcome))
+					{
+						if (hasConfiguredOutcome)
+							return typedImposter;
+						if (bareMatch == null)
+							bareMatch = typedImposter;
+					}
 				}
 
-				return new ConvertMethodImposter<TInput, TResult>(_convertMethodInvocationHistoryCollection, _invocationBehavior);
+				return bareMatch ?? new ConvertMethodImposter<TInput, TResult>(_convertMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -176,6 +182,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public ConvertMethodInvocationImposterGroup(ConvertArgumentsCriteria<TInput, TResult> argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -202,11 +209,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -241,8 +249,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				private ConvertDelegate<TInput, TResult>? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ConvertCallbackDelegate<TInput, TResult>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ConvertCallbackDelegate<TInput, TResult>>();
 				private bool _useBaseImplementation;
-				internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
+				internal volatile bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, TInput input, ConvertDelegate<TInput, TResult>? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -348,7 +355,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IConvertMethodImposter<TInput, TResult> : IConvertMethodImposter
 		{
 			string Invoke(TInput input, ConvertDelegate<TInput, TResult>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup(ConvertArguments<TInput, TResult> arguments);
+			bool HasMatchingInvocationImposterGroup(ConvertArguments<TInput, TResult> arguments, out bool hasConfiguredOutcome);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -400,9 +407,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<string, string>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup(ConvertArguments<TInputTarget, TResultTarget> arguments)
+				public bool HasMatchingInvocationImposterGroup(ConvertArguments<TInputTarget, TResultTarget> arguments, out bool hasConfiguredOutcome)
 				{
-					return _target.HasMatchingInvocationImposterGroup(arguments.As<TInput, TResult>());
+					return _target.HasMatchingInvocationImposterGroup(arguments.As<TInput, TResult>(), out hasConfiguredOutcome);
 				}
 
 				IConvertMethodImposter<TInputTarget1, TResultTarget1>? IConvertMethodImposter.As<TInputTarget1, TResultTarget1>()
@@ -411,20 +418,28 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup(ConvertArguments<TInput, TResult> arguments)
+			public bool HasMatchingInvocationImposterGroup(ConvertArguments<TInput, TResult> arguments, out bool hasConfiguredOutcome)
 			{
-				return FindMatchingInvocationImposterGroup(arguments) != null;
+				var invocationImposterGroup = FindMatchingInvocationImposterGroup(arguments);
+				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
+				return invocationImposterGroup != null;
 			}
 
 			private ConvertMethodInvocationImposterGroup<TInput, TResult>? FindMatchingInvocationImposterGroup(ConvertArguments<TInput, TResult> arguments)
 			{
+				ConvertMethodInvocationImposterGroup<TInput, TResult>? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public string Invoke(TInput input, ConvertDelegate<TInput, TResult>? baseImplementation = null)
@@ -467,8 +482,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new ConvertMethodInvocationImposterGroup<TInput, TResult>(_argumentsCriteria);
 					ConvertMethodImposter<TInput, TResult> methodImposter = imposterCollection.AddNew<TInput, TResult>();
-					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IConvertMethodInvocationImposterGroupContinuation<TInput, TResult> IConvertMethodInvocationImposterGroup<TInput, TResult>.Throws<TException>()
@@ -477,6 +492,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -486,6 +503,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -495,30 +514,40 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(input);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IConvertMethodInvocationImposterGroupContinuation<TInput, TResult> IConvertMethodInvocationImposterGroupCallback<TInput, TResult>.Callback(ConvertCallbackDelegate<TInput, TResult> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IConvertMethodInvocationImposterGroupContinuation<TInput, TResult> IConvertMethodInvocationImposterGroup<TInput, TResult>.Returns(ConvertDelegate<TInput, TResult> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IConvertMethodInvocationImposterGroupContinuation<TInput, TResult> IConvertMethodInvocationImposterGroup<TInput, TResult>.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IConvertMethodInvocationImposterGroupContinuation<TInput, TResult> IConvertMethodInvocationImposterGroup<TInput, TResult>.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -621,14 +650,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IDescribeMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>()
 			{
+				IDescribeMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup())
-						return typedImposter;
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(out var hasConfiguredOutcome))
+					{
+						if (hasConfiguredOutcome)
+							return typedImposter;
+						if (bareMatch == null)
+							bareMatch = typedImposter;
+					}
 				}
 
-				return new DescribeMethodImposter<T>(_describeMethodInvocationHistoryCollection, _invocationBehavior);
+				return bareMatch ?? new DescribeMethodImposter<T>(_describeMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -638,6 +673,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal static DescribeMethodInvocationImposterGroup<T> Default = new DescribeMethodInvocationImposterGroup<T>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public DescribeMethodInvocationImposterGroup()
 			{
 			}
@@ -663,11 +699,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -702,8 +739,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				private DescribeDelegate<T>? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<DescribeCallbackDelegate<T>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DescribeCallbackDelegate<T>>();
 				private bool _useBaseImplementation;
-				internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
+				internal volatile bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, DescribeDelegate<T>? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -809,7 +845,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IDescribeMethodImposter<T> : IDescribeMethodImposter
 		{
 			string Invoke(DescribeDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup();
+			bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -856,9 +892,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					return global::Imposter.Abstractions.TypeCaster.Cast<string, string>(result);
 				}
 
-				public bool HasMatchingInvocationImposterGroup()
+				public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
 				{
-					return _target.HasMatchingInvocationImposterGroup();
+					return _target.HasMatchingInvocationImposterGroup(out hasConfiguredOutcome);
 				}
 
 				IDescribeMethodImposter<TTarget1>? IDescribeMethodImposter.As<TTarget1>()
@@ -867,17 +903,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup()
+			public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
 			{
-				return FindMatchingInvocationImposterGroup() != null;
+				var invocationImposterGroup = FindMatchingInvocationImposterGroup();
+				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
+				return invocationImposterGroup != null;
 			}
 
 			private DescribeMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				DescribeMethodInvocationImposterGroup<T>? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public string Invoke(DescribeDelegate<T>? baseImplementation = null)
@@ -917,8 +961,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._describeMethodInvocationHistoryCollection = _describeMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new DescribeMethodInvocationImposterGroup<T>();
 					DescribeMethodImposter<T> methodImposter = imposterCollection.AddNew<T>();
-					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation<T> IDescribeMethodInvocationImposterGroup<T>.Throws<TException>()
@@ -927,6 +971,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -936,6 +982,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -945,30 +993,40 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation<T> IDescribeMethodInvocationImposterGroupCallback<T>.Callback(DescribeCallbackDelegate<T> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation<T> IDescribeMethodInvocationImposterGroup<T>.Returns(DescribeDelegate<T> resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation<T> IDescribeMethodInvocationImposterGroup<T>.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDescribeMethodInvocationImposterGroupContinuation<T> IDescribeMethodInvocationImposterGroup<T>.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1069,14 +1127,20 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			internal IExecuteMethodImposter<T> GetImposterWithMatchingInvocationImposterGroup<T>()
 			{
+				IExecuteMethodImposter<T>? bareMatch = null;
 				foreach (var storedImposter in _imposters)
 				{
 					var typedImposter = storedImposter.As<T>();
-					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup())
-						return typedImposter;
+					if ((typedImposter != null) && typedImposter.HasMatchingInvocationImposterGroup(out var hasConfiguredOutcome))
+					{
+						if (hasConfiguredOutcome)
+							return typedImposter;
+						if (bareMatch == null)
+							bareMatch = typedImposter;
+					}
 				}
 
-				return new ExecuteMethodImposter<T>(_executeMethodInvocationHistoryCollection, _invocationBehavior);
+				return bareMatch ?? new ExecuteMethodImposter<T>(_executeMethodInvocationHistoryCollection, _invocationBehavior);
 			}
 		}
 
@@ -1086,6 +1150,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 			internal static ExecuteMethodInvocationImposterGroup<T> Default = new ExecuteMethodInvocationImposterGroup<T>();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public ExecuteMethodInvocationImposterGroup()
 			{
 			}
@@ -1112,11 +1177,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter ?? MethodInvocationImposter.Default;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -1151,8 +1217,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				private ExecuteDelegate<T>? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ExecuteCallbackDelegate<T>> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ExecuteCallbackDelegate<T>>();
 				private bool _useBaseImplementation;
-				internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
+				internal volatile bool IsConfigured;
 				public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ExecuteDelegate<T>? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -1243,7 +1308,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		internal interface IExecuteMethodImposter<T> : IExecuteMethodImposter
 		{
 			void Invoke(ExecuteDelegate<T>? baseImplementation = null);
-			bool HasMatchingInvocationImposterGroup();
+			bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1289,9 +1354,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					_target.Invoke(global::Imposter.Abstractions.TypeCaster.Cast<ExecuteDelegate<TTarget>?, ExecuteDelegate<T>>(baseImplementation));
 				}
 
-				public bool HasMatchingInvocationImposterGroup()
+				public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
 				{
-					return _target.HasMatchingInvocationImposterGroup();
+					return _target.HasMatchingInvocationImposterGroup(out hasConfiguredOutcome);
 				}
 
 				IExecuteMethodImposter<TTarget1>? IExecuteMethodImposter.As<TTarget1>()
@@ -1300,17 +1365,25 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				}
 			}
 
-			public bool HasMatchingInvocationImposterGroup()
+			public bool HasMatchingInvocationImposterGroup(out bool hasConfiguredOutcome)
 			{
-				return FindMatchingInvocationImposterGroup() != null;
+				var invocationImposterGroup = FindMatchingInvocationImposterGroup();
+				hasConfiguredOutcome = (invocationImposterGroup != null) && invocationImposterGroup.HasConfiguredOutcome;
+				return invocationImposterGroup != null;
 			}
 
 			private ExecuteMethodInvocationImposterGroup<T>? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				ExecuteMethodInvocationImposterGroup<T>? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public void Invoke(ExecuteDelegate<T>? baseImplementation = null)
@@ -1349,8 +1422,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._executeMethodInvocationHistoryCollection = _executeMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new ExecuteMethodInvocationImposterGroup<T>();
 					ExecuteMethodImposter<T> methodImposter = imposterCollection.AddNew<T>();
-					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					methodImposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IExecuteMethodInvocationImposterGroupContinuation<T> IExecuteMethodInvocationImposterGroup<T>.Throws<TException>()
@@ -1359,6 +1432,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1368,6 +1443,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1377,18 +1454,24 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IExecuteMethodInvocationImposterGroupContinuation<T> IExecuteMethodInvocationImposterGroupCallback<T>.Callback(ExecuteCallbackDelegate<T> callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IExecuteMethodInvocationImposterGroupContinuation<T> IExecuteMethodInvocationImposterGroup<T>.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

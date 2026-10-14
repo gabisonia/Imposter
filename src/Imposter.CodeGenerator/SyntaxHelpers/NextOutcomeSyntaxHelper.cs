@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -10,21 +11,17 @@ internal static class NextOutcomeSyntaxHelper
     /// The body of a method that takes the next outcome from a queue of configured outcomes, and returns the last
     /// published outcome once the queue is empty. An outcome is published before it leaves the queue, and outcomes
     /// leave it one at a time under a lock on the queue. So a concurrent caller that finds the queue empty always
-    /// sees the newest outcome, never a missing or older one.
+    /// sees the newest outcome, never a missing or older one. If readiness is supplied, an unfinished head stays
+    /// queued and calls use the previous outcome (or the supplied fallback) until it is ready to be consumed.
     /// </summary>
     internal static BlockSyntax TakeNextOutcomeBody(
         IdentifierNameSyntax queue,
         IdentifierNameSyntax lastOutcome,
         IdentifierNameSyntax outcome,
-        ExpressionSyntax? publishCondition = null
+        ExpressionSyntax? readyCondition = null,
+        ExpressionSyntax? pendingOutcomeFallback = null
     )
     {
-        StatementSyntax publish = lastOutcome.Assign(outcome).ToStatementSyntax();
-        if (publishCondition is not null)
-        {
-            publish = IfStatement(publishCondition, Block(publish));
-        }
-
         return Block(
             IfStatement(
                 queue.Dot(ConcurrentQueueSyntaxHelper.IsEmpty),
@@ -32,22 +29,34 @@ internal static class NextOutcomeSyntaxHelper
             ),
             LockStatement(
                 queue,
-                Block(
-                    IfStatement(
-                        Not(
-                            queue
-                                .Dot(ConcurrentQueueSyntaxHelper.TryPeek)
-                                .Call(OutVarArgument(outcome.Identifier.Text))
-                        ),
-                        Block(ReturnStatement(lastOutcome))
-                    ),
-                    publish,
-                    queue
-                        .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
-                        .Call(OutDiscardArgument())
-                        .ToStatementSyntax(),
-                    ReturnStatement(outcome)
-                )
+                new BlockBuilder()
+                    .AddStatement(
+                        IfStatement(
+                            Not(
+                                queue
+                                    .Dot(ConcurrentQueueSyntaxHelper.TryPeek)
+                                    .Call(OutVarArgument(outcome.Identifier.Text))
+                            ),
+                            Block(ReturnStatement(lastOutcome))
+                        )
+                    )
+                    .AddStatement(
+                        readyCondition is null
+                            ? null
+                            : IfStatement(
+                                Not(readyCondition),
+                                Block(ReturnStatement(pendingOutcomeFallback ?? lastOutcome))
+                            )
+                    )
+                    .AddStatement(lastOutcome.Assign(outcome).ToStatementSyntax())
+                    .AddStatement(
+                        queue
+                            .Dot(ConcurrentQueueSyntaxHelper.TryDequeue)
+                            .Call(OutDiscardArgument())
+                            .ToStatementSyntax()
+                    )
+                    .AddStatement(ReturnStatement(outcome))
+                    .Build()
             )
         );
     }

@@ -151,6 +151,10 @@ internal readonly struct IndexerGetterImposterMetadata
 
     internal readonly struct GetterInvocationMetadata
     {
+        internal const string HasConfiguredReturnFieldName = "HasConfiguredReturn";
+
+        internal const string BareMatchVariableName = "bareMatch";
+
         internal readonly string Name;
 
         internal readonly NameSyntax TypeSyntax;

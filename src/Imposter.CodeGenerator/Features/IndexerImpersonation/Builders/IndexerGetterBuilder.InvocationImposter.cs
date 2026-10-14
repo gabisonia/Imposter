@@ -47,6 +47,15 @@ internal static partial class IndexerGetterBuilder
             .AddMember(
                 SingleVariableField(invocation.PropertyDisplayNameField, SyntaxKind.PrivateKeyword)
             )
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    IndexerGetterImposterMetadata
+                        .GetterInvocationMetadata
+                        .HasConfiguredReturnFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
             .AddMember(BuildGetterInvocationCriteriaProperty(invocation))
             .AddMember(BuildGetterInvocationConstructor(indexer))
             .AddMember(BuildGetterInvocationAddReturnValueMethod(indexer))
@@ -131,6 +140,8 @@ internal static partial class IndexerGetterBuilder
             .Build();
     }
 
+    // A setup is eligible for lookup only after the handler has been enqueued. Keep readiness separate from queue
+    // emptiness because consumers transfer the final handler to LastReturnValue while calls are in flight.
     private static MethodDeclarationSyntax BuildGetterInvocationAddReturnValueMethod(
         in ImposterIndexerMetadata indexer
     )
@@ -156,10 +167,17 @@ internal static partial class IndexerGetterBuilder
             .AddParameter(generator)
             .WithBody(
                 Block(
-                    TurnDefaultBehaviourOff(indexer),
                     IdentifierName(invocation.ReturnValuesField.Name)
                         .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
                         .Call(Argument(handler))
+                        .ToStatementSyntax(),
+                    TurnDefaultBehaviourOff(indexer),
+                    IdentifierName(
+                            IndexerGetterImposterMetadata
+                                .GetterInvocationMetadata
+                                .HasConfiguredReturnFieldName
+                        )
+                        .Assign(True)
                         .ToStatementSyntax(),
                     IdentifierName(invocation.ParentField.Name)
                         .Dot(IdentifierName(getter.MarkReturnConfiguredMethod.Name))
@@ -337,6 +355,18 @@ internal static partial class IndexerGetterBuilder
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .WithBody(
                 Block(
+                    IdentifierName(invocation.ReturnValuesField.Name)
+                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
+                        .Call(Argument(BaseImplementationHandler(indexer)))
+                        .ToStatementSyntax(),
+                    TurnDefaultBehaviourOff(indexer),
+                    IdentifierName(
+                            IndexerGetterImposterMetadata
+                                .GetterInvocationMetadata
+                                .HasConfiguredReturnFieldName
+                        )
+                        .Assign(True)
+                        .ToStatementSyntax(),
                     IdentifierName(invocation.ParentField.Name)
                         .Dot(
                             IdentifierName(
@@ -344,14 +374,6 @@ internal static partial class IndexerGetterBuilder
                             )
                         )
                         .Call()
-                        .ToStatementSyntax(),
-                    TurnDefaultBehaviourOff(indexer),
-                    IdentifierName(invocation.ReturnValuesField.Name)
-                        .Dot(ConcurrentQueueSyntaxHelper.Enqueue)
-                        .Call(Argument(BaseImplementationHandler(indexer)))
-                        .ToStatementSyntax(),
-                    IdentifierName(invocation.LastReturnValueField.Name)
-                        .Assign(Null)
                         .ToStatementSyntax()
                 )
             )
