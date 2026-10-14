@@ -59,6 +59,18 @@ internal static partial class MethodImposterBuilderBuilder
         }
 
         statements.Add(
+            AdvanceToNewInvocationImposter(
+                method,
+                ThisExpression()
+                    .Dot(
+                        IdentifierName(
+                            method.MethodImposter.Builder.InvocationImposterGroupField.Name
+                        )
+                    )
+            )
+        );
+
+        statements.Add(
             methodImposterAccess
                 .Dot(IdentifierName(method.MethodImposter.InvocationImposterGroupsField.Name))
                 .Dot(SetupCollectionSyntaxHelper.Push)
@@ -70,18 +82,6 @@ internal static partial class MethodImposterBuilderBuilder
                     )
                 )
                 .ToStatementSyntax()
-        );
-
-        statements.Add(
-            AdvanceToNewInvocationImposter(
-                method,
-                ThisExpression()
-                    .Dot(
-                        IdentifierName(
-                            method.MethodImposter.Builder.InvocationImposterGroupField.Name
-                        )
-                    )
-            )
         );
 
         return statements;

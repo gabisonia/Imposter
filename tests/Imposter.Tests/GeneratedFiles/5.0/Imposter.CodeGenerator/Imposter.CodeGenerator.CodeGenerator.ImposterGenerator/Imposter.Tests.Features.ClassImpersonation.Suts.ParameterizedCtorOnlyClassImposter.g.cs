@@ -120,6 +120,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public ComputeMethodInvocationImposterGroup(ComputeArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -146,11 +147,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -185,8 +187,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 				private ComputeDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ComputeCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ComputeCallbackDelegate>();
 				private bool _useBaseImplementation;
-				internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int value, ComputeDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -308,13 +309,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private ComputeMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ComputeArguments arguments)
 			{
+				ComputeMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public int Invoke(int value, ComputeDelegate? baseImplementation = null)
@@ -356,8 +363,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._computeMethodInvocationHistoryCollection = _computeMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new ComputeMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroup.Throws<TException>()
@@ -366,6 +373,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -375,6 +384,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -384,30 +395,40 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(value);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroupCallback.Callback(ComputeCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroup.Returns(ComputeDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroup.Returns(int value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IComputeMethodInvocationImposterGroupContinuation IComputeMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1355,15 +1376,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments)
 				{
+					GetterInvocationImposter? bareMatch = null;
 					foreach (var getterInvocationImposter in _getterInvocationImposters)
 					{
 						if (getterInvocationImposter.Criteria.Matches(arguments))
 						{
-							return getterInvocationImposter;
+							if (getterInvocationImposter.HasConfiguredReturn)
+								return getterInvocationImposter;
+							if (bareMatch == null)
+								bareMatch = getterInvocationImposter;
 						}
 					}
 
-					return null;
+					return bareMatch;
 				}
 
 				private GetterInvocationImposter GetOrCreate(IndexerIndexerArgumentsCriteria criteria)
@@ -1488,6 +1513,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
 					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
 					private string _propertyDisplayName;
+					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
 
 					internal GetterInvocationImposter(GetterImposter parent, DefaultIndexerIndexerBehaviour defaultBehaviour, IndexerIndexerArgumentsCriteria criteria)
@@ -1500,8 +1526,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal void AddReturnValue(global::System.Func<IndexerIndexerArguments, int> generator)
 					{
-						_defaultBehaviour.IsOn = false;
 						_returnValues.Enqueue((arguments, baseImplementation) => generator(arguments));
+						_defaultBehaviour.IsOn = false;
+						HasConfiguredReturn = true;
 						_parent.MarkReturnConfigured();
 					}
 
@@ -1562,8 +1589,6 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 					internal void UseBaseImplementation()
 					{
-						_parent.MarkReturnConfigured();
-						_defaultBehaviour.IsOn = false;
 						_returnValues.Enqueue((arguments, baseImplementation) =>
 						{
 							if (baseImplementation == null)
@@ -1573,7 +1598,9 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 							return baseImplementation();
 						});
-						_lastReturnValue = null;
+						_defaultBehaviour.IsOn = false;
+						HasConfiguredReturn = true;
+						_parent.MarkReturnConfigured();
 					}
 				}
 			}

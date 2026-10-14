@@ -21,6 +21,13 @@ internal static partial class InvocationImposterGroupBuilder
             )
             .AddMember(InvocationImpostersFieldDeclaration(method))
             .AddMember(LastInvocationImposterFieldDeclaration(method))
+            .AddMember(
+                SyntaxFactoryHelper.SingleVariableField(
+                    WellKnownTypes.Bool,
+                    method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
             .AddMember(Constructor(method))
             .AddMember(AddInvocationImposterMethod(method))
             .AddMember(GetInvocationImposterMethod(method))

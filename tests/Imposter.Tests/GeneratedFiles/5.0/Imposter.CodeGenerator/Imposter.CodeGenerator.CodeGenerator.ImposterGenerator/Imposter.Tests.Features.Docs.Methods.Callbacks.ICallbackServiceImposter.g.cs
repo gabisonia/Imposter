@@ -144,6 +144,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public GenericAllRefKindMethodInvocationImposterGroup(GenericAllRefKindArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -170,11 +171,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -208,8 +210,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 				private GenericAllRefKindDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<GenericAllRefKindCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, out int o, ref string r, in double d, bool[] args)
 				{
 					if (_resultGenerator == null)
@@ -323,13 +324,19 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private GenericAllRefKindMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(GenericAllRefKindArguments arguments)
 			{
+				GenericAllRefKindMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public int Invoke(out int o, ref string r, in double d, bool[] args)
@@ -371,8 +378,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					this._genericAllRefKindMethodInvocationHistoryCollection = _genericAllRefKindMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new GenericAllRefKindMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IGenericAllRefKindMethodInvocationImposterGroupContinuation IGenericAllRefKindMethodInvocationImposterGroup.Throws<TException>()
@@ -381,6 +388,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -390,6 +399,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -399,24 +410,32 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exceptionGenerator.Invoke(out o, ref r, in d, args);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGenericAllRefKindMethodInvocationImposterGroupContinuation IGenericAllRefKindMethodInvocationImposterGroupCallback.Callback(GenericAllRefKindCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGenericAllRefKindMethodInvocationImposterGroupContinuation IGenericAllRefKindMethodInvocationImposterGroup.Returns(GenericAllRefKindDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGenericAllRefKindMethodInvocationImposterGroupContinuation IGenericAllRefKindMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -504,6 +523,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 			internal static GetNumberMethodInvocationImposterGroup Default = new GetNumberMethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public GetNumberMethodInvocationImposterGroup()
 			{
 			}
@@ -529,11 +549,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -567,8 +588,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 				private GetNumberDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<GetNumberCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<GetNumberCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
 				{
 					if (_resultGenerator == null)
@@ -675,10 +695,16 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private GetNumberMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				GetNumberMethodInvocationImposterGroup? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public int Invoke()
@@ -717,8 +743,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 				{
 					this._getNumberMethodInvocationHistoryCollection = _getNumberMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new GetNumberMethodInvocationImposterGroup();
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IGetNumberMethodInvocationImposterGroupContinuation IGetNumberMethodInvocationImposterGroup.Throws<TException>()
@@ -727,6 +753,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -736,6 +764,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -745,24 +775,32 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGetNumberMethodInvocationImposterGroupContinuation IGetNumberMethodInvocationImposterGroupCallback.Callback(GetNumberCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGetNumberMethodInvocationImposterGroupContinuation IGetNumberMethodInvocationImposterGroup.Returns(GetNumberDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IGetNumberMethodInvocationImposterGroupContinuation IGetNumberMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -880,6 +918,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public IncrementMethodInvocationImposterGroup(IncrementArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -906,11 +945,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -944,8 +984,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 				private IncrementDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<IncrementCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IncrementCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int v)
 				{
 					if (_resultGenerator == null)
@@ -1052,13 +1091,19 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 
 			private IncrementMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(IncrementArguments arguments)
 			{
+				IncrementMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public int Invoke(int v)
@@ -1100,8 +1145,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					this._incrementMethodInvocationHistoryCollection = _incrementMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new IncrementMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IIncrementMethodInvocationImposterGroupContinuation IIncrementMethodInvocationImposterGroup.Throws<TException>()
@@ -1110,6 +1155,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1119,6 +1166,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -1128,24 +1177,32 @@ namespace Imposter.Tests.Features.Docs.Methods.Callbacks
 					{
 						throw exceptionGenerator.Invoke(v);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IIncrementMethodInvocationImposterGroupContinuation IIncrementMethodInvocationImposterGroupCallback.Callback(IncrementCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IIncrementMethodInvocationImposterGroupContinuation IIncrementMethodInvocationImposterGroup.Returns(IncrementDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IIncrementMethodInvocationImposterGroupContinuation IIncrementMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

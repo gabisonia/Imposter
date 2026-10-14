@@ -243,15 +243,19 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments_1)
 				{
+					GetterInvocationImposter? bareMatch = null;
 					foreach (var getterInvocationImposter_1 in _getterInvocationImposters)
 					{
 						if (getterInvocationImposter_1.Criteria.Matches(arguments_1))
 						{
-							return getterInvocationImposter_1;
+							if (getterInvocationImposter_1.HasConfiguredReturn)
+								return getterInvocationImposter_1;
+							if (bareMatch == null)
+								bareMatch = getterInvocationImposter_1;
 						}
 					}
 
-					return null;
+					return bareMatch;
 				}
 
 				private GetterInvocationImposter GetOrCreate(IndexerIndexerArgumentsCriteria criteria)
@@ -376,6 +380,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
 					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
 					private string _propertyDisplayName;
+					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
 
 					internal GetterInvocationImposter(GetterImposter parent, DefaultIndexerIndexerBehaviour defaultBehaviour, IndexerIndexerArgumentsCriteria criteria)
@@ -388,8 +393,9 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddReturnValue(global::System.Func<IndexerIndexerArguments, int> generator)
 					{
-						_defaultBehaviour.IsOn = false;
 						_returnValues.Enqueue((arguments_1, baseImplementation_1) => generator(arguments_1));
+						_defaultBehaviour.IsOn = false;
+						HasConfiguredReturn = true;
 						_parent.MarkReturnConfigured();
 					}
 
@@ -450,8 +456,6 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void UseBaseImplementation()
 					{
-						_parent.MarkReturnConfigured();
-						_defaultBehaviour.IsOn = false;
 						_returnValues.Enqueue((arguments_1, baseImplementation_1) =>
 						{
 							if (baseImplementation_1 == null)
@@ -461,7 +465,9 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 							return baseImplementation_1();
 						});
-						_lastReturnValue = null;
+						_defaultBehaviour.IsOn = false;
+						HasConfiguredReturn = true;
+						_parent.MarkReturnConfigured();
 					}
 				}
 			}

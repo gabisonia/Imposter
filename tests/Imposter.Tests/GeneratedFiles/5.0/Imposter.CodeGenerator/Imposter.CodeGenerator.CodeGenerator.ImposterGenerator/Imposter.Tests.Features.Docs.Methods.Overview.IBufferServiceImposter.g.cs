@@ -120,6 +120,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public RentMethodInvocationImposterGroup(RentArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -146,11 +147,12 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -184,8 +186,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
 				private RentDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<RentCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<RentCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public global::System.Span<byte> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int size)
 				{
 					if (_resultGenerator == null)
@@ -292,13 +293,19 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 
 			private RentMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(RentArguments arguments)
 			{
+				RentMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public global::System.Span<byte> Invoke(int size)
@@ -340,8 +347,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					this._rentMethodInvocationHistoryCollection = _rentMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new RentMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroup.Throws<TException>()
@@ -350,6 +357,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -359,6 +368,8 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -368,24 +379,32 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
 					{
 						throw exceptionGenerator.Invoke(size);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroupCallback.Callback(RentCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroup.Returns(RentDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroup.Returns(byte[] value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

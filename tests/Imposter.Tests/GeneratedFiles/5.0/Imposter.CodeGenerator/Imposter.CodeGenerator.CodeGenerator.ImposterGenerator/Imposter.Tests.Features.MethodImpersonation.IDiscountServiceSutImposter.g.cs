@@ -124,6 +124,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public CalculateMethodInvocationImposterGroup(CalculateArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -150,11 +151,12 @@ namespace Imposter.Tests.Features.MethodImpersonation
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -188,8 +190,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				private CalculateDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<CalculateCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public decimal Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
 				{
 					if (_resultGenerator == null)
@@ -296,13 +297,19 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private CalculateMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(CalculateArguments arguments)
 			{
+				CalculateMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public decimal Invoke(global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.InvoiceItem>? invoicItems, global::System.Collections.Generic.IDictionary<global::Imposter.Tests.Features.MethodImpersonation.Product, global::System.Collections.Generic.IEnumerable<global::Imposter.Tests.Features.MethodImpersonation.History>>? purchaceHistory)
@@ -344,8 +351,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					this._calculateMethodInvocationHistoryCollection = _calculateMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new CalculateMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Throws<TException>()
@@ -354,6 +361,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -363,6 +372,8 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -372,24 +383,32 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exceptionGenerator.Invoke(invoicItems, purchaceHistory);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroupCallback.Callback(CalculateCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Returns(CalculateDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ICalculateMethodInvocationImposterGroupContinuation ICalculateMethodInvocationImposterGroup.Returns(decimal value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

@@ -28,7 +28,13 @@ internal static partial class InvocationImposterGroupBuilder
             .AddMember(
                 method.SupportsBaseImplementation ? UseBaseImplementationField(method) : null
             )
-            .AddMember(IsEmptyProperty(method))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    method.MethodInvocationImposter.IsConfiguredFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
             .AddMember(InvokeInvocationMethod(method))
             .AddMember(CallbackMethod(method))
             .AddMember(method.HasReturnValue ? ReturnsDelegateMethod(method) : null)
@@ -134,31 +140,6 @@ internal static partial class InvocationImposterGroupBuilder
             method.MethodInvocationImposter.CallbacksFieldName,
             queueType.New(ArgumentList())
         );
-    }
-
-    private static PropertyDeclarationSyntax IsEmptyProperty(in ImposterTargetMethodMetadata method)
-    {
-        ExpressionSyntax condition = ResultGeneratorIdentifier(method)
-            .IsNull()
-            .And(
-                BinaryExpression(
-                    SyntaxKind.EqualsExpression,
-                    CallbacksIdentifier(method).Dot(IdentifierName("Count")),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
-                )
-            );
-
-        if (method.SupportsBaseImplementation)
-        {
-            condition = Not(UseBaseImplementationIdentifier(method)).And(condition);
-        }
-
-        return new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsEmpty")
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
-            .Build()
-            .WithAccessorList(null)
-            .WithExpressionBody(ArrowExpressionClause(condition))
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
 
     // Produces the result and runs the callbacks of one invocation.

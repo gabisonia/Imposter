@@ -105,8 +105,16 @@ internal static partial class InvocationImposterGroupBuilder
                         MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName
                     ),
                     IdentifierName("invocationImposter"),
-                    // An invocation imposter without an outcome applies to its own call but never repeats.
-                    Not(IdentifierName("invocationImposter").Dot(IdentifierName("IsEmpty")))
+                    // Do not consume a pending step or invoke its mutable default generator. A later Returns,
+                    // Throws or Callback must still be able to publish this same step to the queue's readers.
+                    IdentifierName("invocationImposter")
+                        .Dot(IdentifierName(method.MethodInvocationImposter.IsConfiguredFieldName)),
+                    method.HasReturnValue
+                        ? null
+                        : IdentifierName(
+                                MethodInvocationImposterGroupMetadata.LatestInvocationImposterFieldName
+                            )
+                            .Coalesce(invocationImposterType.Dot(IdentifierName("Default")))
                 )
             )
             .Build();

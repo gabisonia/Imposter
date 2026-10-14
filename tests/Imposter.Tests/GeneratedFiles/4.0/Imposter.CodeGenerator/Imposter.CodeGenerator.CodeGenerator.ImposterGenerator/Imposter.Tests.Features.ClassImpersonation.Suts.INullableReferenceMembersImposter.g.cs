@@ -127,6 +127,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public FindMethodInvocationImposterGroup(FindArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -153,11 +154,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -191,8 +193,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				private FindDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<FindCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<FindCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public string? Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? key)
 				{
 					if (_resultGenerator == null)
@@ -299,13 +300,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private FindMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FindArguments arguments)
 			{
+				FindMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public string? Invoke(string? key)
@@ -347,8 +354,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._findMethodInvocationHistoryCollection = _findMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new FindMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroup.Throws<TException>()
@@ -357,6 +364,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -366,6 +375,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -375,24 +386,32 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(key);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroupCallback.Callback(FindCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroup.Returns(FindDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindMethodInvocationImposterGroupContinuation IFindMethodInvocationImposterGroup.Returns(string? value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -510,6 +529,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public FindAsyncMethodInvocationImposterGroup(FindAsyncArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -536,11 +556,12 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -574,8 +595,7 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 				private FindAsyncDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<FindAsyncCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<FindAsyncCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public global::System.Threading.Tasks.Task<string?> Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string? key)
 				{
 					if (_resultGenerator == null)
@@ -700,13 +720,19 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 
 			private FindAsyncMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(FindAsyncArguments arguments)
 			{
+				FindAsyncMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public global::System.Threading.Tasks.Task<string?> Invoke(string? key)
@@ -748,8 +774,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					this._findAsyncMethodInvocationHistoryCollection = _findAsyncMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new FindAsyncMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.Throws<TException>()
@@ -758,6 +784,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -767,6 +795,8 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -776,36 +806,48 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 					{
 						throw exceptionGenerator.Invoke(key);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroupCallback.Callback(FindAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.Returns(FindAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<string?> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.ReturnsAsync(string? value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IFindAsyncMethodInvocationImposterGroupContinuation IFindAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

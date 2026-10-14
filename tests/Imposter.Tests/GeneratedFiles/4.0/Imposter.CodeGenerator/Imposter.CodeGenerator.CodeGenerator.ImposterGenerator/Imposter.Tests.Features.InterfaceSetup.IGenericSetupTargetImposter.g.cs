@@ -97,6 +97,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal static ReadMethodInvocationImposterGroup Default = new ReadMethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public ReadMethodInvocationImposterGroup()
 			{
 			}
@@ -122,11 +123,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -160,8 +162,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 				private ReadDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ReadCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ReadCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
 				{
 					if (_resultGenerator == null)
@@ -268,10 +269,16 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private ReadMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				ReadMethodInvocationImposterGroup? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public int Invoke()
@@ -310,8 +317,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					this._readMethodInvocationHistoryCollection = _readMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new ReadMethodInvocationImposterGroup();
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IReadMethodInvocationImposterGroupContinuation IReadMethodInvocationImposterGroup.Throws<TException>()
@@ -320,6 +327,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -329,6 +338,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -338,24 +349,32 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IReadMethodInvocationImposterGroupContinuation IReadMethodInvocationImposterGroupCallback.Callback(ReadCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IReadMethodInvocationImposterGroupContinuation IReadMethodInvocationImposterGroup.Returns(ReadDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IReadMethodInvocationImposterGroupContinuation IReadMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -443,6 +462,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 			internal static Read_1MethodInvocationImposterGroup Default = new Read_1MethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public Read_1MethodInvocationImposterGroup()
 			{
 			}
@@ -468,11 +488,12 @@ namespace Imposter.Tests.Features.InterfaceSetup
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -506,8 +527,7 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 				private Read_1Delegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<Read_1CallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<Read_1CallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName)
 				{
 					if (_resultGenerator == null)
@@ -614,10 +634,16 @@ namespace Imposter.Tests.Features.InterfaceSetup
 
 			private Read_1MethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				Read_1MethodInvocationImposterGroup? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public string Invoke()
@@ -656,8 +682,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 				{
 					this._read_1MethodInvocationHistoryCollection = _read_1MethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new Read_1MethodInvocationImposterGroup();
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IRead_1MethodInvocationImposterGroupContinuation IRead_1MethodInvocationImposterGroup.Throws<TException>()
@@ -666,6 +692,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -675,6 +703,8 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -684,24 +714,32 @@ namespace Imposter.Tests.Features.InterfaceSetup
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRead_1MethodInvocationImposterGroupContinuation IRead_1MethodInvocationImposterGroupCallback.Callback(Read_1CallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRead_1MethodInvocationImposterGroupContinuation IRead_1MethodInvocationImposterGroup.Returns(Read_1Delegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRead_1MethodInvocationImposterGroupContinuation IRead_1MethodInvocationImposterGroup.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

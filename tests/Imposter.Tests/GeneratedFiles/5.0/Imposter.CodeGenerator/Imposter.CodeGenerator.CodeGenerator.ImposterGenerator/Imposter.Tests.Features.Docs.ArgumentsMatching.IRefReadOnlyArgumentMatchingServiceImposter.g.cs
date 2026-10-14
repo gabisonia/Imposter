@@ -120,6 +120,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public DoubleMethodInvocationImposterGroup(DoubleArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -146,11 +147,12 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -184,8 +186,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 				private DoubleDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<DoubleCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<DoubleCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, ref readonly int value)
 				{
 					if (_resultGenerator == null)
@@ -292,13 +293,19 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 			private DoubleMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(DoubleArguments arguments)
 			{
+				DoubleMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public int Invoke(ref readonly int value)
@@ -340,8 +347,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					this._doubleMethodInvocationHistoryCollection = _doubleMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new DoubleMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IDoubleMethodInvocationImposterGroupContinuation IDoubleMethodInvocationImposterGroup.Throws<TException>()
@@ -350,6 +357,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -359,6 +368,8 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -368,24 +379,32 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exceptionGenerator.Invoke(in value);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDoubleMethodInvocationImposterGroupContinuation IDoubleMethodInvocationImposterGroupCallback.Callback(DoubleCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDoubleMethodInvocationImposterGroupContinuation IDoubleMethodInvocationImposterGroup.Returns(DoubleDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IDoubleMethodInvocationImposterGroupContinuation IDoubleMethodInvocationImposterGroup.Returns(int value_1)
 				{
 					_currentInvocationImposter.Returns(value_1);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

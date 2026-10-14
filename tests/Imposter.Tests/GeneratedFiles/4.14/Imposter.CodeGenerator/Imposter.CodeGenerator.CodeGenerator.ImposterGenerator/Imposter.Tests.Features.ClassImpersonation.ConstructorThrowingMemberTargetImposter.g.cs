@@ -88,6 +88,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal static RunMethodInvocationImposterGroup Default = new RunMethodInvocationImposterGroup();
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public RunMethodInvocationImposterGroup()
 			{
 			}
@@ -114,11 +115,12 @@ namespace Imposter.Tests.Features.ClassImpersonation
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter ?? MethodInvocationImposter.Default;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -153,8 +155,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				private RunDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<RunCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<RunCallbackDelegate>();
 				private bool _useBaseImplementation;
-				internal bool IsEmpty => !_useBaseImplementation && ((_resultGenerator == null) && (_callbacks.Count == 0));
-
+				internal volatile bool IsConfigured;
 				public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, RunDelegate? baseImplementation = null)
 				{
 					if (_useBaseImplementation)
@@ -261,10 +262,16 @@ namespace Imposter.Tests.Features.ClassImpersonation
 
 			private RunMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup()
 			{
-				if (_invocationImposters.TryPeek(out var invocationImposterGroup))
-					return invocationImposterGroup;
-				else
-					return null;
+				RunMethodInvocationImposterGroup? bareMatch = null;
+				foreach (var invocationImposterGroup in _invocationImposters)
+				{
+					if (invocationImposterGroup.HasConfiguredOutcome)
+						return invocationImposterGroup;
+					if (bareMatch == null)
+						bareMatch = invocationImposterGroup;
+				}
+
+				return bareMatch;
 			}
 
 			public void Invoke(RunDelegate? baseImplementation = null)
@@ -302,8 +309,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 				{
 					this._runMethodInvocationHistoryCollection = _runMethodInvocationHistoryCollection;
 					this._invocationImposterGroup = new RunMethodInvocationImposterGroup();
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IRunMethodInvocationImposterGroupContinuation IRunMethodInvocationImposterGroup.Throws<TException>()
@@ -312,6 +319,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -321,6 +330,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -330,18 +341,24 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					{
 						throw exceptionGenerator.Invoke();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRunMethodInvocationImposterGroupContinuation IRunMethodInvocationImposterGroupCallback.Callback(RunCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IRunMethodInvocationImposterGroupContinuation IRunMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

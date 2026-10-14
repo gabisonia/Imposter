@@ -207,6 +207,9 @@ internal static partial class IndexerGetterBuilder
     {
         var getter = indexer.GetterImplementation;
         var setup = IdentifierName(getter.SetupVariableName);
+        var bareMatch = IdentifierName(
+            IndexerGetterImposterMetadata.GetterInvocationMetadata.BareMatchVariableName
+        );
         var setupMatches = setup
             .Dot(IdentifierName(getter.Invocation.CriteriaField.Name))
             .Dot(IdentifierName("Matches"))
@@ -222,13 +225,38 @@ internal static partial class IndexerGetterBuilder
             )
             .WithBody(
                 Block(
+                    LocalVariableDeclarationSyntax(
+                        NullableType(getter.Invocation.TypeSyntax),
+                        bareMatch.Identifier.Text,
+                        Null
+                    ),
                     ForEachStatement(
                         Var,
                         Identifier(getter.SetupVariableName),
                         IdentifierName(getter.SetupsField.Name),
-                        Block(IfStatement(setupMatches, Block(ReturnStatement(setup))))
+                        Block(
+                            IfStatement(
+                                setupMatches,
+                                Block(
+                                    IfStatement(
+                                        setup.Dot(
+                                            IdentifierName(
+                                                IndexerGetterImposterMetadata
+                                                    .GetterInvocationMetadata
+                                                    .HasConfiguredReturnFieldName
+                                            )
+                                        ),
+                                        ReturnStatement(setup)
+                                    ),
+                                    IfStatement(
+                                        bareMatch.IsNull(),
+                                        bareMatch.Assign(setup).ToStatementSyntax()
+                                    )
+                                )
+                            )
+                        )
                     ),
-                    ReturnStatement(Null)
+                    ReturnStatement(bareMatch)
                 )
             )
             .Build();

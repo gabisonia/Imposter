@@ -16,6 +16,8 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 
     internal const string ArgumentsCriteriaPropertyName = "ArgumentsCriteria";
 
+    internal readonly string HasConfiguredOutcomeFieldName;
+
     internal readonly string Name;
 
     internal readonly string MethodInvocationImposterTypeName;
@@ -52,6 +54,7 @@ internal readonly record struct MethodInvocationImposterGroupMetadata
 
     internal MethodInvocationImposterGroupMetadata(in ImposterTargetMethodMetadata method)
     {
+        HasConfiguredOutcomeFieldName = method.MemberNames.Use("HasConfiguredOutcome");
         Name = $"{method.UniqueName}MethodInvocationImposterGroup";
         Interface = TypeMetadataFactory.Create($"I{Name}", method.GenericTypeArguments);
         ContinuationInterface = TypeMetadataFactory.Create(

@@ -200,7 +200,9 @@ internal static partial class MethodImposterBuilderBuilder
             .Build();
     }
 
-    // Passes the arguments on to the current invocation imposter's method of this name, then returns this for chaining.
+    // Publish readiness only after configuration completes. Inferring it from the queue would confuse a bare
+    // void setup's default no-op with an explicitly configured outcome, and consuming a queue must not clear it.
+    // The volatile write also makes the configured outcome visible to a reader that selects this group.
     private static BlockSyntax ForwardToCurrentInvocationImposter(
         in ImposterTargetMethodMetadata method,
         string name,
@@ -210,6 +212,18 @@ internal static partial class MethodImposterBuilderBuilder
             IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name)
                 .Dot(IdentifierName(name))
                 .Call(arguments)
+                .ToStatementSyntax(),
+            IdentifierName(method.MethodImposter.Builder.CurrentInvocationImposterField.Name)
+                .Dot(IdentifierName(method.MethodInvocationImposter.IsConfiguredFieldName))
+                .Assign(True)
+                .ToStatementSyntax(),
+            IdentifierName(method.MethodImposter.Builder.InvocationImposterGroupField.Name)
+                .Dot(
+                    IdentifierName(
+                        method.MethodInvocationImposterGroup.HasConfiguredOutcomeFieldName
+                    )
+                )
+                .Assign(True)
                 .ToStatementSyntax(),
             ReturnThis
         );
