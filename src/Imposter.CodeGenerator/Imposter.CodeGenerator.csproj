@@ -15,6 +15,9 @@
     <Version>0.1.0</Version>
     <Description>Imposter — Mocking library with the perfect balance of Performance and Intuitive API</Description>
     <PackageTags>source generator;mock;stub;imposter;roslyn;testing</PackageTags>
+    <PackageReleaseNotes Condition="'$(PackageReleaseNotesFile)' != ''"
+      >$([System.IO.File]::ReadAllText('$(PackageReleaseNotesFile)'))</PackageReleaseNotes
+    >
 
     <Authors>Bitchiko Tchelidze</Authors>
     <PackageProjectUrl>https://github.com/themidnightgospel/Imposter</PackageProjectUrl>

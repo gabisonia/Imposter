@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-# Packs the generator, builds a small consumer project from that local package with
+# Packs the generator, checks that release notes survive unchanged, builds a small consumer project with
 # IMPOSTER_LOG=true, and checks that the generator log reaches the build output.
 # This exercises what a NuGet consumer gets, which the in-repo tests (project references) do not.
 
@@ -15,11 +15,34 @@ version="0.0.0-smoke.$(date +%s)"
 rm -rf "${work_dir}"
 mkdir -p "${work_dir}/feed" "${work_dir}/consumer"
 
+# Keep shell and MSBuild expressions literal, including percent-encoded special characters.
+release_notes_file="$(realpath "${work_dir}")/release notes.txt"
+# shellcheck disable=SC2016 # The notes deliberately contain literal MSBuild expressions.
+printf '%s' 'Configure Arg<string>.Is("health").Callback(_ => { });
+Keep $(Version), @(Compile), 100%, %3B, %22 and %24 unchanged.
+Preserve XML characters <tag> & text and Unicode: café.' > "${release_notes_file}"
+
 # The released package holds one analyzer build per Roslyn version; the compiler loads the newest one
 # it supports. A single build is enough here, so pack the one a .NET 10 SDK compiler loads.
 echo "packing Imposter ${version}"
 dotnet pack src/Imposter.CodeGenerator -c Release --verbosity quiet \
-    -p:ROSLYN_VERSION=5.0 -p:Version="${version}" -o "${work_dir}/feed"
+    -p:ROSLYN_VERSION=5.0 -p:Version="${version}" -o "${work_dir}/feed" \
+    -p:PackageReleaseNotesFile="${release_notes_file}"
+
+python3 - "${work_dir}/feed/Imposter.${version}.nupkg" "${release_notes_file}" <<'PY'
+import pathlib
+import sys
+import xml.etree.ElementTree as ET
+import zipfile
+
+expected = pathlib.Path(sys.argv[2]).read_text(encoding="utf-8")
+with zipfile.ZipFile(sys.argv[1]) as package:
+    nuspec = ET.fromstring(package.read("Imposter.nuspec"))
+actual = nuspec.findtext("{*}metadata/{*}releaseNotes")
+if actual != expected:
+    sys.exit(f"Package release notes changed: expected {expected!r}, got {actual!r}")
+print("Package release notes are unchanged")
+PY
 
 cat > "${work_dir}/consumer/Consumer.csproj" <<EOF
 <Project Sdk="Microsoft.NET.Sdk">

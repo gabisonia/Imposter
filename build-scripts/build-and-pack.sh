@@ -22,6 +22,10 @@ rm -rf "${artifacts_dir:?}"/*
 artifacts_dir="$(realpath "$artifacts_dir")"
 source_generator_path="$(realpath "${script_dir}/../src/Imposter.CodeGenerator")"
 
+# Pass only a path to MSBuild so release-note text is never parsed as command-line properties.
+release_notes_file="${artifacts_dir}/release-notes.txt"
+printf '%s' "${RELEASE_NOTES}" > "${release_notes_file}"
+
 for roslyn_version in "${roslyn_versions[@]}"; do
     echo "building for Roslyn ${roslyn_version}"
     dotnet pack \
@@ -31,7 +35,7 @@ for roslyn_version in "${roslyn_versions[@]}"; do
         /p:ROSLYN_VERSION="${roslyn_version}" \
         -o "${artifacts_dir}/roslyn-${roslyn_version}" \
         /p:Version="${RELEASE_VERSION}" \
-        /p:PackageReleaseNotes=\""${RELEASE_NOTES}"\"
+        /p:PackageReleaseNotesFile="${release_notes_file}"
 done
 
 echo "merging multi targets to a single nupkg"
