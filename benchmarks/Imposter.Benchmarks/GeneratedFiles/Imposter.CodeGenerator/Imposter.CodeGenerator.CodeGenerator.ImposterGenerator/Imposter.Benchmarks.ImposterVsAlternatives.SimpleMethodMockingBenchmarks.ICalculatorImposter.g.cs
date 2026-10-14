@@ -120,6 +120,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public SquareMethodInvocationImposterGroup(SquareArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -146,11 +147,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -184,8 +186,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 				private SquareDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<SquareCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public int Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, int input)
 				{
 					if (_resultGenerator == null)
@@ -292,13 +293,19 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			private SquareMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(SquareArguments arguments)
 			{
+				SquareMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public int Invoke(int input)
@@ -340,8 +347,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					this._squareMethodInvocationHistoryCollection = _squareMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new SquareMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroup.Throws<TException>()
@@ -350,6 +357,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -359,6 +368,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -368,24 +379,32 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exceptionGenerator.Invoke(input);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroupCallback.Callback(SquareCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroup.Returns(SquareDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				ISquareMethodInvocationImposterGroupContinuation ISquareMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 

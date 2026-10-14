@@ -128,6 +128,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
 			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public ProcessMethodInvocationImposterGroup(ProcessArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -154,11 +155,12 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 						return _lastestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _lastestInvocationImposter;
 					}
 
+					_lastestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -192,8 +194,7 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 				private ProcessDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<ProcessCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<ProcessCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public string Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
 				{
 					if (_resultGenerator == null)
@@ -300,13 +301,19 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 
 			private ProcessMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(ProcessArguments arguments)
 			{
+				ProcessMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public string Invoke(string route, int severity, global::Imposter.Benchmarks.ImposterVsAlternatives.ComplexMethodMockingBenchmark.OperationContext context)
@@ -348,8 +355,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					this._processMethodInvocationHistoryCollection = _processMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new ProcessMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroup.Throws<TException>()
@@ -358,6 +365,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -367,6 +376,8 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -376,24 +387,32 @@ namespace Imposter.Benchmarks.ImposterVsAlternatives
 					{
 						throw exceptionGenerator.Invoke(route, severity, context);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroupCallback.Callback(ProcessCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroup.Returns(ProcessDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IProcessMethodInvocationImposterGroupContinuation IProcessMethodInvocationImposterGroup.Returns(string value)
 				{
 					_currentInvocationImposter.Returns(value);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
