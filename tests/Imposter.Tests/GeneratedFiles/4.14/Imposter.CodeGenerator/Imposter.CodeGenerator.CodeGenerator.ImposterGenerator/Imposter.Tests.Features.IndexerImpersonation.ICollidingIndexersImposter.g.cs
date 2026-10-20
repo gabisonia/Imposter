@@ -100,10 +100,10 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 				}
 
-				internal global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>();
+				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>? BackingField = null;
 				internal int Get(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 				{
-					if (BackingField.TryGetValue(arguments, out var value))
+					if ((BackingField != null) && BackingField.TryGetValue(arguments, out var value))
 						return value;
 					if (baseImplementation != null)
 						return baseImplementation();
@@ -148,7 +148,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>();
+				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory = null;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
@@ -184,7 +184,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 					finally
 					{
-						_invocationHistory.Push(arguments);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(arguments);
 					}
 				}
 
@@ -222,13 +222,16 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
 				{
-					int invocationCount = _invocationHistory.Count(criteria.Matches);
+					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						foreach (var entry in _invocationHistory)
+						if (_invocationHistory != null)
 						{
-							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+							foreach (var entry in _invocationHistory)
+							{
+								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+							}
 						}
 
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
@@ -322,7 +325,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					private readonly GetterImposter _parent;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<IndexerIndexerGetterCallback>();
+					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks = null;
 					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
@@ -346,12 +349,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddCallback(IndexerIndexerGetterCallback callback)
 					{
-						_callbacks.Enqueue(callback);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					}
 
 					internal int Invoke(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 					{
-						if (!_callbacks.IsEmpty)
+						if (_callbacks != null)
 						{
 							foreach (var callback in _callbacks)
 							{
@@ -533,10 +536,10 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 				}
 
-				internal global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, string> BackingField = new global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, string>();
+				private global::System.Collections.Concurrent.ConcurrentDictionary<Indexer_1IndexerArguments, string>? BackingField = null;
 				internal string Get(Indexer_1IndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 				{
-					if (BackingField.TryGetValue(arguments, out var value))
+					if ((BackingField != null) && BackingField.TryGetValue(arguments, out var value))
 						return value;
 					if (baseImplementation != null)
 						return baseImplementation();
@@ -545,7 +548,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				internal void Set(Indexer_1IndexerArguments arguments, string value)
 				{
-					BackingField[arguments] = value;
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref BackingField)[arguments] = value;
 				}
 			}
 
@@ -603,7 +606,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			{
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>();
+				private global::System.Collections.Concurrent.ConcurrentStack<Indexer_1IndexerArguments>? _invocationHistory = null;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
@@ -639,7 +642,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 					finally
 					{
-						_invocationHistory.Push(arguments);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(arguments);
 					}
 				}
 
@@ -677,13 +680,16 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				private void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
 				{
-					int invocationCount = _invocationHistory.Count(criteria.Matches);
+					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						foreach (var entry in _invocationHistory)
+						if (_invocationHistory != null)
 						{
-							performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+							foreach (var entry in _invocationHistory)
+							{
+								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.key) }) + "]");
+							}
 						}
 
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
@@ -777,7 +783,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					private readonly GetterImposter _parent;
 					private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string>>();
-					private readonly global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<Indexer_1IndexerGetterCallback>();
+					private global::Imposter.Abstractions.CallbackCollection<Indexer_1IndexerGetterCallback>? _callbacks = null;
 					private volatile global::System.Func<Indexer_1IndexerArguments, global::System.Func<string>?, string>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
@@ -801,12 +807,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal void AddCallback(Indexer_1IndexerGetterCallback callback)
 					{
-						_callbacks.Enqueue(callback);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
 					}
 
 					internal string Invoke(Indexer_1IndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 					{
-						if (!_callbacks.IsEmpty)
+						if (_callbacks != null)
 						{
 							foreach (var callback in _callbacks)
 							{
@@ -859,8 +865,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
-				private readonly global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>();
-				private readonly global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, string Value)> _invocationHistory = new global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, string Value)>();
+				private global::Imposter.Abstractions.CallbackCollection<(Indexer_1IndexerArgumentsCriteria Criteria, Indexer_1IndexerSetterCallback Callback)>? _callbacks = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<(Indexer_1IndexerArguments Arguments, string Value)>? _invocationHistory = null;
 				private readonly DefaultIndexer_1IndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -874,18 +880,21 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				public void Callback(Indexer_1IndexerArgumentsCriteria criteria, Indexer_1IndexerSetterCallback callback)
 				{
-					_callbacks.Enqueue((criteria, callback));
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria, callback));
 				}
 
 				public void Called(Indexer_1IndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
 				{
-					int invocationCount = _invocationHistory.Count(entry => criteria.Matches(entry.Arguments));
+					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(entry => criteria.Matches(entry.Arguments)) : 0;
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
-						foreach (var entry in _invocationHistory)
+						if (_invocationHistory != null)
 						{
-							performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
+							foreach (var entry in _invocationHistory)
+							{
+								performedInvocations.Add("set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.key) }) + "]" + " = " + FormatValue(entry.Value));
+							}
 						}
 
 						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
@@ -896,9 +905,9 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				{
 					EnsureSetterConfigured();
 					Indexer_1IndexerArguments arguments = new Indexer_1IndexerArguments(key);
-					_invocationHistory.Push((arguments, value));
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push((arguments, value));
 					bool matchedCallback = false;
-					if (!_callbacks.IsEmpty)
+					if (_callbacks != null)
 					{
 						foreach (var registration in _callbacks)
 						{

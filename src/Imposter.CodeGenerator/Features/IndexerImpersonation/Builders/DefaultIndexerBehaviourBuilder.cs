@@ -28,11 +28,7 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddMember(BuildIsOnProperty(indexer))
             .AddMember(
                 indexer.DefaultIndexerBehaviour.BackingField is { } backingField
-                    ? SingleVariableField(
-                        backingField,
-                        SyntaxKind.InternalKeyword,
-                        backingField.Type.New(EmptyArgumentListSyntax)
-                    )
+                    ? LazyCollectionSyntaxHelper.Field(backingField)
                     : null
             )
             .AddMember(indexer.Core.HasGetter ? BuildGetMethod(indexer) : null)
@@ -75,19 +71,23 @@ internal static class DefaultIndexerBehaviourBuilder
         var returnKeptValue = indexer.DefaultIndexerBehaviour.BackingField is { } backingField
             ? IfStatement(
                 IdentifierName(backingField.Name)
-                    .Dot(IdentifierName("TryGetValue"))
-                    .Call(
-                        ArgumentListSyntax([
-                            Argument(IdentifierName("arguments")),
-                            Argument(
-                                null,
-                                Token(SyntaxKind.OutKeyword),
-                                DeclarationExpression(
-                                    Var,
-                                    SingleVariableDesignation(valueIdentifier.Identifier)
-                                )
-                            ),
-                        ])
+                    .IsNotNull()
+                    .And(
+                        IdentifierName(backingField.Name)
+                            .Dot(IdentifierName("TryGetValue"))
+                            .Call(
+                                ArgumentListSyntax([
+                                    Argument(IdentifierName("arguments")),
+                                    Argument(
+                                        null,
+                                        Token(SyntaxKind.OutKeyword),
+                                        DeclarationExpression(
+                                            Var,
+                                            SingleVariableDesignation(valueIdentifier.Identifier)
+                                        )
+                                    ),
+                                ])
+                            )
                     ),
                 ReturnStatement(valueIdentifier)
             )
@@ -146,7 +146,9 @@ internal static class DefaultIndexerBehaviourBuilder
             .AddParameter(ParameterSyntax(indexer.Core.NullableAwareValueTypeSyntax, "value"))
             .WithBody(
                 Block(
-                    ElementAccessExpression(IdentifierName(backingField.Name))
+                    ElementAccessExpression(
+                            LazyCollectionSyntaxHelper.EnsureInitialized(backingField.Name)
+                        )
                         .WithArgumentList(
                             BracketedArgumentList(
                                 SingletonSeparatedList(Argument(IdentifierName("arguments")))
