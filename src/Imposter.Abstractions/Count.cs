@@ -85,7 +85,9 @@ public sealed class Count : global::System.IEquatable<Count>
     /// <summary>
     /// Gets a <see cref="Count"/> representing at least one occurrence.
     /// </summary>
-    public static Count AtLeastOnce() => AtLeast(1);
+    public static Count AtLeastOnce() => AtLeastOnceInstance;
+
+    private static readonly Count AtLeastOnceInstance = AtLeast(1);
 
     /// <summary>
     /// Creates a <see cref="Count"/> representing a maximum number of occurrences.
@@ -103,7 +105,9 @@ public sealed class Count : global::System.IEquatable<Count>
     /// <summary>
     /// Gets a <see cref="Count"/> representing at most one occurrence.
     /// </summary>
-    public static Count AtMostOnce() => AtMost(1);
+    public static Count AtMostOnce() => AtMostOnceInstance;
+
+    private static readonly Count AtMostOnceInstance = AtMost(1);
 
     /// <summary>
     /// Creates a <see cref="Count"/> representing a minimum and maximum inclusive range.
@@ -132,7 +136,9 @@ public sealed class Count : global::System.IEquatable<Count>
     /// <summary>
     /// Gets a <see cref="Count"/> that represents "never" — zero occurrences.
     /// </summary>
-    public static Count Never() => Exactly(0);
+    public static Count Never() => NeverInstance;
+
+    private static readonly Count NeverInstance = Exactly(0);
 
     /// <summary>
     /// Gets a <see cref="Count"/> that allows any number of occurrences.
@@ -145,12 +151,16 @@ public sealed class Count : global::System.IEquatable<Count>
     /// <summary>
     /// Gets a <see cref="Count"/> that represents exactly one occurrence.
     /// </summary>
-    public static Count Once() => Exactly(1);
+    public static Count Once() => OnceInstance;
+
+    private static readonly Count OnceInstance = Exactly(1);
 
     /// <summary>
     /// Gets a <see cref="Count"/> that represents exactly two occurrences.
     /// </summary>
-    public static Count Twice() => Exactly(2);
+    public static Count Twice() => TwiceInstance;
+
+    private static readonly Count TwiceInstance = Exactly(2);
 
     /// <summary>
     /// Determines whether the specified actual count matches this constraint.
