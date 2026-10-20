@@ -99,6 +99,12 @@ namespace Imposter.Playground
 				_invocationHistory.Push(invocationHistory);
 			}
 
+			internal bool RecordFailure(IOnNextMethodInvocationHistory invocationHistory)
+			{
+				Add(invocationHistory);
+				return false;
+			}
+
 			internal int Count(OnNextArgumentsCriteria argumentsCriteria)
 			{
 				return _invocationHistory.Count(it => it.Matches(argumentsCriteria));
@@ -117,7 +123,8 @@ namespace Imposter.Playground
 			internal OnNextArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter> _invocationImposters = new global::System.Collections.Concurrent.ConcurrentQueue<MethodInvocationImposter>();
-			private volatile MethodInvocationImposter? _lastestInvocationImposter;
+			private volatile MethodInvocationImposter? _latestInvocationImposter;
+			internal volatile bool HasConfiguredOutcome;
 			public OnNextMethodInvocationImposterGroup(OnNextArgumentsCriteria argumentsCriteria)
 			{
 				ArgumentsCriteria = argumentsCriteria;
@@ -135,21 +142,22 @@ namespace Imposter.Playground
 			{
 				if (_invocationImposters.IsEmpty)
 				{
-					return _lastestInvocationImposter;
+					return _latestInvocationImposter;
 				}
 
 				lock (_invocationImposters)
 				{
 					if (!_invocationImposters.TryPeek(out var invocationImposter))
 					{
-						return _lastestInvocationImposter;
+						return _latestInvocationImposter;
 					}
 
-					if (!invocationImposter.IsEmpty)
+					if (!invocationImposter.IsConfigured)
 					{
-						_lastestInvocationImposter = invocationImposter;
+						return _latestInvocationImposter ?? MethodInvocationImposter.Default;
 					}
 
+					_latestInvocationImposter = invocationImposter;
 					_invocationImposters.TryDequeue(out _);
 					return invocationImposter;
 				}
@@ -183,8 +191,7 @@ namespace Imposter.Playground
 
 				private OnNextDelegate? _resultGenerator;
 				private readonly global::System.Collections.Concurrent.ConcurrentQueue<OnNextCallbackDelegate> _callbacks = new global::System.Collections.Concurrent.ConcurrentQueue<OnNextCallbackDelegate>();
-				internal bool IsEmpty => (_resultGenerator == null) && (_callbacks.Count == 0);
-
+				internal volatile bool IsConfigured;
 				public void Invoke(global::Imposter.Abstractions.ImposterMode invocationBehavior, string methodDisplayName, T item)
 				{
 					if (_resultGenerator == null)
@@ -278,13 +285,19 @@ namespace Imposter.Playground
 
 			private OnNextMethodInvocationImposterGroup? FindMatchingInvocationImposterGroup(OnNextArguments arguments)
 			{
+				OnNextMethodInvocationImposterGroup? bareMatch = null;
 				foreach (var invocationImposterGroup in _invocationImposters)
 				{
 					if (invocationImposterGroup.ArgumentsCriteria.Matches(arguments))
-						return invocationImposterGroup;
+					{
+						if (invocationImposterGroup.HasConfiguredOutcome)
+							return invocationImposterGroup;
+						if (bareMatch == null)
+							bareMatch = invocationImposterGroup;
+					}
 				}
 
-				return null;
+				return bareMatch;
 			}
 
 			public void Invoke(T item)
@@ -306,9 +319,8 @@ namespace Imposter.Playground
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "void IAsyncObservable<T>.OnNext(T item)", item);
 					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(arguments, default));
 				}
-				catch (global::System.Exception ex)
+				catch (global::System.Exception ex) when (_onNextMethodInvocationHistoryCollection.RecordFailure(new OnNextMethodInvocationHistory(arguments, ex)))
 				{
-					_onNextMethodInvocationHistoryCollection.Add(new OnNextMethodInvocationHistory(arguments, ex));
 					throw;
 				}
 			}
@@ -325,8 +337,8 @@ namespace Imposter.Playground
 					this._onNextMethodInvocationHistoryCollection = _onNextMethodInvocationHistoryCollection;
 					this._argumentsCriteria = _argumentsCriteria;
 					this._invocationImposterGroup = new OnNextMethodInvocationImposterGroup(_argumentsCriteria);
-					imposter._invocationImposters.Push(_invocationImposterGroup);
 					this._currentInvocationImposter = this._invocationImposterGroup.AddInvocationImposter();
+					imposter._invocationImposters.Push(_invocationImposterGroup);
 				}
 
 				IOnNextMethodInvocationImposterGroupContinuation IOnNextMethodInvocationImposterGroup.Throws<TException>()
@@ -335,6 +347,8 @@ namespace Imposter.Playground
 					{
 						throw new TException();
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -344,6 +358,8 @@ namespace Imposter.Playground
 					{
 						throw exception;
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
@@ -353,12 +369,16 @@ namespace Imposter.Playground
 					{
 						throw exceptionGenerator.Invoke(item);
 					});
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
 				IOnNextMethodInvocationImposterGroupContinuation IOnNextMethodInvocationImposterGroupCallback.Callback(OnNextCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					_currentInvocationImposter.IsConfigured = true;
+					_invocationImposterGroup.HasConfiguredOutcome = true;
 					return this;
 				}
 
