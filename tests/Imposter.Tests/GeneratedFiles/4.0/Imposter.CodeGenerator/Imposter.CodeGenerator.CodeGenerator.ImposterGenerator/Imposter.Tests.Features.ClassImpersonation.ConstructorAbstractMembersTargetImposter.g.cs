@@ -1532,7 +1532,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			internal class SetterImposter
 			{
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.Arg<string>, global::System.Action<string>>>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<string>? _invocationHistory = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<string>? _invocationHistory;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
@@ -1673,14 +1673,14 @@ namespace Imposter.Tests.Features.ClassImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ChangedEventImposterBuilder : IChangedEventImposterBuilder, IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
 			internal ChangedEventImposterBuilder()
 			{
 			}
@@ -2042,7 +2042,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					}
 				}
 
-				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, string>? BackingField = null;
+				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, string>? BackingField;
 				internal string Get(IndexerIndexerArguments arguments, global::System.Func<string>? baseImplementation = null)
 				{
 					if ((BackingField != null) && BackingField.TryGetValue(arguments, out var value))
@@ -2112,7 +2112,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
@@ -2289,7 +2289,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
 					private readonly GetterImposter _parent;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string>>();
-					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks = null;
+					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
 					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<string>?, string>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
@@ -2371,8 +2371,8 @@ namespace Imposter.Tests.Features.ClassImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
-				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks = null;
-				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, string Value)>? _invocationHistory = null;
+				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
+				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, string Value)>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;

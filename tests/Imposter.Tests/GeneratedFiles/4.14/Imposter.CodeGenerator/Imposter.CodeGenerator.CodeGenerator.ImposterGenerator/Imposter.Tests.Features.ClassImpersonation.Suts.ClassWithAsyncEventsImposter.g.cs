@@ -51,14 +51,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class CustomAsyncEventEventImposterBuilder : ICustomAsyncEventEventImposterBuilder, ICustomAsyncEventEventImposterSetupBuilder, ICustomAsyncEventEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs args)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs args)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.CustomAsyncEvent";
 			internal CustomAsyncEventEventImposterBuilder()
@@ -432,14 +432,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TaskBasedEventEventImposterBuilder : ITaskBasedEventEventImposterBuilder, ITaskBasedEventEventImposterSetupBuilder, ITaskBasedEventEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.TaskBasedEvent";
 			internal TaskBasedEventEventImposterBuilder()
@@ -813,14 +813,14 @@ namespace Imposter.Tests.Features.ClassImpersonation.Suts
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ValueTaskBasedEventEventImposterBuilder : IValueTaskBasedEventEventImposterBuilder, IValueTaskBasedEventEventImposterSetupBuilder, IValueTaskBasedEventEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
 			private bool _useBaseImplementation;
 			private readonly string _eventDisplayName = "Imposter.Tests.Features.ClassImpersonation.Suts.ClassWithAsyncEvents.ValueTaskBasedEvent";
 			internal ValueTaskBasedEventEventImposterBuilder()

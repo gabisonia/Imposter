@@ -4,7 +4,10 @@ namespace Imposter.Abstractions;
 
 /// <summary>Stores callbacks in registration order with allocation-free snapshot enumeration.</summary>
 /// <typeparam name="T">The callback or registration type.</typeparam>
-/// <remarks>Intended for generated code. Published arrays are immutable.</remarks>
+/// <remarks>
+/// Public for generated code only and may change with the generator in the same package.
+/// Published arrays are immutable.
+/// </remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class CallbackCollection<T>
 {

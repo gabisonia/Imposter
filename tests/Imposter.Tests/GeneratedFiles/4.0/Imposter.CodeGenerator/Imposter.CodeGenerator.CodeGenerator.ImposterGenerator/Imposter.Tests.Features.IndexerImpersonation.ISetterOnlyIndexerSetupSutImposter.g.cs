@@ -99,7 +99,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 				}
 
-				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>? BackingField = null;
+				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>? BackingField;
 				internal void Set(IndexerIndexerArguments arguments, int value)
 				{
 					global::System.Threading.LazyInitializer.EnsureInitialized(ref BackingField)[arguments] = value;
@@ -142,8 +142,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 			private sealed class SetterImposter
 			{
-				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks = null;
-				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, int Value)>? _invocationHistory = null;
+				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
+				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, int Value)>? _invocationHistory;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;

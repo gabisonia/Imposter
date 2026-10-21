@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class DiagnosticPayloadPublishedEventImposterBuilder : IDiagnosticPayloadPublishedEventImposterBuilder, IDiagnosticPayloadPublishedEventImposterSetupBuilder, IDiagnosticPayloadPublishedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
 			internal DiagnosticPayloadPublishedEventImposterBuilder()
 			{
 			}
@@ -378,14 +378,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class LegacyPayloadAvailableEventImposterBuilder : ILegacyPayloadAvailableEventImposterBuilder, ILegacyPayloadAvailableEventImposterSetupBuilder, ILegacyPayloadAvailableEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
 			internal LegacyPayloadAvailableEventImposterBuilder()
 			{
 			}
@@ -706,14 +706,14 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class PayloadAvailableEventImposterBuilder : IPayloadAvailableEventImposterBuilder, IPayloadAvailableEventImposterSetupBuilder, IPayloadAvailableEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>>>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler<global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T>> Handler, object? sender, global::Imposter.Tests.Features.OpenGenericImposter.GenericEventArgs<T> e)>? _handlerInvocations;
 			internal PayloadAvailableEventImposterBuilder()
 			{
 			}

@@ -67,7 +67,7 @@ internal static class DefaultIndexerBehaviourBuilder
         );
         var valueIdentifier = IdentifierName("value");
 
-        // A value passed through isn't kept, so it comes from the base getter or is the default.
+        // Without a setter, or for a value passed through, nothing is kept: use the base getter or the default.
         var returnKeptValue = indexer.DefaultIndexerBehaviour.BackingField is { } backingField
             ? IfStatement(
                 IdentifierName(backingField.Name)

@@ -4,7 +4,10 @@ namespace Imposter.Abstractions;
 
 /// <summary>Consumes configured outcomes in order, repeating the last after exhaustion.</summary>
 /// <typeparam name="T">The reference type representing an outcome.</typeparam>
-/// <remarks>Intended for generated code. Create this collection lazily on the first setup.</remarks>
+/// <remarks>
+/// Public for generated code only and may change with the generator in the same package.
+/// Create this collection lazily on the first setup.
+/// </remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class ReturnValueSequence<T>
     where T : class?
