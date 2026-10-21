@@ -224,9 +224,9 @@ public class Arg<T>
     /// <summary>
     /// Matches any value of type <typeparamref name="T"/>.
     /// </summary>
-    public static Arg<T> Any() => _anyInstance;
+    public static Arg<T> Any() => AnyInstance;
 
-    private static readonly Arg<T> _anyInstance = new(MatcherKind.Any);
+    private static readonly Arg<T> AnyInstance = new(MatcherKind.Any);
 
     /// <summary>
     /// Implicitly converts a value of type <typeparamref name="T"/> to an <see cref="Arg{T}"/>
