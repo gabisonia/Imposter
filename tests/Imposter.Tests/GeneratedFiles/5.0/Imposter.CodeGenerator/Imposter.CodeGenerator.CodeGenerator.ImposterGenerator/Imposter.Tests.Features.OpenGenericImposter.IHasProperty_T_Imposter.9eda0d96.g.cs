@@ -766,7 +766,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 			internal class SetterImposter
 			{
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.Arg<T>, global::System.Action<T>>>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<T>? _invocationHistory = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<T>? _invocationHistory;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;

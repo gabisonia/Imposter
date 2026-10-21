@@ -229,7 +229,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
 			internal class SetterImposter
 			{
 				private global::Imposter.Abstractions.CallbackCollection<global::System.Tuple<global::Imposter.Abstractions.SpanArg<byte>, global::System.Action<byte[]>>>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _invocationHistory = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<byte[]>? _invocationHistory;
 				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;

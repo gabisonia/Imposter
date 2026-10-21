@@ -1401,11 +1401,8 @@ namespace Imposter.Benchmarks
 					}
 				}
 
-				private global::System.Collections.Concurrent.ConcurrentDictionary<IndexerIndexerArguments, int>? BackingField = null;
 				internal int Get(IndexerIndexerArguments arguments, global::System.Func<int>? baseImplementation = null)
 				{
-					if ((BackingField != null) && BackingField.TryGetValue(arguments, out var value))
-						return value;
 					if (baseImplementation != null)
 						return baseImplementation();
 					return default !;
@@ -1449,7 +1446,7 @@ namespace Imposter.Benchmarks
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory = null;
+				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredReturn;
@@ -1626,7 +1623,7 @@ namespace Imposter.Benchmarks
 					private readonly GetterImposter _parent;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private readonly global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>> _returnValues = new global::System.Collections.Concurrent.ConcurrentQueue<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>>();
-					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks = null;
+					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
 					private volatile global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>? _lastReturnValue;
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;

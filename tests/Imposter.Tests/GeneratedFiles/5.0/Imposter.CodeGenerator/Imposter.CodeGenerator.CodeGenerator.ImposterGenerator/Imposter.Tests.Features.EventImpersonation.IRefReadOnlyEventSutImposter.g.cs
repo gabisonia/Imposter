@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class HappenedEventImposterBuilder : IHappenedEventImposterBuilder, IHappenedEventImposterSetupBuilder, IHappenedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler Handler, int value)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyHandler Handler, int value)>? _handlerInvocations;
 			internal HappenedEventImposterBuilder()
 			{
 			}
@@ -373,14 +373,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TaskHappenedEventImposterBuilder : ITaskHappenedEventImposterBuilder, ITaskHappenedEventImposterSetupBuilder, ITaskHappenedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler Handler, int value)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.RefReadOnlyTaskHandler Handler, int value)>? _handlerInvocations;
 			internal TaskHappenedEventImposterBuilder()
 			{
 			}

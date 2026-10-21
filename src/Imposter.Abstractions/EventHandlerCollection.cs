@@ -4,7 +4,10 @@ namespace Imposter.Abstractions;
 
 /// <summary>Publishes event handler snapshots when subscriptions change.</summary>
 /// <typeparam name="T">The event delegate type.</typeparam>
-/// <remarks>Intended for generated code. Removal follows multicast delegate semantics.</remarks>
+/// <remarks>
+/// Public for generated code only and may change with the generator in the same package.
+/// Removal follows multicast delegate semantics.
+/// </remarks>
 [EditorBrowsable(EditorBrowsableState.Never)]
 public sealed class EventHandlerCollection<T>
     where T : Delegate

@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ChangedEventImposterBuilder : IChangedEventImposterBuilder, IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
 			internal ChangedEventImposterBuilder()
 			{
 			}
@@ -368,14 +368,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class Changed_1EventImposterBuilder : IChanged_1EventImposterBuilder, IChanged_1EventImposterSetupBuilder, IChanged_1EventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
 			internal Changed_1EventImposterBuilder()
 			{
 			}
@@ -696,14 +696,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class CustomEventEventImposterBuilder : ICustomEventEventImposterBuilder, ICustomEventEventImposterSetupBuilder, ICustomEventEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
 			internal CustomEventEventImposterBuilder()
 			{
 			}

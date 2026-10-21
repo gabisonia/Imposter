@@ -11,8 +11,7 @@ internal static class LazyCollectionSyntaxHelper
         SingleVariableField(
             field.Type.ToNullableType(),
             field.Name,
-            TokenList(Token(SyntaxKind.PrivateKeyword)),
-            Null
+            TokenList(Token(SyntaxKind.PrivateKeyword))
         );
 
     internal static ExpressionSyntax CountOrZero(

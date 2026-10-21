@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class BufferFilledEventImposterBuilder : IBufferFilledEventImposterBuilder, IBufferFilledEventImposterSetupBuilder, IBufferFilledEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, byte[] buffer)>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object? sender, byte[] buffer)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, byte[] buffer)>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.BufferFilledHandler Handler, object? sender, byte[] buffer)>? _handlerInvocations;
 			internal BufferFilledEventImposterBuilder()
 			{
 			}
@@ -378,14 +378,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TextReceivedEventImposterBuilder : ITextReceivedEventImposterBuilder, ITextReceivedEventImposterSetupBuilder, ITextReceivedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<char[]>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler Handler, char[] text)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<char[]>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.TextReceivedHandler Handler, char[] text)>? _handlerInvocations;
 			internal TextReceivedEventImposterBuilder()
 			{
 			}

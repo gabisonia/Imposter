@@ -50,14 +50,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class TaskHappenedEventImposterBuilder : ITaskHappenedEventImposterBuilder, ITaskHappenedEventImposterSetupBuilder, ITaskHappenedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler Handler, int value)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterTaskHandler Handler, int value)>? _handlerInvocations;
 			internal TaskHappenedEventImposterBuilder()
 			{
 			}
@@ -393,14 +393,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal sealed class ValueTaskHappenedEventImposterBuilder : IValueTaskHappenedEventImposterBuilder, IValueTaskHappenedEventImposterSetupBuilder, IValueTaskHappenedEventImposterVerificationBuilder
 		{
-			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _activeHandlers = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _subscribeHistory = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _unsubscribeHistory = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>>? _subscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>>? _unsubscribeInterceptors = null;
-			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _callbacks = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history = null;
-			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler Handler, int value)>? _handlerInvocations = null;
+			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _activeHandlers;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _subscribeHistory;
+			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>>? _subscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>>? _unsubscribeInterceptors;
+			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler>? _callbacks;
+			private global::System.Collections.Concurrent.ConcurrentStack<int>? _history;
+			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.InParameterValueTaskHandler Handler, int value)>? _handlerInvocations;
 			internal ValueTaskHappenedEventImposterBuilder()
 			{
 			}
