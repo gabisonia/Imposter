@@ -78,7 +78,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public bool Matches<TTarget>()
 				where TTarget : allows ref struct
 			{
-				return typeof(T) == typeof(TTarget);
+				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()
@@ -505,7 +505,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public bool Matches<TTarget>()
 				where TTarget : allows ref struct
 			{
-				return (typeof(TTarget) == typeof(T)) && (typeof(T) == typeof(TTarget));
+				return typeof(TTarget) == typeof(T);
 			}
 
 			public override string ToString()
@@ -970,7 +970,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			public bool Matches<TTarget>(MeasureArgumentsCriteria<TTarget> criteria)
 				where TTarget : allows ref struct
 			{
-				return (((typeof(TTarget) == typeof(T)) && (typeof(int) == typeof(int))) && (typeof(int) == typeof(int))) && criteria.As<T>().Matches(Arguments);
+				return (typeof(TTarget) == typeof(T)) && criteria.As<T>().Matches(Arguments);
 			}
 
 			public override string ToString()
