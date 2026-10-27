@@ -86,7 +86,7 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
         public override int GetHashCode()
         {
-            return Score.GetHashCode();
+            return Score;
         }
     }
 }
