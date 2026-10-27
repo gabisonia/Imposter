@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Imposter.Abstractions;
 using Imposter.Tests.Shared;
 using Shouldly;
@@ -24,43 +23,20 @@ namespace Imposter.Tests.Features.IndexerImpersonation
             var setter = _sut[Arg<int>.Any()].Setter();
 
             var instance = _sut.Instance();
-            var threads = new Thread[ThreadCount];
-            var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(ThreadCount);
-
-            for (int i = 0; i < ThreadCount; i++)
-            {
-                var index = i;
-                threads[i] =
-                    index % 2 == 0
-                        ? new Thread(() =>
-                        {
-                            readySignal.Signal();
-                            startSignal.Wait();
-
-                            instance[index] = index;
-                        })
-                        : new Thread(() =>
-                        {
-                            readySignal.Signal();
-                            startSignal.Wait();
-
-                            var _ = instance[index];
-                        });
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
-
-            readySignal.Wait();
-            startSignal.Set();
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+            DedicatedThreads.RunTogether(
+                ThreadCount,
+                index =>
+                {
+                    if (index % 2 == 0)
+                    {
+                        instance[index] = index;
+                    }
+                    else
+                    {
+                        _ = instance[index];
+                    }
+                }
+            );
 
             Should.NotThrow(() => getter.Called(Count.Exactly(ThreadCount / 2)));
             Should.NotThrow(() => setter.Called(Count.Exactly(ThreadCount / 2)));
@@ -79,34 +55,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
             var instance = _sut.Instance();
             var results = new int[ThreadCount];
-            var threads = new Thread[ThreadCount];
-            var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(ThreadCount);
-
-            for (int i = 0; i < ThreadCount; i++)
-            {
-                var index = i;
-                threads[i] = new Thread(() =>
-                {
-                    readySignal.Signal();
-                    startSignal.Wait();
-
-                    results[index] = instance[index];
-                });
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
-
-            readySignal.Wait();
-            startSignal.Set();
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+            DedicatedThreads.RunTogether(ThreadCount, index => results[index] = instance[index]);
 
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
