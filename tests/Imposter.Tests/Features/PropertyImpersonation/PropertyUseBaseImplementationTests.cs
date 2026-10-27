@@ -336,7 +336,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
     {
         private string _getterOnlyBacking = "getter-only-value";
         private string _setterOnlyBacking = string.Empty;
-        private string _throwingSetterBacking = string.Empty;
+        private readonly string _throwingSetterBacking = string.Empty;
 
         public virtual string ThrowingGetterVirtualProperty =>
             throw new InvalidOperationException("Base getter failed.");

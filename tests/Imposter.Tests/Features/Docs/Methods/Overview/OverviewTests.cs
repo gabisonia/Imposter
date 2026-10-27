@@ -101,7 +101,7 @@ namespace Imposter.Tests.Features.Docs.Methods.Overview
                 .Increment(Arg<int>.Any())
                 .Callback(v =>
                 {
-                    var _ = v;
+                    _ = v;
                 });
 
             imposter

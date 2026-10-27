@@ -78,5 +78,15 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 
             return Score.CompareTo(other.Score);
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ComparablePayload other && Score == other.Score;
+        }
+
+        public override int GetHashCode()
+        {
+            return Score.GetHashCode();
+        }
     }
 }
