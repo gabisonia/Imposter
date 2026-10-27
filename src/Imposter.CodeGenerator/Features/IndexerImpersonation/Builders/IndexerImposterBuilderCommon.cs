@@ -176,7 +176,7 @@ internal static class IndexerImposterBuilderCommon
         string fieldName
     ) =>
         new MethodDeclarationBuilder(WellKnownTypes.Void, methodName)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .WithBody(Block(VolatileWrite(fieldName, True).ToStatementSyntax()))
             .Build();
 }

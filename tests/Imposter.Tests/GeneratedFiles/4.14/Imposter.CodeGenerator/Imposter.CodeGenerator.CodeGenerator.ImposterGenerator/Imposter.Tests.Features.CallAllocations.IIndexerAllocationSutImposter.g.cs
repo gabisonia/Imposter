@@ -461,7 +461,7 @@ namespace Imposter.Tests.Features.CallAllocations
 					}
 				}
 
-				internal void MarkConfigured()
+				private void MarkConfigured()
 				{
 					global::System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
 				}
