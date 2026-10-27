@@ -64,30 +64,21 @@ internal static class IndexerArgumentsCriteriaBuilder
     private static MethodDeclarationSyntax BuildMatchesMethod(in ImposterIndexerMetadata indexer)
     {
         var argumentsParam = ParameterSyntax(indexer.Arguments.TypeSyntax, "arguments");
-        ExpressionSyntax? comparison = null;
-
-        foreach (
-            var parameterComparison in indexer.Core.MatchedParameters.Select(parameter =>
-                ThisExpression()
-                    .Dot(IdentifierName(parameter.FieldName))
-                    .Dot(IdentifierName("Matches"))
-                    .Call(
-                        Argument(
-                            IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName))
-                        )
-                    )
-            )
-        )
-        {
-            comparison = comparison is null
-                ? parameterComparison
-                : comparison.And(parameterComparison);
-        }
+        var comparison = indexer
+            .Core.MatchedParameters.Select(ParameterComparison)
+            .DefaultIfEmpty(True)
+            .Aggregate((all, next) => all.And(next));
 
         return new MethodDeclarationBuilder(WellKnownTypes.Bool, "Matches")
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddParameter(argumentsParam)
-            .WithBody(Block(ReturnStatement(comparison ?? True)))
+            .WithBody(Block(ReturnStatement(comparison)))
             .Build();
     }
+
+    private static ExpressionSyntax ParameterComparison(IndexerParameterMetadata parameter) =>
+        ThisExpression()
+            .Dot(IdentifierName(parameter.FieldName))
+            .Dot(IdentifierName("Matches"))
+            .Call(Argument(IdentifierName("arguments").Dot(IdentifierName(parameter.FieldName))));
 }
