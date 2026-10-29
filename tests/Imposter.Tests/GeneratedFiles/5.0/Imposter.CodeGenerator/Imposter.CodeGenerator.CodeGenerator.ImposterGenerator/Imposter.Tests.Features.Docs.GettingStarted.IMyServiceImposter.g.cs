@@ -1586,7 +1586,7 @@ namespace Imposter.Tests.Features.Docs.GettingStarted
 					}
 				}
 
-				internal void MarkConfigured()
+				private void MarkConfigured()
 				{
 					global::System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
 				}

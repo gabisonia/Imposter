@@ -58,9 +58,8 @@ internal static partial class InvocationImposterGroupBuilder
             method.MethodInvocationImposterGroup.Name
         ).WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
 
-        if (method.Parameters.HasInputParameters)
-        {
-            ctorBuilder = ctorBuilder
+        ctorBuilder = method.Parameters.HasInputParameters
+            ? ctorBuilder
                 .AddParameter(
                     SyntaxFactoryHelper.ParameterSyntax(
                         method.ArgumentsCriteria.Syntax,
@@ -75,12 +74,8 @@ internal static partial class InvocationImposterGroupBuilder
                             .Assign(IdentifierName("argumentsCriteria"))
                             .ToStatementSyntax()
                     )
-                );
-        }
-        else
-        {
-            ctorBuilder = ctorBuilder.WithBody(Block());
-        }
+                )
+            : ctorBuilder.WithBody(Block());
 
         return ctorBuilder.Build();
     }

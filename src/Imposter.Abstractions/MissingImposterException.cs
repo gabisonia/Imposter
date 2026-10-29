@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace Imposter.Abstractions;
 
 /// <summary>
@@ -10,7 +8,6 @@ namespace Imposter.Abstractions;
 /// The <see cref="MethodName"/> (when provided) can be used to inspect which member
 /// was invoked without a matching setup.
 /// </remarks>
-[Serializable]
 public class MissingImposterException : Exception
 {
     /// <summary>
@@ -40,19 +37,5 @@ public class MissingImposterException : Exception
         : base($"No imposter setup was configured for '{methodName}'.", innerException)
     {
         MethodName = methodName;
-    }
-
-    /// <inheritdoc />
-    protected MissingImposterException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
-        MethodName = info.GetString(nameof(MethodName));
-    }
-
-    /// <inheritdoc />
-    public override void GetObjectData(SerializationInfo info, StreamingContext context)
-    {
-        base.GetObjectData(info, context);
-        info.AddValue(nameof(MethodName), MethodName);
     }
 }

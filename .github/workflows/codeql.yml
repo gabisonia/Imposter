@@ -44,7 +44,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           languages: csharp
           queries: security-and-quality
@@ -53,7 +53,7 @@ jobs:
         run: dotnet build Imposter.slnx -c Release
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           category: "/language:csharp"
           upload: failure-only
@@ -62,15 +62,33 @@ jobs:
       # The build also compiles source-generator output under obj/: the imposters generated for the test and sample
       # projects, and PolySharp's polyfills. Their results would bury the ones in checked-in code, and paths-ignore
       # doesn't apply to a built C# analysis, so they are dropped from the SARIF before upload.
-      - name: Drop results in generated output
+      # Test targets deliberately call virtual members from constructors, and thread helpers catch all worker
+      # exceptions to report them on the test thread. Drop those two rules only when all locations are under
+      # tests/; retain findings with source or unresolved locations.
+      - name: Drop generated output and intentional test findings
         run: |
           for sarif in sarif-results/*.sarif; do
-            jq '.runs[].results |= map(select(all(.locations[]?; .physicalLocation.artifactLocation.uri | test("(^|/)obj/.*/generated/") | not)))' "$sarif" > "$sarif.filtered"
+            jq '
+              .runs[].results |= map(
+                select(all(.locations[]?;
+                  (.physicalLocation.artifactLocation.uri // "") | test("(^|/)obj/.*/generated/") | not
+                ))
+                | select(
+                  (
+                    (.ruleId == "cs/virtual-call-in-constructor" or .ruleId == "cs/catch-of-all-exceptions")
+                    and ((.locations // []) | length > 0)
+                    and all(.locations[]?;
+                      (.physicalLocation.artifactLocation.uri // "") | startswith("tests/")
+                    )
+                  ) | not
+                )
+              )
+            ' "$sarif" > "$sarif.filtered"
             mv "$sarif.filtered" "$sarif"
           done
 
       - name: Upload CodeQL results
-        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
           sarif_file: sarif-results
           category: "/language:csharp"
