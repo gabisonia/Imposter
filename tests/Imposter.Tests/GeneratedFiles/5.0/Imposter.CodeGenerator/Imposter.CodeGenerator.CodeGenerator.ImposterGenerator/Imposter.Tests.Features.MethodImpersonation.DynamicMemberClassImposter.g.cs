@@ -1140,7 +1140,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 				}
 
-				internal void MarkConfigured()
+				private void MarkConfigured()
 				{
 					global::System.Threading.Volatile.Write(ref _hasConfiguredSetter, true);
 				}
