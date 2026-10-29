@@ -234,6 +234,15 @@ internal static class WellKnownTypes
             internal static NameSyntax CallbackCollection(TypeSyntax itemType) =>
                 GenericType(Namespace, nameof(CallbackCollection), itemType);
 
+            internal static NameSyntax PropertyValue(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(PropertyValue), valueType);
+
+            internal static NameSyntax PropertyGetter(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(PropertyGetter), valueType);
+
+            internal static NameSyntax PropertySetter(TypeSyntax valueType) =>
+                GenericType(Namespace, nameof(PropertySetter), valueType);
+
             internal static NameSyntax ReturnValueSequence(TypeSyntax itemType) =>
                 GenericType(Namespace, nameof(ReturnValueSequence), itemType);
 
