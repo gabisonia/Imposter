@@ -62,10 +62,28 @@ jobs:
       # The build also compiles source-generator output under obj/: the imposters generated for the test and sample
       # projects, and PolySharp's polyfills. Their results would bury the ones in checked-in code, and paths-ignore
       # doesn't apply to a built C# analysis, so they are dropped from the SARIF before upload.
-      - name: Drop results in generated output
+      # Test targets deliberately call virtual members from constructors, and thread helpers catch all worker
+      # exceptions to report them on the test thread. Drop those two rules only when all locations are under
+      # tests/; retain findings with source or unresolved locations.
+      - name: Drop generated output and intentional test findings
         run: |
           for sarif in sarif-results/*.sarif; do
-            jq '.runs[].results |= map(select(all(.locations[]?; .physicalLocation.artifactLocation.uri | test("(^|/)obj/.*/generated/") | not)))' "$sarif" > "$sarif.filtered"
+            jq '
+              .runs[].results |= map(
+                select(all(.locations[]?;
+                  (.physicalLocation.artifactLocation.uri // "") | test("(^|/)obj/.*/generated/") | not
+                ))
+                | select(
+                  (
+                    (.ruleId == "cs/virtual-call-in-constructor" or .ruleId == "cs/catch-of-all-exceptions")
+                    and ((.locations // []) | length > 0)
+                    and all(.locations[]?;
+                      (.physicalLocation.artifactLocation.uri // "") | startswith("tests/")
+                    )
+                  ) | not
+                )
+              )
+            ' "$sarif" > "$sarif.filtered"
             mv "$sarif.filtered" "$sarif"
           done
 
