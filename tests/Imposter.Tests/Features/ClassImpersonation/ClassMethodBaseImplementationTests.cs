@@ -95,7 +95,7 @@ namespace Imposter.Tests.Features.ClassImpersonation
         {
             var callbackCount = 0;
 
-            var builder = _classSut
+            _classSut
                 .BuildLabelAsync(Arg<string>.Any(), Arg<string>.Any())
                 .UseBaseImplementation()
                 .Callback(
