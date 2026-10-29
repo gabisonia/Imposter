@@ -33,10 +33,7 @@ internal static partial class IndexerGetterBuilder
 
         var invocationArguments = new List<ArgumentSyntax>(indexer.Core.ParameterArguments);
 
-        if (
-            indexer.Core.GetterSupportsBaseImplementation
-            && getterBaseImplementationParameter is not null
-        )
+        if (getterBaseImplementationParameter is not null)
         {
             invocationArguments.Add(
                 Argument(IdentifierName(getterBaseImplementationParameter.Identifier))
