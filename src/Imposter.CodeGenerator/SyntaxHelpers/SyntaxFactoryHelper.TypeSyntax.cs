@@ -79,9 +79,8 @@ internal static partial class SyntaxFactoryHelper
         IEnumerable<TypeParameterModel> typeParameters
     )
     {
-        foreach (var typeParameter in typeParameters)
+        foreach (var constraintClause in typeParameters.Select(TryBuildConstraintClause))
         {
-            var constraintClause = TryBuildConstraintClause(typeParameter);
             if (constraintClause is not null)
             {
                 yield return constraintClause;

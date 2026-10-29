@@ -40,8 +40,7 @@ internal static class IndexerSetterBuilder
 
         invocationArguments.Add(Argument(IdentifierName(setterValueParameterName)));
         invocationArguments.Add(
-            indexer.Core.SetterSupportsBaseImplementation
-            && setterBaseImplementationParameter is not null
+            setterBaseImplementationParameter is not null
                 ? Argument(IdentifierName(setterBaseImplementationParameter.Identifier))
                 : Argument(Null)
         );

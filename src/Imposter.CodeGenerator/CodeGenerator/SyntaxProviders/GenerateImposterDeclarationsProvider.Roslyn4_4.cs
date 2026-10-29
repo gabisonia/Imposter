@@ -70,9 +70,7 @@ internal static class GenerateImposterDeclarationsProvider
 
     private static INamedTypeSymbol NormalizeImposterTarget(INamedTypeSymbol imposterType)
     {
-        return imposterType.IsUnboundGenericType
-            ? (INamedTypeSymbol)imposterType.OriginalDefinition
-            : imposterType;
+        return imposterType.IsUnboundGenericType ? imposterType.OriginalDefinition : imposterType;
     }
 }
 #endif
