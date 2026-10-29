@@ -21,26 +21,20 @@ namespace Imposter.Tests.Features.MethodImpersonation
         [Fact]
         public void GivenConcurrentOperations_WhenMixingVoidAndReturnMethods_ShouldNotThrowExceptions()
         {
-            var threads = new Thread[ThreadCount];
-
-            for (int i = 0; i < ThreadCount; i++)
-            {
-                var index = i;
-                threads[i] =
-                    index % 2 == 0
-                        ? new Thread(() => _sut.Instance().IntNoParams())
-                        : new Thread(() => _sut.Instance().VoidNoParams());
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+            DedicatedThreads.RunTogether(
+                ThreadCount,
+                index =>
+                {
+                    if (index % 2 == 0)
+                    {
+                        _sut.Instance().IntNoParams();
+                    }
+                    else
+                    {
+                        _sut.Instance().VoidNoParams();
+                    }
+                }
+            );
 
             Should.NotThrow(() => _sut.IntNoParams().Called(Count.AtLeast(ThreadCount / 2)));
             Should.NotThrow(() => _sut.VoidNoParams().Called(Count.AtLeast(ThreadCount / 2)));
@@ -57,35 +51,10 @@ namespace Imposter.Tests.Features.MethodImpersonation
             }
 
             var results = new int[ThreadCount];
-            var threads = new Thread[ThreadCount];
-
-            var startSignal = new ManualResetEventSlim(false);
-            var readySignal = new CountdownEvent(ThreadCount);
-
-            for (int i = 0; i < ThreadCount; i++)
-            {
-                var index = i;
-                threads[i] = new Thread(() =>
-                {
-                    readySignal.Signal();
-                    startSignal.Wait();
-
-                    results[index] = _sut.Instance().IntNoParams();
-                });
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
-
-            readySignal.Wait();
-            startSignal.Set();
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+            DedicatedThreads.RunTogether(
+                ThreadCount,
+                index => results[index] = _sut.Instance().IntNoParams()
+            );
 
             results.ShouldBeUnique();
             results.ShouldAllBe(x => x >= 0 && x < ThreadCount);
