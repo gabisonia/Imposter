@@ -17,7 +17,7 @@ namespace Imposter.Tests.Features.PropertyImpersonation
         [Fact]
         public void GivenNullFunction_WhenPropertyIsAccessed_ShouldThrowNullReferenceException()
         {
-            _sut.Age.Getter().Returns((Func<int>)null!);
+            _sut.Age.Getter().Returns(null!);
 
             Should.Throw<NullReferenceException>(() => _sut.Instance().Age);
         }
