@@ -421,126 +421,61 @@ namespace Imposter.Tests.Features.OpenGenericImposter
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class CurrentPropertyBuilder : ICurrentPropertyBuilder
 		{
-			private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
+			private readonly global::Imposter.Abstractions.PropertyValue<TException> _defaultPropertyBehaviour;
 			private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 			internal GetterImposterBuilder _getterImposterBuilder;
 			internal CurrentPropertyBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior)
 			{
-				_defaultPropertyBehaviour = new DefaultPropertyBehaviour();
+				_defaultPropertyBehaviour = new global::Imposter.Abstractions.PropertyValue<TException>();
 				_invocationBehavior = invocationBehavior;
 				_getterImposterBuilder = new GetterImposterBuilder(_defaultPropertyBehaviour, _invocationBehavior, "Imposter.Tests.Features.OpenGenericImposter.IHaveTExceptionTypeParameter<TException>.Current");
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class DefaultPropertyBehaviour
+			internal class GetterImposterBuilder : global::Imposter.Abstractions.PropertyGetter<TException>, ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder
 			{
-				internal volatile bool IsOn = true;
-				internal volatile bool HasValueSet = false;
-				internal TException BackingField = default !;
-			}
-
-			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal class GetterImposterBuilder : ICurrentPropertyGetterBuilder, ICurrentPropertyGetterFluentBuilder
-			{
-				private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<global::System.Func<TException>?, TException>>? _returnValues;
-				private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
-				private volatile global::System.Func<global::System.Func<TException>?, TException> _lastReturnValue = _ => default !;
-				private int _invocationCount;
-				private readonly DefaultPropertyBehaviour _defaultPropertyBehaviour;
-				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
-				private readonly string _propertyDisplayName;
-				private bool _hasConfiguredReturn;
-				internal GetterImposterBuilder(DefaultPropertyBehaviour _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal GetterImposterBuilder(global::Imposter.Abstractions.PropertyValue<TException> _defaultPropertyBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName) : base(_defaultPropertyBehaviour, invocationBehavior, propertyDisplayName)
 				{
-					this._defaultPropertyBehaviour = _defaultPropertyBehaviour;
-					this._invocationBehavior = invocationBehavior;
-					this._propertyDisplayName = propertyDisplayName;
-				}
-
-				private void AddReturnValue(global::System.Func<global::System.Func<TException>?, TException> valueGenerator)
-				{
-					_defaultPropertyBehaviour.IsOn = false;
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _returnValues).Add(valueGenerator);
-					_hasConfiguredReturn = true;
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterOutcomeBuilder.Returns(TException value)
 				{
-					AddReturnValue((_) => value);
+					base.Returns(value);
 					return this;
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterOutcomeBuilder.Returns(global::System.Func<TException> valueGenerator)
 				{
-					AddReturnValue((_) => valueGenerator());
+					base.Returns(valueGenerator);
 					return this;
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterOutcomeBuilder.Throws(global::System.Exception exception)
 				{
-					AddReturnValue((_) => throw exception);
+					base.Throws(exception);
 					return this;
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterOutcomeBuilder.Throws<TException_1>()
 				{
-					AddReturnValue((_) => throw new TException_1());
+					base.Throws<TException_1>();
 					return this;
 				}
 
 				ICurrentPropertyGetterContinuationBuilder ICurrentPropertyGetterCallbackBuilder.Callback(global::System.Action callback)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(callback);
+					base.Callback(callback);
 					return this;
 				}
 
 				void ICurrentPropertyGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					if (!count.Matches(_invocationCount))
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, _invocationCount);
+					base.Called(count);
 				}
 
 				ICurrentPropertyGetterFluentBuilder ICurrentPropertyGetterContinuationBuilder.Then()
 				{
 					return this;
-				}
-
-				internal TException Get(global::System.Func<TException>? baseImplementation = null)
-				{
-					EnsureGetterConfigured();
-					global::System.Threading.Interlocked.Increment(ref _invocationCount);
-					if (_callbacks != null)
-					{
-						foreach (var getterCallback in _callbacks)
-						{
-							getterCallback();
-						}
-					}
-
-					if (_defaultPropertyBehaviour.IsOn)
-					{
-						if (((_invocationCount == 1) && (baseImplementation != null)) && !_defaultPropertyBehaviour.HasValueSet)
-						{
-							_defaultPropertyBehaviour.BackingField = baseImplementation();
-						}
-
-						return _defaultPropertyBehaviour.BackingField;
-					}
-
-					var nextReturnValue = NextReturnValue();
-					return nextReturnValue(baseImplementation);
-				}
-
-				private global::System.Func<global::System.Func<TException>?, TException> NextReturnValue()
-				{
-					var returnValues = global::System.Threading.Volatile.Read(ref _returnValues);
-					return returnValues != null ? returnValues.Next(_lastReturnValue) : _lastReturnValue;
-				}
-
-				private void EnsureGetterConfigured()
-				{
-					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !_hasConfiguredReturn)
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
 				}
 			}
 
