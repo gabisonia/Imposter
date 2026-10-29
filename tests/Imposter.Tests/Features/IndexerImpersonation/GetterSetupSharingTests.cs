@@ -1,5 +1,6 @@
 using System.Threading;
 using Imposter.Abstractions;
+using Imposter.Tests.Shared;
 using Shouldly;
 using Xunit;
 
@@ -30,25 +31,10 @@ namespace Imposter.Tests.Features.IndexerImpersonation
             var imposter = new IIndexerSetupSutImposter();
             var indexer = imposter[Arg<int>.Is(1)];
             var calls = 0;
-            var threads = new Thread[ThreadCount];
-            using var startSignal = new ManualResetEventSlim(false);
-            using var readySignal = new CountdownEvent(ThreadCount);
-
-            for (var i = 0; i < ThreadCount; i++)
-            {
-                threads[i] = new Thread(() =>
-                {
-                    readySignal.Signal();
-                    startSignal.Wait();
-                    indexer.Getter().Callback(_ => Interlocked.Increment(ref calls));
-                });
-                threads[i].Start();
-            }
-
-            readySignal.Wait();
-            startSignal.Set();
-            foreach (var thread in threads)
-                thread.Join();
+            DedicatedThreads.RunTogether(
+                ThreadCount,
+                _ => indexer.Getter().Callback(_ => Interlocked.Increment(ref calls))
+            );
 
             _ = imposter.Instance()[1];
 
