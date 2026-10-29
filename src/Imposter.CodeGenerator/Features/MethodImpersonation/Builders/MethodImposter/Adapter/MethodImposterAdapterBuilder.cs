@@ -367,7 +367,6 @@ internal static class MethodImposterAdapterBuilder
         internal readonly string TargetFieldName;
         internal readonly string TargetConstructorParameterName;
         internal readonly string InvokeResultVariableName;
-        internal readonly string HasMatchingInvocationImposterGroupArgumentsParameterName;
         internal readonly Dictionary<string, string> AdaptedParameterNames;
 
         internal AdapterNames(in ImposterTargetMethodMetadata method)
@@ -376,7 +375,6 @@ internal static class MethodImposterAdapterBuilder
             TargetFieldName = nameContext.Use("_target");
             TargetConstructorParameterName = nameContext.Use("target");
             InvokeResultVariableName = nameContext.Use("result");
-            HasMatchingInvocationImposterGroupArgumentsParameterName = nameContext.Use("arguments");
             AdaptedParameterNames = method
                 .Parameters.AllParameterMetadata.Where(parameter =>
                     parameter.Model.RefKind
