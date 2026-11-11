@@ -13,15 +13,16 @@ using global::Imposter.Tests.Features.Docs.ArgumentsMatching;
 namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ISpanArgumentMatchingServiceImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService>, ISpanArgumentMatchingServiceImposter.ISpanArgumentMatchingServiceSetup
+	public sealed class ISpanArgumentMatchingServiceImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService>, ISpanArgumentMatchingServiceImposter.ISpanArgumentMatchingServiceSetup
 	{
-		private readonly ParseMethodImposter _parseMethodImposter;
-		private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection();
+		private ParseMethodImposter _parseMethodImposter;
+		private ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
 		public IParseMethodImposterBuilder Parse(global::Imposter.Abstractions.ReadOnlySpanArg<char> text)
 		{
 			return new ParseMethodImposter.Builder(_parseMethodImposter, _parseMethodInvocationHistoryCollection, new ParseArgumentsCriteria(text));
 		}
 
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanArgumentMatchingService>.Instance()
 		{
@@ -63,47 +64,115 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IParseMethodInvocationHistory
+		internal interface IParseMethodInvocationHistory
 		{
 			bool Matches(ParseArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ParseMethodInvocationHistory : ParseMethodInvocationHistoryCollection.Node, IParseMethodInvocationHistory
+		public sealed class ParseInvocation : ParseMethodInvocationHistoryCollection.Node, IParseMethodInvocationHistory
 		{
 			internal readonly char[] capturedtext;
-			internal readonly int? Result;
-			internal readonly global::System.Exception? Exception;
-			public ParseMethodInvocationHistory(char[] capturedtext, int? Result, global::System.Exception? Exception)
+			internal readonly int? _result;
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public global::System.ReadOnlyMemory<char> Text
 			{
-				this.capturedtext = capturedtext;
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return capturedtext;
+				}
 			}
 
-			public bool Matches(ParseArgumentsCriteria criteria)
+			public int? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Parse";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public ParseInvocation(char[] capturedtext, int? _result, global::System.Exception? _exception, long _sequence)
+			{
+				this.capturedtext = capturedtext;
+				this._result = _result;
+				this._exception = _exception;
+				this._sequence = _sequence;
+			}
+
+			bool IParseMethodInvocationHistory.Matches(ParseArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedtext);
 			}
 
 			public override string ToString()
 			{
-				return "Parse(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Parse(" + global::System.String.Join(", ", new[] { "text: " + FormatValue(capturedtext) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ParseMethodInvocationHistoryCollection
+		public class ParseMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal ParseMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private ParseMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal ParseMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -138,6 +207,64 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected, ParseArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((IParseMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((IParseMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<ParseInvocation> MatchingInvocations(ParseArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<ParseInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IParseMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((ParseInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -159,6 +286,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 			internal ParseArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "Parse(" + "text: " + ArgumentsCriteria.text.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public ParseMethodInvocationImposterGroup(ParseArgumentsCriteria argumentsCriteria)
 			{
@@ -196,6 +331,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, text);
 			}
 
@@ -276,6 +412,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		public interface IParseMethodInvocationImposterGroupContinuation : IParseMethodInvocationImposterGroupCallback
 		{
 			IParseMethodInvocationImposterGroup Then();
+			IParseMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -294,15 +431,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<ParseInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IParseMethodImposterBuilder : IParseMethodInvocationImposterGroup, IParseMethodInvocationImposterGroupCallback, ParseInvocationVerifier
+		public interface IParseMethodImposterBuilder : IParseMethodInvocationImposterGroup, IParseMethodInvocationImposterGroupCallback, ParseInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class ParseMethodImposter
+		internal class ParseMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<ParseMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<ParseMethodInvocationImposterGroup>();
 			private readonly ParseMethodInvocationHistoryCollection _parseMethodInvocationHistoryCollection;
@@ -324,28 +464,39 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public int Invoke(global::System.ReadOnlySpan<char> text)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				char[] capturedtext = text.ToArray();
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)");
-					}
-
-					matchingInvocationImposterGroup = ParseMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedtext);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("Parse", "Parse(" + "text: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedtext) + ")", GetConfiguredSetups(), "int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)");
+						matchingInvocationImposterGroup = ParseMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "int ISpanArgumentMatchingService.Parse(ReadOnlySpan<char> text)", text);
-					_parseMethodInvocationHistoryCollection.Add(new ParseMethodInvocationHistory(capturedtext, result, default));
+					_parseMethodInvocationHistoryCollection.Add(new ParseInvocation(capturedtext, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_parseMethodInvocationHistoryCollection.RecordFailure(new ParseMethodInvocationHistory(capturedtext, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_parseMethodInvocationHistoryCollection.RecordFailure(new ParseInvocation(capturedtext, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -372,6 +523,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -382,6 +534,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -392,6 +545,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exceptionGenerator.Invoke(text);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -399,6 +553,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroupCallback.Callback(ParseCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -406,6 +561,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroup.Returns(ParseDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -413,6 +569,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroup.Returns(int value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -425,10 +582,19 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 				void ParseInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _parseMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _parseMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _parseMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Parse", "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")", count, invocationCount, _parseMethodInvocationHistoryCollection.ToString(), null, _parseMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_parseMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void ParseInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _parseMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Parse", "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")", count, invocationCount, _parseMethodInvocationHistoryCollection.ToString(), because, _parseMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_parseMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -436,6 +602,48 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				{
 					return _parseMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _parseMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "Parse(" + "text: " + _argumentsCriteria.text.ToString() + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _parseMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+				}
+
+				IParseMethodInvocationImposterGroupContinuation IParseMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<ParseInvocation> ParseInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _parseMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_parseMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_parseMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -457,8 +665,46 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public ISpanArgumentMatchingServiceImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection(this);
 			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_parseMethodInvocationHistoryCollection.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_parseMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_parseMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_parseMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_parseMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_parseMethodInvocationHistoryCollection.Clear();
+			this._parseMethodInvocationHistoryCollection = new ParseMethodInvocationHistoryCollection(this);
+			this._parseMethodImposter = new ParseMethodImposter(_parseMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

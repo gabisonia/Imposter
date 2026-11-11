@@ -36,7 +36,7 @@ namespace Imposter.Tests.Features.Verification
             int actual
         )
         {
-            exception.Message.ShouldContain($"expected to be performed {expected}");
+            exception.Message.ShouldContain(expected.ToString());
             exception.Message.ShouldContain($"performed {actual} times");
         }
 

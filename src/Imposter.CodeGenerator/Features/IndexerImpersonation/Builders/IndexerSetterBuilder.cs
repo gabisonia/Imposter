@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -101,10 +102,36 @@ internal static partial class IndexerSetterBuilder
             .AddMember(
                 SingleVariableField(setter.HasConfiguredSetterField, SyntaxKind.PrivateKeyword)
             )
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    "Owner",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                )
+            )
             .AddMember(BuildSetterConstructor(indexer))
+            .AddMember(
+                InvocationLifecycleBuilder.Clear([
+                    InvocationLifecycleBuilder.ClearStack(setter.InvocationHistoryField.Name),
+                ])
+            )
             .AddMember(BuildSetterCallbackMethod(indexer))
-            .AddMember(BuildSetterCalledMethod(indexer))
-            .AddMember(BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, false))
+            .AddMember(
+                IndexerVerificationBuilder.Cover(indexer, false, BuildSetterCalledMethod(indexer))
+            )
+            .AddMember(
+                IndexerHistoryBuilder.Wrap(
+                    indexer,
+                    BuildSetterSetMethod(indexer, baseCriteriaLoop, invokedBaseIdentifier),
+                    false
+                )
+            )
+            .AddMember(IndexerHistoryBuilder.Snapshot(indexer, false))
+            .AddMember(IndexerHistoryBuilder.Matching(indexer, false))
             .AddMember(BuildEnsureSetterConfiguredMethod(indexer))
             .AddMember(BuildMarkSetterConfiguredMethod(indexer))
             .AddMember(useBaseImplementationMethod)
@@ -156,7 +183,13 @@ internal static partial class IndexerSetterBuilder
                     LazyCollectionSyntaxHelper
                         .EnsureInitialized(setter.CallbacksField.Name)
                         .Dot(IdentifierName("Add"))
-                        .Call(Argument(tupleExpression))
+                        .Call(
+                            Argument(
+                                setter.CallbackRegistrationType.New(
+                                    tupleExpression.ToSingleArgumentList()
+                                )
+                            )
+                        )
                         .ToStatementSyntax(),
                     IdentifierName(setter.MarkConfiguredMethodName).Call().ToStatementSyntax()
                 )
@@ -176,11 +209,9 @@ internal static partial class IndexerSetterBuilder
         var invocationCount = IdentifierName("invocationCount");
         var entryIdentifier = IdentifierName("entry");
         // An entry is the keys alone for a value passed through, which the history can't keep.
-        ExpressionSyntax entryArguments = !indexer.Core.IsValuePassedThrough
-            ? entryIdentifier.Dot(
-                IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
-            )
-            : entryIdentifier;
+        ExpressionSyntax entryArguments = entryIdentifier.Dot(
+            IdentifierName(IndexerSetterImposterMetadata.HistoryArgumentsElementName)
+        );
 
         var invocationCountDeclaration = LocalVariableDeclarationSyntax(
             WellKnownTypes.Int,
@@ -230,6 +261,10 @@ internal static partial class IndexerSetterBuilder
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, setter.CriteriaParameterName)
             )
             .AddParameter(countParameter)
+            .AddParameter(
+                ParameterSyntax(WellKnownTypes.String.ToNullableType(), "because")
+                    .WithDefault(EqualsValueClause(Null))
+            )
             .WithBody(
                 Block(
                     invocationCountDeclaration,
@@ -241,7 +276,19 @@ internal static partial class IndexerSetterBuilder
                             entryIdentifier,
                             descriptionExpression,
                             IsHistoryNullable: true
-                        )
+                        ),
+                        IdentifierName(setter.PropertyDisplayNameField.Name),
+                        "set "
+                            .StringLiteral()
+                            .Add(IdentifierName(setter.PropertyDisplayNameField.Name))
+                            .Add(
+                                ExpectedIndices(
+                                    indexer,
+                                    IdentifierName(setter.CriteriaParameterName)
+                                )
+                            ),
+                        IdentifierName("because"),
+                        IdentifierName("Owner")
                     )
                 )
             )
@@ -268,7 +315,14 @@ internal static partial class IndexerSetterBuilder
                     LazyCollectionSyntaxHelper
                         .EnsureInitialized(baseCriteria.Name)
                         .Dot(IdentifierName("Add"))
-                        .Call(Argument(IdentifierName(setter.CriteriaParameterName)))
+                        .Call(
+                            Argument(
+                                setter.BaseRegistrationType.New(
+                                    IdentifierName(setter.CriteriaParameterName)
+                                        .ToSingleArgumentList()
+                                )
+                            )
+                        )
                         .ToStatementSyntax(),
                     IdentifierName(setter.MarkConfiguredMethodName).Call().ToStatementSyntax()
                 )
@@ -298,7 +352,12 @@ internal static partial class IndexerSetterBuilder
 
         var bodyBuilder = new BlockBuilder()
             .AddStatement(
-                IdentifierName(setter.EnsureSetterConfiguredMethodName).Call().ToStatementSyntax()
+                IdentifierName(setter.EnsureSetterConfiguredMethodName)
+                    .Call(
+                        ArgumentListSyntax(indexer.Core.ParameterArguments)
+                            .AddArguments(Argument(value))
+                    )
+                    .ToStatementSyntax()
             )
             .AddStatement(CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName))
             .AddStatement(
@@ -370,6 +429,7 @@ internal static partial class IndexerSetterBuilder
             Block(
                 IfStatement(
                     IdentifierName(setter.RegistrationVariableName)
+                        .Dot(IdentifierName("Value"))
                         .Dot(
                             IdentifierName(
                                 IndexerSetterImposterMetadata.RegistrationCriteriaElementName
@@ -380,6 +440,23 @@ internal static partial class IndexerSetterBuilder
                     new BlockBuilder()
                         .AddExpression(
                             IdentifierName(setter.RegistrationVariableName)
+                                .Dot(IdentifierName("Value"))
+                                .Dot(
+                                    IdentifierName(
+                                        IndexerSetterImposterMetadata.RegistrationCriteriaElementName
+                                    )
+                                )
+                                .Dot(IdentifierName(indexer.ArgumentsCriteria.SetterUsedFieldName))
+                                .Assign(True)
+                        )
+                        .AddExpression(
+                            IdentifierName(setter.RegistrationVariableName)
+                                .Dot(IdentifierName("MarkUsed"))
+                                .Call()
+                        )
+                        .AddExpression(
+                            IdentifierName(setter.RegistrationVariableName)
+                                .Dot(IdentifierName("Value"))
                                 .Dot(
                                     IdentifierName(
                                         IndexerSetterImposterMetadata.RegistrationCallbackElementName
@@ -435,9 +512,25 @@ internal static partial class IndexerSetterBuilder
                 Block(
                     IfStatement(
                         IdentifierName(setter.CriteriaParameterName)
+                            .Dot(IdentifierName("Value"))
                             .Dot(IdentifierName(IndexerArgumentsCriteriaMetadata.MatchesMethodName))
                             .Call(Argument(argumentsVariable)),
                         new BlockBuilder()
+                            .AddExpression(
+                                IdentifierName(setter.CriteriaParameterName)
+                                    .Dot(IdentifierName("Value"))
+                                    .Dot(
+                                        IdentifierName(
+                                            indexer.ArgumentsCriteria.SetterUsedFieldName
+                                        )
+                                    )
+                                    .Assign(True)
+                            )
+                            .AddExpression(
+                                IdentifierName(setter.CriteriaParameterName)
+                                    .Dot(IdentifierName("MarkUsed"))
+                                    .Call()
+                            )
                             .AddStatement(
                                 IfStatement(
                                     IdentifierName(setter.BaseImplementationParameter.Name)
@@ -510,12 +603,49 @@ internal static partial class IndexerSetterBuilder
     {
         var setter = indexer.SetterImplementation;
 
+        ExpressionSyntax actual = "set "
+            .StringLiteral()
+            .Add(IdentifierName(setter.PropertyDisplayNameField.Name))
+            .Add(BuildIndices(indexer, IdentifierName(setter.ArgumentsVariableName)))
+            .Add(" = ".StringLiteral())
+            .Add(
+                indexer.Core.IsValuePassedThrough
+                    ? "<unrecorded>".StringLiteral()
+                    : Invocation(IdentifierName(setter.ValueParameterName))
+            );
         return EnsureConfiguredMethod(
-            setter.EnsureSetterConfiguredMethodName,
-            setter.InvocationBehaviorField.Name,
-            VolatileRead(setter.HasConfiguredSetterField.Name),
-            Block(ThrowMissingImposter(setter.PropertyDisplayNameField.Name, setter.SetterSuffix))
-        );
+                setter.EnsureSetterConfiguredMethodName,
+                setter.InvocationBehaviorField.Name,
+                VolatileRead(setter.HasConfiguredSetterField.Name),
+                Block(
+                    CreateArgumentsDeclaration(indexer, setter.ArgumentsVariableName),
+                    ThrowStatement(
+                        WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                            ArgumentListSyntax([
+                                Argument(
+                                    IdentifierName(setter.PropertyDisplayNameField.Name)
+                                        .Add(setter.SetterSuffix.StringLiteral())
+                                ),
+                                Argument(actual),
+                                Argument(
+                                    WellKnownTypes
+                                        .System.Collections.Generic.List(WellKnownTypes.String)
+                                        .New()
+                                ),
+                            ])
+                        )
+                    )
+                )
+            )
+            .WithParameterList(
+                ParameterList(SeparatedList(indexer.Core.ParameterSyntaxes))
+                    .AddParameters(
+                        ParameterSyntax(
+                            indexer.Core.NullableAwareKeptTypeSyntax,
+                            setter.ValueParameterName
+                        )
+                    )
+            );
     }
 
     private static MethodDeclarationSyntax BuildMarkSetterConfiguredMethod(

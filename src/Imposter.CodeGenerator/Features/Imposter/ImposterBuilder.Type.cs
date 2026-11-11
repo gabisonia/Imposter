@@ -8,6 +8,7 @@ using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Builders;
 using Imposter.CodeGenerator.Features.InterfaceSetup.Metadata;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.Helpers;
 using Imposter.CodeGenerator.Models;
 using Imposter.CodeGenerator.SyntaxHelpers;
@@ -26,12 +27,15 @@ internal readonly ref struct ImposterBuilder
     private readonly string _imposterName;
     private readonly TypeMetadata _typeMetadata;
     private readonly BlockBuilder _constructorBodyBuilder;
+    private readonly BlockBuilder _clearBodyBuilder;
     private readonly ParameterMetadata _invocationBehaviorParameter;
     private readonly bool _isClassTarget;
     private readonly ImposterTargetConstructorMetadata[] _accessibleConstructors;
     private readonly NameSet _memberNameSet;
     private readonly List<InterfaceSetupMemberMetadata> _interfaceSetupMembers = [];
     private readonly MemberTypes _memberTypes = new();
+    private readonly List<ExpressionSyntax> _invocationSnapshots = [];
+    private readonly List<ExpressionSyntax> _verificationSources = [];
 
     private ImposterBuilder(
         ClassDeclarationBuilder imposterBuilder,
@@ -39,6 +43,7 @@ internal readonly ref struct ImposterBuilder
         string imposterName,
         TypeMetadata typeMetadata,
         BlockBuilder constructorBodyBuilder,
+        BlockBuilder clearBodyBuilder,
         ParameterMetadata invocationBehaviorParameter,
         bool isClassTarget,
         ImposterTargetConstructorMetadata[] accessibleConstructors,
@@ -50,6 +55,7 @@ internal readonly ref struct ImposterBuilder
         _imposterName = imposterName;
         _typeMetadata = typeMetadata;
         _constructorBodyBuilder = constructorBodyBuilder;
+        _clearBodyBuilder = clearBodyBuilder;
         _invocationBehaviorParameter = invocationBehaviorParameter;
         _isClassTarget = isClassTarget;
         _accessibleConstructors = accessibleConstructors;
@@ -83,6 +89,14 @@ internal readonly ref struct ImposterBuilder
             _invocationBehaviorParameter.Name,
             _imposterInstanceBuilder
         ).AddProperty(property);
+
+        _clearBodyBuilder.AddStatement(
+            InvocationLifecycleBuilder.ClearChild(property.BuilderField.Name)
+        );
+        _verificationSources.Add(IdentifierName(property.BuilderField.Name));
+        _invocationSnapshots.Add(
+            IdentifierName(property.BuilderField.Name).Dot(IdentifierName("Snapshot")).Call()
+        );
 
         return this;
     }
@@ -159,6 +173,14 @@ internal readonly ref struct ImposterBuilder
             _imposterInstanceBuilder
         ).AddEvent(@event);
 
+        _clearBodyBuilder.AddStatement(
+            InvocationLifecycleBuilder.ClearChild(@event.BuilderField.Name)
+        );
+        _verificationSources.Add(IdentifierName(@event.BuilderField.Name));
+        _invocationSnapshots.Add(
+            IdentifierName(@event.BuilderField.Name).Dot(IdentifierName("Snapshot")).Call()
+        );
+
         return this;
     }
 
@@ -170,6 +192,14 @@ internal readonly ref struct ImposterBuilder
             _invocationBehaviorParameter.Name,
             _imposterInstanceBuilder
         ).AddIndexer(indexer);
+
+        _clearBodyBuilder.AddStatement(
+            InvocationLifecycleBuilder.ClearChild(indexer.BuilderField.Name)
+        );
+        _verificationSources.Add(IdentifierName(indexer.BuilderField.Name));
+        _invocationSnapshots.Add(
+            IdentifierName(indexer.BuilderField.Name).Dot(IdentifierName("Snapshot")).Call()
+        );
 
         return this;
     }
@@ -192,7 +222,40 @@ internal readonly ref struct ImposterBuilder
             imposterBuilder = imposterBuilder.AddMember(constructor);
         }
 
-        return imposterBuilder.AddMember(_imposterInstanceBuilder.Build()).Build();
+        return imposterBuilder
+            .AddMember(InvocationMembersBuilder.Build(_invocationSnapshots))
+            .AddMembers(ImposterVerificationBuilder.Build(_verificationSources))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.Void,
+                    InvocationLifecycleBuilder.ClearMethodName
+                )
+                    .WithExplicitInterfaceSpecifier(WellKnownTypes.Imposter.Abstractions.IImposter)
+                    .WithBody(_clearBodyBuilder.Build())
+                    .Build()
+            )
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.Void,
+                    InvocationLifecycleBuilder.ResetMethodName
+                )
+                    .WithExplicitInterfaceSpecifier(WellKnownTypes.Imposter.Abstractions.IImposter)
+                    .WithBody(
+                        Block(
+                                SyntaxFactoryHelper.LocalVariableDeclarationSyntax(
+                                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                                    _invocationBehaviorParameter.Name,
+                                    ThisExpression()
+                                        .Dot(IdentifierName(_typeMetadata.ModeFieldName))
+                                )
+                            )
+                            .AddStatements(_clearBodyBuilder.Build().Statements.ToArray())
+                            .AddStatements(_constructorBodyBuilder.Build().Statements.ToArray())
+                    )
+                    .Build()
+            )
+            .AddMember(_imposterInstanceBuilder.Build())
+            .Build();
     }
 
     internal static ImposterBuilder Create(in ImposterGenerationContext imposterGenerationContext)
@@ -204,6 +267,7 @@ internal readonly ref struct ImposterBuilder
             typeParameters.TypeParameterListSyntax
         )
             .AddConstraintClauses(typeParameters.ConstraintClauses)
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposter))
             .AddBaseType(
                 SimpleBaseType(
                     WellKnownTypes.Imposter.Abstractions.IHaveImposterInstance(
@@ -233,7 +297,29 @@ internal readonly ref struct ImposterBuilder
             invocationBehaviorParameter.Name
         );
 
+        var clearBodyBuilder = new BlockBuilder().AddStatements(
+            imposterGenerationContext.Imposter.Methods.Select(method =>
+                IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+                    .Dot(IdentifierName("Clear"))
+                    .Call()
+                    .ToStatementSyntax()
+            )
+        );
+        constructorBodyBuilder.AddStatement(
+            ThisExpression()
+                .Dot(IdentifierName(typeMetadata.ModeFieldName))
+                .Assign(IdentifierName(invocationBehaviorParameter.Name))
+                .ToStatementSyntax()
+        );
+
         var imposterClassBuilder = imposterBuilder
+            .AddMember(
+                SyntaxFactoryHelper.SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.ImposterMode,
+                    typeMetadata.ModeFieldName,
+                    SyntaxKind.PrivateKeyword
+                )
+            )
             .AddMember(
                 ImposterInstanceField(
                     typeMetadata.ImposterTargetInstanceClassName,
@@ -260,17 +346,28 @@ internal readonly ref struct ImposterBuilder
             typeMetadata.ImposterTargetInstanceClassName
         );
 
-        return new ImposterBuilder(
+        var result = new ImposterBuilder(
             imposterClassBuilder,
             imposterInstanceBuilder,
             imposterGenerationContext.Imposter.Name,
             typeMetadata,
             constructorBodyBuilder,
+            clearBodyBuilder,
             invocationBehaviorParameter,
             isClassTarget,
             accessibleConstructors,
             memberNameSet
         );
+        foreach (var method in imposterGenerationContext.Imposter.Methods)
+        {
+            result._invocationSnapshots.Add(
+                IdentifierName(method.InvocationHistory.Collection.AsField.Name)
+                    .Dot(IdentifierName("Snapshot"))
+                    .Call()
+            );
+            result._verificationSources.Add(IdentifierName(method.ImposterField.Name));
+        }
+        return result;
     }
 
     internal NameSet MemberNameSet => _memberNameSet;
@@ -320,25 +417,38 @@ internal readonly ref struct ImposterBuilder
         string invocationBehaviorParameterName
     )
     {
-        return new BlockBuilder().AddStatements(
-            imposterGenerationContext.Imposter.Methods.Select(method =>
-            {
-                var constructorArguments = new List<ArgumentSyntax>
-                {
-                    Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
-                    Argument(IdentifierName(invocationBehaviorParameterName)),
-                };
-
-                return ThisExpression()
-                    .Dot(IdentifierName(method.ImposterField.Name))
-                    .Assign(
-                        method.ImposterField.Type.New(
-                            SyntaxFactoryHelper.ArgumentListSyntax(constructorArguments)
+        return new BlockBuilder()
+            .AddStatements(
+                imposterGenerationContext.Imposter.Methods.Select(method =>
+                    ThisExpression()
+                        .Dot(IdentifierName(method.InvocationHistory.Collection.AsField.Name))
+                        .Assign(
+                            method.InvocationHistory.Collection.Syntax.New(
+                                ThisExpression().ToSingleArgumentList()
+                            )
                         )
-                    )
-                    .ToStatementSyntax();
-            })
-        );
+                        .ToStatementSyntax()
+                )
+            )
+            .AddStatements(
+                imposterGenerationContext.Imposter.Methods.Select(method =>
+                {
+                    var constructorArguments = new List<ArgumentSyntax>
+                    {
+                        Argument(IdentifierName(method.InvocationHistory.Collection.AsField.Name)),
+                        Argument(IdentifierName(invocationBehaviorParameterName)),
+                    };
+
+                    return ThisExpression()
+                        .Dot(IdentifierName(method.ImposterField.Name))
+                        .Assign(
+                            method.ImposterField.Type.New(
+                                SyntaxFactoryHelper.ArgumentListSyntax(constructorArguments)
+                            )
+                        )
+                        .ToStatementSyntax();
+                })
+            );
     }
 
     private BlockSyntax BuildInterfaceConstructorBody() =>
@@ -411,11 +521,13 @@ internal readonly ref struct ImposterBuilder
     {
         internal readonly string ImposterTargetInstanceClassName;
         internal readonly string ImposterInstanceFieldName;
+        internal readonly string ModeFieldName;
 
         internal TypeMetadata(NameSet nameSet)
         {
             ImposterTargetInstanceClassName = nameSet.Use("ImposterTargetInstance");
             ImposterInstanceFieldName = nameSet.Use("_imposterInstance");
+            ModeFieldName = nameSet.Use("_imposterMode");
         }
     }
 }

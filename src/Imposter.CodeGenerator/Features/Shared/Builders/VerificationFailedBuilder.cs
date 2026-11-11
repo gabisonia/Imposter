@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.SyntaxHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.SyntaxHelpers.SyntaxFactoryHelper;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -20,7 +21,11 @@ internal static class VerificationFailedBuilder
     internal static IfStatementSyntax ThrowIfCountDoesNotMatch(
         ExpressionSyntax count,
         ExpressionSyntax invocationCount,
-        PerformedInvocations performedInvocations
+        PerformedInvocations performedInvocations,
+        ExpressionSyntax? member = null,
+        ExpressionSyntax? expected = null,
+        ExpressionSyntax? because = null,
+        ExpressionSyntax? owner = null
     )
     {
         var performedInvocationsList = IdentifierName("performedInvocations");
@@ -49,11 +54,42 @@ internal static class VerificationFailedBuilder
                 performedInvocations.IsHistoryNullable
                     ? LazyCollectionSyntaxHelper.UnlessNull(historyLoop)
                     : historyLoop,
-                ThrowVerificationFailed(
-                    count,
-                    invocationCount,
-                    JoinWithNewLines(performedInvocationsList)
-                )
+                member is not null && expected is not null
+                    ? ThrowVerificationFailed(
+                        ArgumentListSyntax([
+                            Argument(member),
+                            Argument(expected),
+                            Argument(count),
+                            Argument(invocationCount),
+                            Argument(JoinWithNewLines(performedInvocationsList)),
+                            Argument(because ?? Null),
+                            Argument(
+                                owner is null
+                                    ? Null
+                                    : ConditionalExpression(
+                                        BinaryExpression(
+                                            SyntaxKind.EqualsExpression,
+                                            performedInvocationsList.Dot(IdentifierName("Count")),
+                                            LiteralExpression(
+                                                SyntaxKind.NumericLiteralExpression,
+                                                Literal(0)
+                                            )
+                                        ),
+                                        WellKnownTypes
+                                            .Imposter.Abstractions.DiagnosticValue.Dot(
+                                                IdentifierName("OtherInteractions")
+                                            )
+                                            .Call(Argument(owner)),
+                                        Null
+                                    )
+                            ),
+                        ])
+                    )
+                    : ThrowVerificationFailed(
+                        count,
+                        invocationCount,
+                        JoinWithNewLines(performedInvocationsList)
+                    )
             )
         );
     }

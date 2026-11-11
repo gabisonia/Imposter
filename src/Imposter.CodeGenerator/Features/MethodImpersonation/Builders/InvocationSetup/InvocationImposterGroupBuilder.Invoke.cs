@@ -83,6 +83,10 @@ internal static partial class InvocationImposterGroupBuilder
                 Block(
                     invocationImposterAssignment,
                     guardMissingImposter,
+                    ThisExpression()
+                        .Dot(IdentifierName(method.MethodInvocationImposterGroup.IsUsedFieldName))
+                        .Assign(True)
+                        .ToStatementSyntax(),
                     method.Model.ReturnType.IsVoid
                         ? invokeCall.ToStatementSyntax()
                         : ReturnStatement(invokeCall)

@@ -20,6 +20,7 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
   - `Arg.Any` — untyped wildcard property returning `AnyArgMarker`, implicitly converts to `Arg<T>.Any()` for any parameter type.
 
 - `Arg<T>` (`src/Imposter.Abstractions/Arg.cs`)
+  - `Describe(string)` returns a new matcher with a diagnostic label. Default descriptions never evaluate predicates or comparers; ordinary matcher allocation sizes are preserved.
   - Matchers for input parameters in setups:
     - `Arg<T>.Is(predicate)` / `Arg<T>.Is(value)`
     - `Arg<T>.Any()`
@@ -43,6 +44,8 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
   - `Matches(int)` helper used by generated verifiers.
 
 - `VerificationFailedException` (`src/Imposter.Abstractions/VerificationFailedException.cs`)
+  - Rich diagnostics expose `Expected`, retain `PerformedInvocations`, and support a verification reason. `MissingImposterException.ConfiguredSetups` is a snapshot of setup descriptions.
+  - `DiagnosticValue` formats values safely on failure; throwing `ToString()` implementations use an unprintable-value fallback.
   - Thrown by generated verifiers when counts don’t match.
 
 - `IHaveImposterInstance<T>` and `ImposterExtensions` (`src/Imposter.Abstractions/IHaveImposterInstance.cs`, `ImposterExtensions.cs`)
@@ -54,6 +57,15 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 
 ## How It’s Used
 
+- `IImposter` provides invocation snapshots, clear/reset lifecycle operations, and completeness checks. `Imposters` aggregates completeness failures across multiple instances and creates ordered verifications.
+- `IImposterInvocation` supplies member identity, a process-wide entry sequence, and synchronous exceptions. Generated method/accessor records provide typed captures. `EventSubscriptionInvocation<THandler>` represents event add/remove accessors. Property getters retain counters and do not enter the ordered history.
+- `InvocationHistory<T>` publishes accessor/event records through an intrusive list; generated method histories use an equivalent typed node chain. Coverage occupies the sign bit of each stored sequence, with the public sequence masking that bit. Snapshots materialize and sort on demand; they keep membership across clear/reset, but ordinary reference arguments are not copied. Span captures expose `ReadOnlyMemory<T>` over their recorded array.
+- Generic dispatch records the caller's type arguments and captures entry values before evaluating setup predicates. Its inner method implementations and compatible-type adapters skip recording so one interaction produces exactly one record. Output values are recorded after conversion, and synchronous exceptions still propagate modified ref/out arguments to the caller.
+- Generic span calls retain an entry array separate from mutable matcher arrays. The existing generic dispatch evaluates setup candidates and the selected method's groups separately, so removing this additional snapshot would expose history to predicate mutation. The allocation regression case now measures 176 bytes per call: a 56-byte record and three 40-byte arrays for four int elements. Its previous regression ceiling was 136 bytes, not a recorded baseline measurement. The extra caller-entry snapshot is intentional; the change is not limited to the sequence stamp. See the invocation-history performance table and CallAllocationTests for the other measured costs.
+- `IInvocationStep` is the common method/accessor handle consumed by `InvocationOrder`. Ordered verification greedily selects distinct invocation entries and applies coverage only after every step succeeds.
+- Successful count verification covers matching records from a captured history in two deterministic-matcher passes; reading/counting records never changes coverage. Counter-only getters track coverage without allocating on access.
+- `IImposterVerificationSource`, `IVerifiableInvocation`, `ImposterVerification`, `CounterVerification`, `TrackedSetup<T>`, and `SetupUsage` support generated completeness checks and setup usage tracking.
+
 - Include `Imposter.Abstractions` in consumer projects to reference the attribute and argument matching types.
 - The generator uses these types at compile time to discover targets and glue behaviour contracts.
 
@@ -62,3 +74,9 @@ Public API for consumers and the generator. Lives in `src/Imposter.Abstractions`
 - Build: `dotnet build src/Imposter.Abstractions/Imposter.Abstractions.csproj`
 - Tests: see `Imposter_codex/modules/Tests.md` (contains tests referencing abstractions).
 
+
+## Lifecycle and setter state
+
+ClearInvocations clears history and coverage while preserving configured outcomes, their position and usage, stored property/indexer values, and subscriptions. Reset clears old histories and replaces generated state objects while retaining the instance and mode. Retained builders are detached; already-returned snapshot lists keep their records.
+
+PropertySetter<T> stores one intrusive PropertySetterInvocation<T> record per completed assignment and tracks callback usage per builder chain. Span setters adapt span matchers once when a builder is created and isolate the captured entry array from mutable callbacks/property storage, exposing it as read-only memory in the named generated record. PassThroughSetter<TInvocation> provides equivalent history, coverage, and setup usage for custom ref-struct setters while omitting the unretainable value. Generated init accessors record after direct base assignment so a throwing base initializer is represented exactly once.

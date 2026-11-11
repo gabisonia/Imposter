@@ -13,8 +13,9 @@ using global::Imposter.Tests.Features.EventImpersonation;
 namespace Imposter.Tests.Features.EventImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IEventSetupSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImpersonation.IEventSetupSut>, IEventSetupSutImposter.IEventSetupSutSetup
+	public sealed class IEventSetupSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImpersonation.IEventSetupSut>, IEventSetupSutImposter.IEventSetupSutSetup
 	{
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.EventImpersonation.IEventSetupSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.EventImpersonation.IEventSetupSut>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IAsyncSomethingHappenedEventImposterBuilder AsyncSomethingHappened => _AsyncSomethingHappened;
 
-		private readonly AsyncSomethingHappenedEventImposterBuilder _AsyncSomethingHappened;
+		private AsyncSomethingHappenedEventImposterBuilder _AsyncSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAsyncSomethingHappenedEventImposterBuilder : IAsyncSomethingHappenedEventImposterSetupBuilder, IAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -32,6 +33,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAsyncSomethingHappenedEventImposterSetupBuilder
 		{
+			IAsyncSomethingHappenedEventImposterSetupBuilder Lenient();
 			IAsyncSomethingHappenedEventImposterSetupBuilder Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> callback);
 			global::System.Threading.Tasks.Task<IAsyncSomethingHappenedEventImposterSetupBuilder> RaiseAsync(object? arg1, global::System.EventArgs arg2);
 			IAsyncSomethingHappenedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> interceptor);
@@ -41,60 +43,188 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> Unsubscriptions { get; }
+
 			IAsyncSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
 			IAsyncSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count);
 			IAsyncSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
 			IAsyncSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count);
+			IAsyncSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IAsyncSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IAsyncSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because);
+			IAsyncSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class AsyncSomethingHappenedEventImposterBuilder : IAsyncSomethingHappenedEventImposterBuilder, IAsyncSomethingHappenedEventImposterSetupBuilder, IAsyncSomethingHappenedEventImposterVerificationBuilder
+		internal sealed class AsyncSomethingHappenedEventImposterBuilder : IAsyncSomethingHappenedEventImposterBuilder, IAsyncSomethingHappenedEventImposterSetupBuilder, IAsyncSomethingHappenedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.AsyncSomethingHappened OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.AsyncSomethingHappened OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.AsyncSomethingHappened Callback";
+					}
+				}
+			}
+
+			IAsyncSomethingHappenedEventImposterSetupBuilder IAsyncSomethingHappenedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
-			internal AsyncSomethingHappenedEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal AsyncSomethingHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> IAsyncSomethingHappenedEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>> IAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>("AsyncSomethingHappened", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>("AsyncSomethingHappened", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -127,16 +257,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -146,15 +274,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("AsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("AsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("AsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -172,16 +359,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -191,15 +376,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("AsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("AsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("AsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -263,7 +507,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+							if (true)
 							{
 								performedInvocations.Add("AsyncSomethingHappened raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
 							}
@@ -271,7 +515,102 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened raised" + " " + arg1Criteria.ToString() + " " + arg2Criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("AsyncSomethingHappened raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened raised" + " " + arg1Criteria.ToString() + " " + arg2Criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IAsyncSomethingHappenedEventImposterVerificationBuilder IAsyncSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.Task>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("AsyncSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -308,7 +647,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
+							if (true)
 							{
 								performedInvocations.Add("AsyncSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
 							}
@@ -316,7 +655,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("AsyncSomethingHappened", "AsyncSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -326,14 +665,18 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((arg1, arg2));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						var task = callback(arg1, arg2);
-						if (task != default)
+						foreach (var callback in _callbacks)
 						{
-							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							var task = callback(arg1, arg2);
+							if (task != default)
+							{
+								(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
+							}
 						}
 					}
 				}
@@ -369,13 +712,13 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		public ICustomAsyncSomethingHappenedEventImposterBuilder CustomAsyncSomethingHappened => _CustomAsyncSomethingHappened;
 
-		private readonly CustomAsyncSomethingHappenedEventImposterBuilder _CustomAsyncSomethingHappened;
+		private CustomAsyncSomethingHappenedEventImposterBuilder _CustomAsyncSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomAsyncSomethingHappenedEventImposterBuilder : ICustomAsyncSomethingHappenedEventImposterSetupBuilder, ICustomAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -384,6 +727,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomAsyncSomethingHappenedEventImposterSetupBuilder
 		{
+			ICustomAsyncSomethingHappenedEventImposterSetupBuilder Lenient();
 			ICustomAsyncSomethingHappenedEventImposterSetupBuilder Callback(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> callback);
 			global::System.Threading.Tasks.Task<ICustomAsyncSomethingHappenedEventImposterSetupBuilder> RaiseAsync(object? sender, global::System.EventArgs args);
 			ICustomAsyncSomethingHappenedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> interceptor);
@@ -393,60 +737,188 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomAsyncSomethingHappenedEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> Unsubscriptions { get; }
+
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count);
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count);
 			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count);
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class CustomAsyncSomethingHappenedEventImposterBuilder : ICustomAsyncSomethingHappenedEventImposterBuilder, ICustomAsyncSomethingHappenedEventImposterSetupBuilder, ICustomAsyncSomethingHappenedEventImposterVerificationBuilder
+		internal sealed class CustomAsyncSomethingHappenedEventImposterBuilder : ICustomAsyncSomethingHappenedEventImposterBuilder, ICustomAsyncSomethingHappenedEventImposterSetupBuilder, ICustomAsyncSomethingHappenedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.CustomAsyncSomethingHappened OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.CustomAsyncSomethingHappened OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.CustomAsyncSomethingHappened Callback";
+					}
+				}
+			}
+
+			ICustomAsyncSomethingHappenedEventImposterSetupBuilder ICustomAsyncSomethingHappenedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs args)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> Handler, object? sender, global::System.EventArgs args)>? _handlerInvocations;
-			internal CustomAsyncSomethingHappenedEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal CustomAsyncSomethingHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>> ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>("CustomAsyncSomethingHappened", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>("CustomAsyncSomethingHappened", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -479,16 +951,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -498,15 +968,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("CustomAsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("CustomAsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomAsyncSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -524,16 +1053,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -543,15 +1070,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("CustomAsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("CustomAsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomAsyncSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -615,7 +1201,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args))
+							if (true)
 							{
 								performedInvocations.Add("CustomAsyncSomethingHappened raised" + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
 							}
@@ -623,7 +1209,102 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened raised" + " " + senderCriteria.ToString() + " " + argsCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> argsCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (argsCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(argsCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (senderCriteria.Matches(entry.sender) && argsCriteria.Matches(entry.args))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomAsyncSomethingHappened raised" + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened raised" + " " + senderCriteria.ToString() + " " + argsCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomAsyncSomethingHappenedEventImposterVerificationBuilder ICustomAsyncSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::Imposter.Tests.Features.EventImpersonation.AsyncEventHandler<global::System.EventArgs>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomAsyncSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -660,7 +1341,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
+							if (true)
 							{
 								performedInvocations.Add("CustomAsyncSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " args: " + FormatValue(entry.args));
 							}
@@ -668,7 +1349,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomAsyncSomethingHappened", "CustomAsyncSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -678,14 +1359,18 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, args));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						var task = callback(sender, args);
-						if (task != default)
+						foreach (var callback in _callbacks)
 						{
-							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							var task = callback(sender, args);
+							if (task != default)
+							{
+								(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task);
+							}
 						}
 					}
 				}
@@ -721,13 +1406,13 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		public ISomethingHappenedEventImposterBuilder SomethingHappened => _SomethingHappened;
 
-		private readonly SomethingHappenedEventImposterBuilder _SomethingHappened;
+		private SomethingHappenedEventImposterBuilder _SomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISomethingHappenedEventImposterBuilder : ISomethingHappenedEventImposterSetupBuilder, ISomethingHappenedEventImposterVerificationBuilder
 		{
@@ -736,6 +1421,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISomethingHappenedEventImposterSetupBuilder
 		{
+			ISomethingHappenedEventImposterSetupBuilder Lenient();
 			ISomethingHappenedEventImposterSetupBuilder Callback(global::System.EventHandler callback);
 			ISomethingHappenedEventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			ISomethingHappenedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
@@ -745,60 +1431,188 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ISomethingHappenedEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> Unsubscriptions { get; }
+
 			ISomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			ISomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			ISomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
 			ISomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			ISomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ISomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ISomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because);
+			ISomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class SomethingHappenedEventImposterBuilder : ISomethingHappenedEventImposterBuilder, ISomethingHappenedEventImposterSetupBuilder, ISomethingHappenedEventImposterVerificationBuilder
+		internal sealed class SomethingHappenedEventImposterBuilder : ISomethingHappenedEventImposterBuilder, ISomethingHappenedEventImposterSetupBuilder, ISomethingHappenedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.SomethingHappened OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.SomethingHappened OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.SomethingHappened Callback";
+					}
+				}
+			}
+
+			ISomethingHappenedEventImposterSetupBuilder ISomethingHappenedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
-			internal SomethingHappenedEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal SomethingHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> ISomethingHappenedEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> ISomethingHappenedEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.EventHandler handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>("SomethingHappened", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.EventHandler handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>("SomethingHappened", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -831,16 +1645,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -850,15 +1662,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("SomethingHappened subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("SomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("SomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -876,16 +1747,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -895,15 +1764,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("SomethingHappened unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("SomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("SomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -967,7 +1895,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+							if (true)
 							{
 								performedInvocations.Add("SomethingHappened raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 							}
@@ -975,7 +1903,102 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened raised" + " " + senderCriteria.ToString() + " " + eCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (eCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(eCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("SomethingHappened raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened raised" + " " + senderCriteria.ToString() + " " + eCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ISomethingHappenedEventImposterVerificationBuilder ISomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("SomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1012,7 +2035,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
+							if (true)
 							{
 								performedInvocations.Add("SomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 							}
@@ -1020,7 +2043,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("SomethingHappened", "SomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1029,11 +2052,15 @@ namespace Imposter.Tests.Features.EventImpersonation
 			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, e));
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(sender, e);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(sender, e);
+						}
 					}
 				}
 
@@ -1049,13 +2076,13 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		public IValueTaskSomethingHappenedEventImposterBuilder ValueTaskSomethingHappened => _ValueTaskSomethingHappened;
 
-		private readonly ValueTaskSomethingHappenedEventImposterBuilder _ValueTaskSomethingHappened;
+		private ValueTaskSomethingHappenedEventImposterBuilder _ValueTaskSomethingHappened;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskSomethingHappenedEventImposterBuilder : IValueTaskSomethingHappenedEventImposterSetupBuilder, IValueTaskSomethingHappenedEventImposterVerificationBuilder
 		{
@@ -1064,6 +2091,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskSomethingHappenedEventImposterSetupBuilder
 		{
+			IValueTaskSomethingHappenedEventImposterSetupBuilder Lenient();
 			IValueTaskSomethingHappenedEventImposterSetupBuilder Callback(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> callback);
 			global::System.Threading.Tasks.Task<IValueTaskSomethingHappenedEventImposterSetupBuilder> RaiseAsync(object? arg1, global::System.EventArgs arg2);
 			IValueTaskSomethingHappenedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> interceptor);
@@ -1073,60 +2101,188 @@ namespace Imposter.Tests.Features.EventImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IValueTaskSomethingHappenedEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> Unsubscriptions { get; }
+
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count);
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count);
 			IValueTaskSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count);
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because);
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class ValueTaskSomethingHappenedEventImposterBuilder : IValueTaskSomethingHappenedEventImposterBuilder, IValueTaskSomethingHappenedEventImposterSetupBuilder, IValueTaskSomethingHappenedEventImposterVerificationBuilder
+		internal sealed class ValueTaskSomethingHappenedEventImposterBuilder : IValueTaskSomethingHappenedEventImposterBuilder, IValueTaskSomethingHappenedEventImposterSetupBuilder, IValueTaskSomethingHappenedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.ValueTaskSomethingHappened OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.ValueTaskSomethingHappened OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.EventImpersonation.IEventSetupSut.ValueTaskSomethingHappened Callback";
+					}
+				}
+			}
+
+			IValueTaskSomethingHappenedEventImposterSetupBuilder IValueTaskSomethingHappenedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? arg1, global::System.EventArgs arg2)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> Handler, object? arg1, global::System.EventArgs arg2)>? _handlerInvocations;
-			internal ValueTaskSomethingHappenedEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal ValueTaskSomethingHappenedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> IValueTaskSomethingHappenedEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>> IValueTaskSomethingHappenedEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>("ValueTaskSomethingHappened", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask> handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>("ValueTaskSomethingHappened", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -1159,16 +2315,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -1178,15 +2332,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("ValueTaskSomethingHappened subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("ValueTaskSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("ValueTaskSomethingHappened subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -1204,16 +2417,14 @@ namespace Imposter.Tests.Features.EventImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -1223,15 +2434,74 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("ValueTaskSomethingHappened unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("ValueTaskSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("ValueTaskSomethingHappened unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -1295,7 +2565,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+							if (true)
 							{
 								performedInvocations.Add("ValueTaskSomethingHappened raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
 							}
@@ -1303,7 +2573,102 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened raised" + " " + arg1Criteria.ToString() + " " + arg2Criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> arg1Criteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> arg2Criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (arg1Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg1Criteria));
+				}
+
+				if (arg2Criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(arg2Criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (arg1Criteria.Matches(entry.arg1) && arg2Criteria.Matches(entry.arg2))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("ValueTaskSomethingHappened raised" + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened raised" + " " + arg1Criteria.ToString() + " " + arg2Criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IValueTaskSomethingHappenedEventImposterVerificationBuilder IValueTaskSomethingHappenedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Func<object?, global::System.EventArgs, global::System.Threading.Tasks.ValueTask>> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("ValueTaskSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1340,7 +2705,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
+							if (true)
 							{
 								performedInvocations.Add("ValueTaskSomethingHappened handler invoked" + " handler: " + FormatValue(entry.Handler) + " arg1: " + FormatValue(entry.arg1) + " arg2: " + FormatValue(entry.arg2));
 							}
@@ -1348,7 +2713,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("ValueTaskSomethingHappened", "ValueTaskSomethingHappened handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -1358,14 +2723,18 @@ namespace Imposter.Tests.Features.EventImpersonation
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((arg1, arg2));
 				global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>? pendingTasks = null;
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						var task = callback(arg1, arg2);
-						if (task != default)
+						foreach (var callback in _callbacks)
 						{
-							(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task.AsTask());
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							var task = callback(arg1, arg2);
+							if (task != default)
+							{
+								(pendingTasks ??= new global::System.Collections.Generic.List<global::System.Threading.Tasks.Task>()).Add(task.AsTask());
+							}
 						}
 					}
 				}
@@ -1401,7 +2770,7 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -1432,11 +2801,59 @@ namespace Imposter.Tests.Features.EventImpersonation
 
 		public IEventSetupSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder();
-			this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder();
-			this._SomethingHappened = new SomethingHappenedEventImposterBuilder();
-			this._ValueTaskSomethingHappened = new ValueTaskSomethingHappenedEventImposterBuilder();
+			this._imposterMode = invocationBehavior;
+			this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder(this);
+			this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder(this);
+			this._SomethingHappened = new SomethingHappenedEventImposterBuilder(this);
+			this._ValueTaskSomethingHappened = new ValueTaskSomethingHappenedEventImposterBuilder(this);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_AsyncSomethingHappened.Snapshot());
+			invocations.AddRange(_CustomAsyncSomethingHappened.Snapshot());
+			invocations.AddRange(_SomethingHappened.Snapshot());
+			invocations.AddRange(_ValueTaskSomethingHappened.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_AsyncSomethingHappened, _CustomAsyncSomethingHappened, _SomethingHappened, _ValueTaskSomethingHappened);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_AsyncSomethingHappened, _CustomAsyncSomethingHappened, _SomethingHappened, _ValueTaskSomethingHappened);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_AsyncSomethingHappened, _CustomAsyncSomethingHappened, _SomethingHappened, _ValueTaskSomethingHappened);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_AsyncSomethingHappened.ClearInvocations();
+			_CustomAsyncSomethingHappened.ClearInvocations();
+			_SomethingHappened.ClearInvocations();
+			_ValueTaskSomethingHappened.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_AsyncSomethingHappened.ClearInvocations();
+			_CustomAsyncSomethingHappened.ClearInvocations();
+			_SomethingHappened.ClearInvocations();
+			_ValueTaskSomethingHappened.ClearInvocations();
+			this._imposterMode = invocationBehavior;
+			this._AsyncSomethingHappened = new AsyncSomethingHappenedEventImposterBuilder(this);
+			this._CustomAsyncSomethingHappened = new CustomAsyncSomethingHappenedEventImposterBuilder(this);
+			this._SomethingHappened = new SomethingHappenedEventImposterBuilder(this);
+			this._ValueTaskSomethingHappened = new ValueTaskSomethingHappenedEventImposterBuilder(this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

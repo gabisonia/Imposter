@@ -1,4 +1,4 @@
-using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
+﻿using Imposter.CodeGenerator.Features.Shared.BuilderInterface;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -38,5 +38,13 @@ internal static class FluentInterfaceBuilder
         new InterfaceDeclarationBuilder(name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
+            .AddMember(
+                InterfaceMethod(
+                    called.ReturnType,
+                    called.Name,
+                    called.CountParameter,
+                    called.BecauseParameter
+                )
+            )
             .Build();
 }

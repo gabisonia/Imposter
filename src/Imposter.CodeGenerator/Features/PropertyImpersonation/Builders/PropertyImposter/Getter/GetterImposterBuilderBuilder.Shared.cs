@@ -89,6 +89,41 @@ internal static partial class GetterImposterBuilderBuilder
             new MethodDeclarationBuilder(called.ReturnType, called.Name)
                 .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
                 .AddParameter(ParameterSyntax(called.CountParameter))
+                .AddParameter(ParameterSyntax(called.BecauseParameter))
+                .WithBody(
+                    Block(
+                        BaseExpression()
+                            .Dot(IdentifierName(called.Name))
+                            .Call([
+                                Argument(IdentifierName(called.CountParameter.Name)),
+                                Argument(IdentifierName(called.BecauseParameter.Name)),
+                            ])
+                            .ToStatementSyntax()
+                    )
+                )
+                .Build()
+        );
+        builder.AddMember(
+            new MethodDeclarationBuilder(
+                builderInterface.ContinuationInterfaceTypeSyntax,
+                "Lenient"
+            )
+                .WithExplicitInterfaceSpecifier(builderInterface.ContinuationInterfaceTypeSyntax)
+                .WithBody(
+                    Block(
+                        BaseExpression()
+                            .Dot(IdentifierName("MarkLenient"))
+                            .Call()
+                            .ToStatementSyntax(),
+                        ReturnThis
+                    )
+                )
+                .Build()
+        );
+        builder.AddMember(
+            new MethodDeclarationBuilder(called.ReturnType, called.Name)
+                .WithExplicitInterfaceSpecifier(builderInterface.VerificationInterfaceTypeSyntax)
+                .AddParameter(ParameterSyntax(called.CountParameter))
                 .WithBody(
                     Block(
                         BaseExpression()

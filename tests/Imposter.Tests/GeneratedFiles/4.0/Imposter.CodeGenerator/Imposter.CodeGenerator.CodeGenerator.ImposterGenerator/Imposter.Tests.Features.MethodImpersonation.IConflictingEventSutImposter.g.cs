@@ -13,8 +13,9 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class IConflictingEventSutImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut>, IConflictingEventSutImposter.IConflictingEventSutSetup, IConflictingEventSutImposter.IHasActionChangedSetup, IConflictingEventSutImposter.IHasEventHandlerChangedSetup
+	public sealed class IConflictingEventSutImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut>, IConflictingEventSutImposter.IConflictingEventSutSetup, IConflictingEventSutImposter.IHasActionChangedSetup, IConflictingEventSutImposter.IHasEventHandlerChangedSetup
 	{
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut>.Instance()
 		{
@@ -23,7 +24,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IChangedEventImposterBuilder Changed => _Changed;
 
-		private readonly ChangedEventImposterBuilder _Changed;
+		private ChangedEventImposterBuilder _Changed;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterBuilder : IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
 		{
@@ -32,6 +33,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterSetupBuilder
 		{
+			IChangedEventImposterSetupBuilder Lenient();
 			IChangedEventImposterSetupBuilder Callback(global::System.Action callback);
 			IChangedEventImposterSetupBuilder Raise();
 			IChangedEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Action> interceptor);
@@ -41,60 +43,188 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChangedEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> Unsubscriptions { get; }
+
 			IChangedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count);
 			IChangedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count);
 			IChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count);
 			IChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count);
+			IChangedEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count, string? because);
+			IChangedEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class ChangedEventImposterBuilder : IChangedEventImposterBuilder, IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder
+		internal sealed class ChangedEventImposterBuilder : IChangedEventImposterBuilder, IChangedEventImposterSetupBuilder, IChangedEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasActionChanged.Changed OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasActionChanged.Changed OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasActionChanged.Changed Callback";
+					}
+				}
+			}
+
+			IChangedEventImposterSetupBuilder IChangedEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
-			internal ChangedEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal ChangedEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> IChangedEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> IChangedEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.Action handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>("Changed", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.Action handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>("Changed", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -127,16 +257,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -146,15 +274,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -172,16 +359,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -191,15 +376,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -261,7 +505,92 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (true)
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed raised");
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChangedEventImposterVerificationBuilder IChangedEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -298,7 +627,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry))
+							if (true)
 							{
 								performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry));
 							}
@@ -306,7 +635,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -315,11 +644,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private void RaiseInternal()
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(true);
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback();
+						}
 					}
 				}
 
@@ -335,13 +668,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		public IChanged_1EventImposterBuilder Changed_1 => _Changed_1;
 
-		private readonly Changed_1EventImposterBuilder _Changed_1;
+		private Changed_1EventImposterBuilder _Changed_1;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChanged_1EventImposterBuilder : IChanged_1EventImposterSetupBuilder, IChanged_1EventImposterVerificationBuilder
 		{
@@ -350,6 +683,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChanged_1EventImposterSetupBuilder
 		{
+			IChanged_1EventImposterSetupBuilder Lenient();
 			IChanged_1EventImposterSetupBuilder Callback(global::System.EventHandler callback);
 			IChanged_1EventImposterSetupBuilder Raise(object? sender, global::System.EventArgs e);
 			IChanged_1EventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.EventHandler> interceptor);
@@ -359,60 +693,188 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IChanged_1EventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> Unsubscriptions { get; }
+
 			IChanged_1EventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			IChanged_1EventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count);
 			IChanged_1EventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count);
 			IChanged_1EventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count);
+			IChanged_1EventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because);
+			IChanged_1EventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class Changed_1EventImposterBuilder : IChanged_1EventImposterBuilder, IChanged_1EventImposterSetupBuilder, IChanged_1EventImposterVerificationBuilder
+		internal sealed class Changed_1EventImposterBuilder : IChanged_1EventImposterBuilder, IChanged_1EventImposterSetupBuilder, IChanged_1EventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasEventHandlerChanged.Changed OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasEventHandlerChanged.Changed OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IHasEventHandlerChanged.Changed Callback";
+					}
+				}
+			}
+
+			IChanged_1EventImposterSetupBuilder IChanged_1EventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.EventHandler>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.EventHandler>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.EventHandler>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.EventHandler>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<(object? sender, global::System.EventArgs e)>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<(global::System.EventHandler Handler, object? sender, global::System.EventArgs e)>? _handlerInvocations;
-			internal Changed_1EventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal Changed_1EventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IChanged_1EventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>> IChanged_1EventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.EventHandler handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>("Changed", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.EventHandler handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>("Changed", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -445,16 +907,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -464,15 +924,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -490,16 +1009,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -509,15 +1026,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.EventHandler> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.EventHandler>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -581,7 +1157,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _history)
 						{
-							if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+							if (true)
 							{
 								performedInvocations.Add("Changed raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 							}
@@ -589,7 +1165,102 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + " " + senderCriteria.ToString() + " " + eCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Arg<object?> senderCriteria, global::Imposter.Abstractions.Arg<global::System.EventArgs> eCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (senderCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(senderCriteria));
+				}
+
+				if (eCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(eCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (senderCriteria.Matches(entry.sender) && eCriteria.Matches(entry.e))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed raised" + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed raised" + " " + senderCriteria.ToString() + " " + eCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			IChanged_1EventImposterVerificationBuilder IChanged_1EventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.EventHandler> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry.Handler))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -626,7 +1297,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry.Handler))
+							if (true)
 							{
 								performedInvocations.Add("Changed handler invoked" + " handler: " + FormatValue(entry.Handler) + " sender: " + FormatValue(entry.sender) + " e: " + FormatValue(entry.e));
 							}
@@ -634,7 +1305,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("Changed", "Changed handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -643,11 +1314,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private void RaiseInternal(object? sender, global::System.EventArgs e)
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push((sender, e));
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback(sender, e);
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback(sender, e);
+						}
 					}
 				}
 
@@ -663,13 +1338,13 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		public ICustomEventEventImposterBuilder CustomEvent => _CustomEvent;
 
-		private readonly CustomEventEventImposterBuilder _CustomEvent;
+		private CustomEventEventImposterBuilder _CustomEvent;
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomEventEventImposterBuilder : ICustomEventEventImposterSetupBuilder, ICustomEventEventImposterVerificationBuilder
 		{
@@ -678,6 +1353,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomEventEventImposterSetupBuilder
 		{
+			ICustomEventEventImposterSetupBuilder Lenient();
 			ICustomEventEventImposterSetupBuilder Callback(global::System.Action callback);
 			ICustomEventEventImposterSetupBuilder Raise();
 			ICustomEventEventImposterSetupBuilder OnSubscribe(global::System.Action<global::System.Action> interceptor);
@@ -687,60 +1363,188 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface ICustomEventEventImposterVerificationBuilder
 		{
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> Subscriptions { get; }
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> Unsubscriptions { get; }
+
 			ICustomEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count);
 			ICustomEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count);
 			ICustomEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count);
 			ICustomEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count);
+			ICustomEventEventImposterVerificationBuilder Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder Raised(global::Imposter.Abstractions.Count count, string? because);
+			ICustomEventEventImposterVerificationBuilder HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal sealed class CustomEventEventImposterBuilder : ICustomEventEventImposterBuilder, ICustomEventEventImposterSetupBuilder, ICustomEventEventImposterVerificationBuilder
+		internal sealed class CustomEventEventImposterBuilder : ICustomEventEventImposterBuilder, ICustomEventEventImposterSetupBuilder, ICustomEventEventImposterVerificationBuilder, global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				if (_isLenient)
+					yield break;
+				if (_subscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _subscribeInterceptors)
+					{
+						if (++index > _subscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut.CustomEvent OnSubscribe";
+					}
+				}
+
+				if (_unsubscribeInterceptors != null)
+				{
+					int index = 0;
+					foreach (var registration in _unsubscribeInterceptors)
+					{
+						if (++index > _unsubscribeUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut.CustomEvent OnUnsubscribe";
+					}
+				}
+
+				if (_callbacks != null)
+				{
+					int index = 0;
+					foreach (var registration in _callbacks)
+					{
+						if (++index > _callbacksUsed)
+							yield return "Imposter.Tests.Features.MethodImpersonation.IConflictingEventSut.CustomEvent Callback";
+					}
+				}
+			}
+
+			ICustomEventEventImposterSetupBuilder ICustomEventEventImposterSetupBuilder.Lenient()
+			{
+				_isLenient = true;
+				return this;
+			}
+
 			private global::Imposter.Abstractions.EventHandlerCollection<global::System.Action>? _activeHandlers;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _subscribeHistory;
-			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _unsubscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>? _subscribeHistory;
+			private global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>? _unsubscribeHistory;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _subscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action<global::System.Action>>? _unsubscribeInterceptors;
 			private global::Imposter.Abstractions.CallbackCollection<global::System.Action>? _callbacks;
 			private global::System.Collections.Concurrent.ConcurrentStack<bool>? _history;
 			private global::System.Collections.Concurrent.ConcurrentStack<global::System.Action>? _handlerInvocations;
-			internal CustomEventEventImposterBuilder()
+			private readonly global::Imposter.Abstractions.IImposter Owner;
+			private int _subscribeUsed;
+			private int _unsubscribeUsed;
+			private int _callbacksUsed;
+			private bool _isLenient;
+			internal CustomEventEventImposterBuilder(global::Imposter.Abstractions.IImposter owner)
 			{
+				Owner = owner;
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> ICustomEventEventImposterVerificationBuilder.Subscriptions
+			{
+				get
+				{
+					return _subscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>()) : _subscribeHistory.Snapshot();
+				}
+			}
+
+			global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>> ICustomEventEventImposterVerificationBuilder.Unsubscriptions
+			{
+				get
+				{
+					return _unsubscribeHistory == null ? global::Imposter.Abstractions.InvocationSnapshots.Order(new global::System.Collections.Generic.List<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>()) : _unsubscribeHistory.Snapshot();
+				}
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_subscribeHistory, _unsubscribeHistory);
+			}
+
+			internal void ClearInvocations()
+			{
+				_subscribeHistory?.Clear();
+				_unsubscribeHistory?.Clear();
+				_history?.Clear();
+				_handlerInvocations?.Clear();
 			}
 
 			internal void Subscribe(global::System.Action handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(handler);
-				if (_subscribeInterceptors != null)
-				{
-					foreach (var interceptor in _subscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Combine(handler);
+					{
+						int interceptorIndex = 0;
+						if (_subscribeInterceptors != null)
+						{
+							foreach (var interceptor in _subscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _subscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _subscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>("CustomEvent", handler, true, invocationSequence, invocationFailure));
 				}
 			}
 
 			internal void Unsubscribe(global::System.Action handler)
 			{
-				if (handler is null)
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				global::System.Exception? invocationFailure = null;
+				try
 				{
-					throw new global::System.ArgumentNullException(nameof(handler));
-				}
-
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
-				global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(handler);
-				if (_unsubscribeInterceptors != null)
-				{
-					foreach (var interceptor in _unsubscribeInterceptors)
+					if (handler is null)
 					{
-						interceptor(handler);
+						throw new global::System.ArgumentNullException(nameof(handler));
 					}
+
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _activeHandlers).Remove(handler);
+					{
+						int interceptorIndex = 0;
+						if (_unsubscribeInterceptors != null)
+						{
+							foreach (var interceptor in _unsubscribeInterceptors)
+							{
+								global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _unsubscribeUsed, ++interceptorIndex);
+								interceptor(handler);
+							}
+						}
+					}
+				}
+				catch (global::System.Exception caughtException)
+				{
+					invocationFailure = caughtException;
+					throw;
+				}
+				finally
+				{
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _unsubscribeHistory).Push(new global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>("CustomEvent", handler, false, invocationSequence, invocationFailure));
 				}
 			}
 
@@ -773,16 +1577,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_subscribeHistory != null)
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _subscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -792,15 +1594,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _subscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("CustomEvent subscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("CustomEvent subscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Subscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _subscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _subscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_subscribeHistory != null)
+					{
+						foreach (var entry in _subscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomEvent subscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent subscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -818,16 +1679,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					throw new global::System.ArgumentNullException(nameof(count));
 				}
 
-				int actual = 0;
-				if (_unsubscribeHistory != null)
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
 				{
-					foreach (var entry in _unsubscribeHistory)
-					{
-						if (criteria.Matches(entry))
-						{
-							actual++;
-						}
-					}
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
 				}
 
 				if (!count.Matches(actual))
@@ -837,15 +1696,74 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _unsubscribeHistory)
 						{
-							if (criteria.Matches(entry))
+							if (true)
 							{
-								performedInvocations.Add("CustomEvent unsubscribed" + " handler: " + FormatValue(entry));
+								performedInvocations.Add("CustomEvent unsubscribed" + " handler: " + FormatValue(entry.Handler));
 							}
 						}
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Unsubscribed(global::Imposter.Abstractions.Arg<global::System.Action> criteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (criteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(criteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				var actual = 0;
+				var snapshot = _unsubscribeHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<global::Imposter.Abstractions.EventSubscriptionInvocation<global::System.Action>>.Enumerator) : _unsubscribeHistory.GetEnumerator();
+				var cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						actual++;
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_unsubscribeHistory != null)
+					{
+						foreach (var entry in _unsubscribeHistory)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomEvent unsubscribed" + " handler: " + FormatValue(entry.Handler));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent unsubscribed" + " " + criteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				cursor = snapshot;
+				while (cursor.MoveNext())
+				{
+					var entry = cursor.Current;
+					if (criteria.Matches(entry.Handler))
+						entry.MarkVerified();
 				}
 
 				return this;
@@ -907,7 +1825,92 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent raised", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.Raised(global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_history != null)
+				{
+					foreach (var entry in _history)
+					{
+						if (true)
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_history != null)
+					{
+						foreach (var entry in _history)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomEvent raised");
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent raised", count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+				}
+
+				return this;
+			}
+
+			ICustomEventEventImposterVerificationBuilder ICustomEventEventImposterVerificationBuilder.HandlerInvoked(global::Imposter.Abstractions.Arg<global::System.Action> handlerCriteria, global::Imposter.Abstractions.Count count, string? because)
+			{
+				if (handlerCriteria is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(handlerCriteria));
+				}
+
+				if (count is null)
+				{
+					throw new global::System.ArgumentNullException(nameof(count));
+				}
+
+				int actual = 0;
+				if (_handlerInvocations != null)
+				{
+					foreach (var entry in _handlerInvocations)
+					{
+						if (handlerCriteria.Matches(entry))
+						{
+							actual++;
+						}
+					}
+				}
+
+				if (!count.Matches(actual))
+				{
+					var performedInvocations = new global::System.Collections.Generic.List<string>();
+					if (_handlerInvocations != null)
+					{
+						foreach (var entry in _handlerInvocations)
+						{
+							if (true)
+							{
+								performedInvocations.Add("CustomEvent handler invoked" + " handler: " + FormatValue(entry));
+							}
+						}
+					}
+
+					performedInvocations.Reverse();
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -944,7 +1947,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						foreach (var entry in _handlerInvocations)
 						{
-							if (handlerCriteria.Matches(entry))
+							if (true)
 							{
 								performedInvocations.Add("CustomEvent handler invoked" + " handler: " + FormatValue(entry));
 							}
@@ -952,7 +1955,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					}
 
 					performedInvocations.Reverse();
-					throw new global::Imposter.Abstractions.VerificationFailedException(count, actual, string.Join(global::System.Environment.NewLine, performedInvocations));
+					throw new global::Imposter.Abstractions.VerificationFailedException("CustomEvent", "CustomEvent handler invoked" + " " + handlerCriteria.ToString(), count, actual, string.Join(global::System.Environment.NewLine, performedInvocations), null, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 				}
 
 				return this;
@@ -961,11 +1964,15 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			private void RaiseInternal()
 			{
 				global::System.Threading.LazyInitializer.EnsureInitialized(ref _history).Push(true);
-				if (_callbacks != null)
 				{
-					foreach (var callback in _callbacks)
+					int callbackIndex = 0;
+					if (_callbacks != null)
 					{
-						callback();
+						foreach (var callback in _callbacks)
+						{
+							global::Imposter.Abstractions.SetupUsage.MarkUsed(ref _callbacksUsed, ++callbackIndex);
+							callback();
+						}
 					}
 				}
 
@@ -981,7 +1988,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -1026,10 +2033,54 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 		public IConflictingEventSutImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._Changed = new ChangedEventImposterBuilder();
-			this._Changed_1 = new Changed_1EventImposterBuilder();
-			this._CustomEvent = new CustomEventEventImposterBuilder();
+			this._imposterMode = invocationBehavior;
+			this._Changed = new ChangedEventImposterBuilder(this);
+			this._Changed_1 = new Changed_1EventImposterBuilder(this);
+			this._CustomEvent = new CustomEventEventImposterBuilder(this);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_Changed.Snapshot());
+			invocations.AddRange(_Changed_1.Snapshot());
+			invocations.AddRange(_CustomEvent.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_Changed, _Changed_1, _CustomEvent);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_Changed, _Changed_1, _CustomEvent);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_Changed, _Changed_1, _CustomEvent);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_Changed.ClearInvocations();
+			_Changed_1.ClearInvocations();
+			_CustomEvent.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_Changed.ClearInvocations();
+			_Changed_1.ClearInvocations();
+			_CustomEvent.ClearInvocations();
+			this._imposterMode = invocationBehavior;
+			this._Changed = new ChangedEventImposterBuilder(this);
+			this._Changed_1 = new Changed_1EventImposterBuilder(this);
+			this._CustomEvent = new CustomEventEventImposterBuilder(this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

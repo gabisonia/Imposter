@@ -43,6 +43,19 @@ internal static partial class InvocationImposterGroupBuilder
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )
             .AddMember(BuildThenInterfaceMethod(method))
+            .AddMember(
+                InterfaceMethod(
+                    method.MethodInvocationImposterGroup.ContinuationInterface.Syntax,
+                    global::Imposter
+                        .CodeGenerator
+                        .Features
+                        .MethodImpersonation
+                        .Metadata
+                        .InvocationSetup
+                        .MethodInvocationImposterGroupMetadata
+                        .LenientMethodName
+                )
+            )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .Build();
 

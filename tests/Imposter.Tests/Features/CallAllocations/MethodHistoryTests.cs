@@ -196,6 +196,10 @@ namespace Imposter.Tests.Features.CallAllocations
             }
             value.ShouldBe(99);
             observed.ShouldBe(new[] { 7 });
+            if (readOnly)
+                sut.GenericIn<int>(7).Called(Count.Once());
+            else
+                sut.Generic<int>(7).Called(Count.Once());
         }
 
         [Fact]

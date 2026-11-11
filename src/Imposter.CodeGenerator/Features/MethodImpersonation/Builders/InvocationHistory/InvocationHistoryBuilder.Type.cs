@@ -23,10 +23,12 @@ internal static partial class InvocationHistoryBuilder
             method.GenericTypeParameterListSyntax
         )
             .AddConstraintClauses(method.GenericTypeConstraintClauses)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddModifier(Token(SyntaxKind.SealedKeyword))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Collection.NodeSyntax))
             .AddBaseType(SimpleBaseType(method.InvocationHistory.Interface.Syntax))
             .AddMembers(fields)
+            .AddMembers(BuildPublicProperties(method))
             .AddMember(
                 SyntaxFactoryHelper.BuildConstructorAndInitializeMembers(
                     method.InvocationHistory.Name,
@@ -37,6 +39,122 @@ internal static partial class InvocationHistoryBuilder
             .AddMember(BuildToStringMethod(method))
             .AddMember(FormatValueMethodBuilder.Build())
             .Build();
+    }
+
+    private static MemberDeclarationSyntax[] BuildPublicProperties(
+        in ImposterTargetMethodMetadata method
+    )
+    {
+        var properties = new System.Collections.Generic.List<MemberDeclarationSyntax>();
+        foreach (var parameter in method.Parameters.MatchedParameterMetadata)
+        {
+            TypeSyntax type = parameter.NullableAwareKeptTypeSyntax;
+            if (parameter.Model.Span is { } span)
+                type = WellKnownTypes.System.ReadOnlyMemory(
+                    SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
+                );
+            properties.Add(
+                PublicProperty(
+                    type,
+                    method.InvocationHistory.ArgumentProperties[parameter.Name],
+                    IdentifierName(method.InvocationHistory.ArgumentFields[parameter.Name])
+                )
+            );
+        }
+        if (method.KeepsResult)
+        {
+            TypeSyntax resultType = method.ReturnType.KeptTypeSyntax;
+            if (method.Model.ReturnType.Span is { } span)
+                resultType = WellKnownTypes.System.ReadOnlyMemory(
+                    SyntaxFactoryHelper.TypeSyntaxIncludingNullable(span.ElementType)
+                );
+            properties.Add(
+                PublicProperty(
+                    resultType,
+                    "Result",
+                    IdentifierName(InvocationHistoryTypeMetadata.ResultFieldName)
+                )
+            );
+        }
+        properties.Add(
+            PublicProperty(WellKnownTypes.String, "Member", method.Model.Name.StringLiteral(), true)
+        );
+        var stamp = VolatileSyntaxHelper.VolatileRead(
+            InvocationHistoryTypeMetadata.SequenceFieldName
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.Long,
+                "Sequence",
+                BinaryExpression(
+                    SyntaxKind.BitwiseAndExpression,
+                    stamp,
+                    WellKnownTypes.Long.Dot(IdentifierName("MaxValue"))
+                ),
+                true
+            )
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.Bool,
+                "IsVerified",
+                BinaryExpression(
+                    SyntaxKind.LessThanExpression,
+                    stamp,
+                    SyntaxFactoryHelper.NumericLiteral(0)
+                ),
+                true
+            )
+        );
+        properties.Add(
+            new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkVerified")
+                .AddModifier(Token(SyntaxKind.PublicKeyword))
+                .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                .WithBody(
+                    Block(
+                        WellKnownTypes
+                            .System.Threading.Interlocked.Dot(IdentifierName("Exchange"))
+                            .Call([
+                                SyntaxFactoryHelper.RefArgument(
+                                    IdentifierName(InvocationHistoryTypeMetadata.SequenceFieldName)
+                                ),
+                                Argument(
+                                    BinaryExpression(
+                                        SyntaxKind.BitwiseOrExpression,
+                                        stamp,
+                                        WellKnownTypes.Long.Dot(IdentifierName("MinValue"))
+                                    )
+                                ),
+                            ])
+                            .ToStatementSyntax()
+                    )
+                )
+                .Build()
+        );
+        properties.Add(
+            PublicProperty(
+                WellKnownTypes.System.Exception.ToNullableType(),
+                "Exception",
+                IdentifierName(InvocationHistoryTypeMetadata.ExceptionFieldName),
+                true
+            )
+        );
+        return properties.ToArray();
+    }
+
+    private static PropertyDeclarationSyntax PublicProperty(
+        TypeSyntax type,
+        string name,
+        ExpressionSyntax value,
+        bool isOverride = false
+    )
+    {
+        var builder = new PropertyDeclarationBuilder(type, name).AddModifier(
+            Token(SyntaxKind.PublicKeyword)
+        );
+        if (isOverride)
+            builder.AddModifier(Token(SyntaxKind.OverrideKeyword));
+        return builder.WithGetterBody(Block(ReturnStatement(value))).Build();
     }
 
     private static MethodDeclarationSyntax BuildToStringMethod(

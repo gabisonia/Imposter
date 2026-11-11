@@ -15,17 +15,17 @@ internal static class MethodImposterMembersBuilder
         in ImposterGenerationContext imposterGenerationContext
     ) =>
         imposterGenerationContext.Imposter.Methods.Select(method =>
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(method.ImposterField)
+            SyntaxFactoryHelper.SingleVariableField(method.ImposterField, SyntaxKind.PrivateKeyword)
         );
 
     internal static IEnumerable<FieldDeclarationSyntax> BuildInvocationHistoryFields(
         in ImposterGenerationContext imposterGenerationContext
     ) =>
         imposterGenerationContext.Imposter.Methods.Select(method =>
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            SyntaxFactoryHelper.SingleVariableField(
                 method.InvocationHistory.Collection.Syntax,
                 method.InvocationHistory.Collection.AsField.Name,
-                method.InvocationHistory.Collection.Syntax.New()
+                SyntaxKind.PrivateKeyword
             )
         );
 

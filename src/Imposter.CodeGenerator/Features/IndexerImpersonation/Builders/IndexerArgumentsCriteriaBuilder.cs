@@ -39,6 +39,23 @@ internal static class IndexerArgumentsCriteriaBuilder
                 : null
         );
         classBuilder = classBuilder.AddMember(BuildConstructor(indexer));
+        if (indexer.Core.HasSetter)
+        {
+            classBuilder = classBuilder.AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    indexer.ArgumentsCriteria.SetterLenientFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            );
+            classBuilder = classBuilder.AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    indexer.ArgumentsCriteria.SetterUsedFieldName,
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            );
+        }
         classBuilder = classBuilder.AddMember(BuildMatchesMethod(indexer));
 
         return classBuilder.Build();

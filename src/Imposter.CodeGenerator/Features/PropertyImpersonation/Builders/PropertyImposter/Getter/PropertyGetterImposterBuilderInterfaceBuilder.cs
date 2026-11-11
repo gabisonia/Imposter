@@ -27,10 +27,16 @@ internal static class PropertyGetterImposterBuilderInterfaceBuilder
                 property.GetterImposterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                property.GetterImposterBuilderInterface.ContinuationInterfaceName,
-                property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
-                property.GetterImposterBuilderInterface.ThenMethod
-            ),
+                    property.GetterImposterBuilderInterface.ContinuationInterfaceName,
+                    property.GetterImposterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    property.GetterImposterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        property.GetterImposterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        "Lenient"
+                    )
+                ),
             VerificationInterface(
                 property.GetterImposterBuilderInterface.VerificationInterfaceName,
                 property.GetterImposterBuilderInterface.CalledMethod

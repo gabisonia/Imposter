@@ -2,6 +2,7 @@
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.Imposter.Builders;
@@ -27,7 +28,10 @@ internal readonly ref struct PropertyImposterMembersBuilder(
         );
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(property.BuilderField)
+            SyntaxFactoryHelper.SingleVariableField(
+                property.BuilderField,
+                SyntaxKind.PrivateKeyword
+            )
         );
 
         constructorBodyBuilder.AddStatement(
@@ -37,6 +41,7 @@ internal readonly ref struct PropertyImposterMembersBuilder(
                     property.ImposterBuilder.Syntax.New(
                         SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(IdentifierName(invocationBehaviorParameterName)),
+                            Argument(ThisExpression()),
                         ])
                     )
                 )

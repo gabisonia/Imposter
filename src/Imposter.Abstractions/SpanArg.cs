@@ -16,14 +16,32 @@
 /// </remarks>
 public sealed class SpanArg<T>
 {
-    private static readonly SpanArg<T> AnyInstance = new(_ => true);
+    private static readonly SpanArg<T> AnyInstance = new(_ => true, description: "any");
 
     private readonly Func<T[], bool> _matches;
+    private readonly T[]? _expected;
+    private readonly string? _description;
 
-    private SpanArg(Func<T[], bool> matches)
+    private SpanArg(Func<T[], bool> matches, T[]? expected = null, string? description = null)
     {
         _matches = matches;
+        _expected = expected;
+        _description = description;
     }
+
+    /// <summary>Returns a new matcher with the given diagnostic description.</summary>
+    /// <param name="description">Text to display instead of the default description.</param>
+    /// <exception cref="ArgumentNullException">The description is null.</exception>
+    public SpanArg<T> Describe(string description) =>
+        new(
+            _matches,
+            _expected,
+            description ?? throw new ArgumentNullException(nameof(description))
+        );
+
+    /// <summary>Describes the matcher without evaluating its predicate or comparer.</summary>
+    public override string ToString() =>
+        _description ?? (_expected is null ? "<predicate>" : DiagnosticValue.Sequence(_expected));
 
     /// <summary>
     /// Determines whether the copy of a span argument satisfies this matcher.
@@ -51,8 +69,11 @@ public sealed class SpanArg<T>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="expected"/> or <paramref name="comparer"/> is <see langword="null"/>.
     /// </exception>
-    public static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer) =>
-        new(SpanElementMatchers.SequenceEqualTo(expected, comparer));
+    public static SpanArg<T> Is(T[] expected, IEqualityComparer<T> comparer)
+    {
+        var matcher = SpanElementMatchers.SequenceEqualTo(expected, comparer, out var elements);
+        return new(matcher, elements);
+    }
 
     /// <summary>
     /// Matches a span whose elements satisfy <paramref name="predicate"/>.

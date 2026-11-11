@@ -19,6 +19,9 @@ internal static partial class MethodImposterCollectionBuilder
 
         return new ClassDeclarationBuilder(method.MethodImposter.Collection.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
             .AddMembers(
                 MethodImposterStateBuilder.BuildMembers(
                     method,
@@ -28,6 +31,8 @@ internal static partial class MethodImposterCollectionBuilder
             .AddMember(BuildImpostersField(method))
             .AddMember(BuildAddNewMethod(method))
             .AddMember(BuildGetImposterWithMatchingInvocationImposterGroup(method))
+            .AddMember(BuildConfiguredSetups(method))
+            .AddMembers(MethodVerificationSourceBuilder.Build(method, true))
             .Build();
     }
 
@@ -44,5 +49,49 @@ internal static partial class MethodImposterCollectionBuilder
             MethodImposterCollectionMetadata.ImpostersFieldName,
             impostersFieldType.New()
         );
+    }
+
+    private static MethodDeclarationSyntax BuildConfiguredSetups(
+        in ImposterTargetMethodMetadata method
+    )
+    {
+        var listType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
+        var setups = IdentifierName("setups");
+        var imposter = IdentifierName("imposter");
+        return new MethodDeclarationBuilder(
+            listType,
+            method.MethodImposter.ConfiguredSetupsMethodName
+        )
+            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .WithBody(
+                Block(
+                    SyntaxFactoryHelper.LocalVariableDeclarationSyntax(
+                        SyntaxFactoryHelper.Var,
+                        "setups",
+                        listType.New()
+                    ),
+                    ForEachStatement(
+                        SyntaxFactoryHelper.Var,
+                        imposter.Identifier,
+                        IdentifierName(MethodImposterCollectionMetadata.ImpostersFieldName),
+                        setups
+                            .Dot(IdentifierName("AddRange"))
+                            .Call(
+                                Argument(
+                                    imposter
+                                        .Dot(
+                                            IdentifierName(
+                                                method.MethodImposter.ConfiguredSetupsMethodName
+                                            )
+                                        )
+                                        .Call()
+                                )
+                            )
+                            .ToStatementSyntax()
+                    ),
+                    ReturnStatement(setups)
+                )
+            )
+            .Build();
     }
 }

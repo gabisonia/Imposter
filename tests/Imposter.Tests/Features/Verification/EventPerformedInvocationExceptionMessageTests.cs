@@ -61,6 +61,7 @@ namespace Imposter.Tests.Features.Verification
                 new[]
                 {
                     $"SomethingHappened handler invoked handler: {FormatValue(handler)} sender: {FormatValue(sender)} e: {FormatValue(eventArgs)}",
+                    $"SomethingHappened handler invoked handler: {FormatValue(other)} sender: {FormatValue(sender)} e: {FormatValue(eventArgs)}",
                 }
             );
             exception.MessageShouldDescribeCounts(expectedCount, 1);

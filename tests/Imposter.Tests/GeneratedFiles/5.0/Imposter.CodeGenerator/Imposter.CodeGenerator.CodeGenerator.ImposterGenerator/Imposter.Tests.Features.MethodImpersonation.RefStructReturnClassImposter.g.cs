@@ -13,15 +13,16 @@ using global::Imposter.Tests.Features.MethodImpersonation;
 namespace Imposter.Tests.Features.MethodImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class RefStructReturnClassImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.RefStructReturnClass>
+	public sealed class RefStructReturnClassImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.RefStructReturnClass>
 	{
-		private readonly RentMethodImposter _rentMethodImposter;
-		private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection();
+		private RentMethodImposter _rentMethodImposter;
+		private RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
 		public IRentMethodImposterBuilder Rent(global::Imposter.Abstractions.Arg<int> size)
 		{
 			return new RentMethodImposter.Builder(_rentMethodImposter, _rentMethodInvocationHistoryCollection, new RentArgumentsCriteria(size));
 		}
 
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.MethodImpersonation.RefStructReturnClass global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.MethodImpersonation.RefStructReturnClass>.Instance()
 		{
@@ -63,45 +64,105 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IRentMethodInvocationHistory
+		internal interface IRentMethodInvocationHistory
 		{
 			bool Matches(RentArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class RentMethodInvocationHistory : RentMethodInvocationHistoryCollection.Node, IRentMethodInvocationHistory
+		public sealed class RentInvocation : RentMethodInvocationHistoryCollection.Node, IRentMethodInvocationHistory
 		{
 			internal readonly int capturedsize;
-			internal readonly global::System.Exception? Exception;
-			public RentMethodInvocationHistory(int capturedsize, global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public int Size
 			{
-				this.capturedsize = capturedsize;
-				this.Exception = Exception;
+				get
+				{
+					return capturedsize;
+				}
 			}
 
-			public bool Matches(RentArgumentsCriteria criteria)
+			public override string Member
+			{
+				get
+				{
+					return "Rent";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public RentInvocation(int capturedsize, global::System.Exception? _exception, long _sequence)
+			{
+				this.capturedsize = capturedsize;
+				this._exception = _exception;
+				this._sequence = _sequence;
+			}
+
+			bool IRentMethodInvocationHistory.Matches(RentArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedsize);
 			}
 
 			public override string ToString()
 			{
-				return "Rent(" + global::System.String.Join(", ", new[] { "size: " + FormatValue(capturedsize) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Rent(" + global::System.String.Join(", ", new[] { "size: " + FormatValue(capturedsize) }) + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class RentMethodInvocationHistoryCollection
+		public class RentMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal RentMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private RentMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal RentMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -136,6 +197,64 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected, RentArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((IRentMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((IRentMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<RentInvocation> MatchingInvocations(RentArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<RentInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IRentMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((RentInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -157,6 +276,14 @@ namespace Imposter.Tests.Features.MethodImpersonation
 			internal RentArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "Rent(" + "size: " + ArgumentsCriteria.size.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public RentMethodInvocationImposterGroup(RentArgumentsCriteria argumentsCriteria)
 			{
@@ -194,6 +321,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, size, baseImplementation);
 			}
 
@@ -280,6 +408,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		public interface IRentMethodInvocationImposterGroupContinuation : IRentMethodInvocationImposterGroupCallback
 		{
 			IRentMethodInvocationImposterGroup Then();
+			IRentMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -298,15 +427,18 @@ namespace Imposter.Tests.Features.MethodImpersonation
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<RentInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IRentMethodImposterBuilder : IRentMethodInvocationImposterGroup, IRentMethodInvocationImposterGroupCallback, RentInvocationVerifier
+		public interface IRentMethodImposterBuilder : IRentMethodInvocationImposterGroup, IRentMethodInvocationImposterGroupCallback, RentInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class RentMethodImposter
+		internal class RentMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<RentMethodInvocationImposterGroup>();
 			private readonly RentMethodInvocationHistoryCollection _rentMethodInvocationHistoryCollection;
@@ -328,28 +460,39 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::Imposter.Tests.Features.MethodImpersonation.Slot Invoke(int size, RentDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				int capturedsize = size;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedsize);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual Slot RefStructReturnClass.Rent(int size)");
-					}
-
-					matchingInvocationImposterGroup = RentMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedsize);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("Rent", "Rent(" + "size: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedsize) + ")", GetConfiguredSetups(), "virtual Slot RefStructReturnClass.Rent(int size)");
+						matchingInvocationImposterGroup = RentMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual Slot RefStructReturnClass.Rent(int size)", size, baseImplementation);
-					_rentMethodInvocationHistoryCollection.Add(new RentMethodInvocationHistory(capturedsize, default));
+					_rentMethodInvocationHistoryCollection.Add(new RentInvocation(capturedsize, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_rentMethodInvocationHistoryCollection.RecordFailure(new RentMethodInvocationHistory(capturedsize, ex)))
+				catch (global::System.Exception ex)
 				{
+					_rentMethodInvocationHistoryCollection.RecordFailure(new RentInvocation(capturedsize, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -376,6 +519,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -386,6 +530,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -396,6 +541,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 					{
 						throw exceptionGenerator.Invoke(size);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -403,6 +549,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroupCallback.Callback(RentCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -410,6 +557,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroup.Returns(RentDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -417,6 +565,7 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -429,10 +578,19 @@ namespace Imposter.Tests.Features.MethodImpersonation
 
 				void RentInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _rentMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _rentMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _rentMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Rent", "Rent(" + "size: " + _argumentsCriteria.size.ToString() + ")", count, invocationCount, _rentMethodInvocationHistoryCollection.ToString(), null, _rentMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_rentMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void RentInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _rentMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Rent", "Rent(" + "size: " + _argumentsCriteria.size.ToString() + ")", count, invocationCount, _rentMethodInvocationHistoryCollection.ToString(), because, _rentMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_rentMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -440,13 +598,93 @@ namespace Imposter.Tests.Features.MethodImpersonation
 				{
 					return _rentMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _rentMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "Rent(" + "size: " + _argumentsCriteria.size.ToString() + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _rentMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+				}
+
+				IRentMethodInvocationImposterGroupContinuation IRentMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<RentInvocation> RentInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _rentMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_rentMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_rentMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
 		public RefStructReturnClassImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection(this);
 			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_rentMethodInvocationHistoryCollection.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_rentMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_rentMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_rentMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_rentMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_rentMethodInvocationHistoryCollection.Clear();
+			this._rentMethodInvocationHistoryCollection = new RentMethodInvocationHistoryCollection(this);
+			this._rentMethodImposter = new RentMethodImposter(_rentMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

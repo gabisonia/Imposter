@@ -2,6 +2,7 @@
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Getter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,12 +12,17 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter;
 
-internal static class PropertyImposterBuilder
+internal static partial class PropertyImposterBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property) =>
         new ClassDeclarationBuilder(property.ImposterBuilder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
             .AddBaseType(SimpleBaseType(property.ImposterBuilderInterface.Syntax))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(BuildVerificationSources(property))
+            .AddMember(BuildSnapshot(property))
             // The default (auto-property) behaviour stores the last value set so the getter can return it.
             .AddMember(
                 property.Core.KeepsValue
@@ -45,6 +51,16 @@ internal static class PropertyImposterBuilder
                     : null
             )
             .AddMember(BuildConstructor(property))
+            .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    property.Core.HasGetter
+                        ? property.ImposterBuilder.GetterImposterBuilderField.Name
+                        : null,
+                    property.Core.HasSetter
+                        ? property.ImposterBuilder.SetterImposterField.Name
+                        : null
+                )
+            )
             .AddMember(
                 property.Core.HasGetter ? GetterImposterBuilderBuilder.Build(property) : null
             )
@@ -155,7 +171,8 @@ internal static class PropertyImposterBuilder
 
         var constructorBuilder = new ConstructorBuilder(property.ImposterBuilder.Name)
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
-            .AddParameter(ParameterSyntax(property.ImposterBuilder.InvocationBehaviorParameter));
+            .AddParameter(ParameterSyntax(property.ImposterBuilder.InvocationBehaviorParameter))
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.IImposter, "owner"));
 
         var bodyBuilder = new BlockBuilder();
 
@@ -199,6 +216,11 @@ internal static class PropertyImposterBuilder
                 );
 
             bodyBuilder.AddExpression(getterInitialization);
+            bodyBuilder.AddExpression(
+                IdentifierName(property.ImposterBuilder.GetterImposterBuilderField.Name)
+                    .Dot(IdentifierName("Owner"))
+                    .Assign(IdentifierName("owner"))
+            );
         }
 
         if (property.Core.HasSetter)
@@ -213,6 +235,11 @@ internal static class PropertyImposterBuilder
                 );
 
             bodyBuilder.AddExpression(setterInitialization);
+            bodyBuilder.AddExpression(
+                IdentifierName(property.ImposterBuilder.SetterImposterField.Name)
+                    .Dot(IdentifierName("Owner"))
+                    .Assign(IdentifierName("owner"))
+            );
         }
 
         return constructorBuilder.WithBody(bodyBuilder.Build()).Build();

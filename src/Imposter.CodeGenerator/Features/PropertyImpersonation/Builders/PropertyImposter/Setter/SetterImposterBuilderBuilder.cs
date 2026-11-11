@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.PropertyImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Imposter.CodeGenerator.Features.PropertyImpersonation.Builders.PropertyImposter.Setter;
 
-internal static class SetterImposterBuilderBuilder
+internal static partial class SetterImposterBuilderBuilder
 {
     internal static ClassDeclarationSyntax Build(in ImposterPropertyMetadata property)
     {
@@ -45,9 +46,21 @@ internal static class SetterImposterBuilderBuilder
                     ? SinglePrivateReadonlyVariableField(criteriaField)
                     : null
             )
+            .AddMember(
+                !property.Core.IsPassedThrough
+                    ? SinglePrivateReadonlyVariableField(
+                        property.SetterImposter.Builder.RuntimeCriteriaField
+                    )
+                    : null
+            )
             .AddMember(BuildConstructor(property))
+            .AddMember(
+                SinglePrivateReadonlyVariableField(property.SetterImposter.Builder.SetupField)
+            )
+            .AddMembers(BuildSharedVerificationMembers(property))
             .AddMember(BuildCallbackMethod(property))
             .AddMember(BuildCalledMethod(property))
+            .AddMember(BuildCalledMethod(property, withReason: true))
             .AddMember(ThenReturningThis(property.SetterImposterBuilderInterface.ThenMethod))
             .AddMember(BuildUseBaseImplementationEntryMethod(property))
             .Build();
@@ -68,13 +81,72 @@ internal static class SetterImposterBuilderBuilder
             constructor.AddParameter(criteriaField);
         }
 
+        if (!property.Core.IsPassedThrough)
+        {
+            var metadata = property.SetterImposter.Builder;
+            ExpressionSyntax criteria = IdentifierName(metadata.CriteriaField!.Value.Name);
+            if (!property.Core.UsesSharedRuntime)
+                criteria = metadata
+                    .RuntimeCriteriaField.Type.Dot(IdentifierName("Is"))
+                    .Call(
+                        Argument(
+                            SimpleLambdaExpression(
+                                Parameter(Identifier("value")),
+                                criteria
+                                    .Dot(IdentifierName("Matches"))
+                                    .Call(Argument(IdentifierName("value")))
+                            )
+                        )
+                    )
+                    .Dot(IdentifierName("Describe"))
+                    .Call(
+                        Argument(
+                            IdentifierName(metadata.CriteriaField.Value.Name)
+                                .Dot(IdentifierName("ToString"))
+                                .Call()
+                        )
+                    );
+            constructor.AddStatements(
+                new StatementSyntax[]
+                {
+                    IdentifierName(metadata.RuntimeCriteriaField.Name)
+                        .Assign(criteria)
+                        .ToStatementSyntax(),
+                    IdentifierName(metadata.SetupField.Name)
+                        .Assign(
+                            metadata.SetupField.Type.New(
+                                IdentifierName(metadata.RuntimeCriteriaField.Name)
+                                    .ToSingleArgumentList()
+                            )
+                        )
+                        .ToStatementSyntax(),
+                }
+            );
+        }
+        if (property.Core.IsPassedThrough)
+            constructor.AddStatements(
+                new StatementSyntax[]
+                {
+                    IdentifierName(property.SetterImposter.Builder.SetupField.Name)
+                        .Assign(property.SetterImposter.Builder.SetupField.Type.New())
+                        .ToStatementSyntax(),
+                }
+            );
         return constructor.Build();
     }
 
     private static MethodDeclarationSyntax BuildCalledMethod(
-        in ImposterPropertyMetadata property
-    ) =>
-        new MethodDeclarationBuilder(
+        in ImposterPropertyMetadata property,
+        bool withReason = false
+    )
+    {
+        var called = property.SetterImposterBuilderInterface.CalledMethod;
+        var arguments = SetterImposterArguments(property, called.CountParameter.Name);
+        if (withReason)
+            arguments = arguments.AddArguments(
+                Argument(IdentifierName(called.BecauseParameter.Name))
+            );
+        var builder = new MethodDeclarationBuilder(
             property.SetterImposterBuilderInterface.CalledMethod.ReturnType,
             property.SetterImposterBuilderInterface.CalledMethod.Name
         )
@@ -83,25 +155,20 @@ internal static class SetterImposterBuilderBuilder
             )
             .AddParameter(
                 ParameterSyntax(property.SetterImposterBuilderInterface.CalledMethod.CountParameter)
-            )
+            );
+        if (withReason)
+            builder.AddParameter(ParameterSyntax(called.BecauseParameter));
+        return builder
             .WithBody(
                 Block(
                     IdentifierName(property.SetterImposter.Builder.SetterImposterField.Name)
                         .Dot(IdentifierName(property.SetterImposter.CalledMethod.Name))
-                        .Call(
-                            SetterImposterArguments(
-                                property,
-                                property
-                                    .SetterImposterBuilderInterface
-                                    .CalledMethod
-                                    .CountParameter
-                                    .Name
-                            )
-                        )
+                        .Call(arguments)
                         .ToStatementSyntax()
                 )
             )
             .Build();
+    }
 
     private static MethodDeclarationSyntax BuildCallbackMethod(
         in ImposterPropertyMetadata property
@@ -129,7 +196,8 @@ internal static class SetterImposterBuilderBuilder
                                     .SetterImposterBuilderInterface
                                     .CallbackMethod
                                     .CallbackParameter
-                                    .Name
+                                    .Name,
+                                useSetup: true
                             )
                         )
                         .ToStatementSyntax(),
@@ -141,13 +209,22 @@ internal static class SetterImposterBuilderBuilder
     // The setter imposter's methods take the builder's criteria first, when it has any.
     private static ArgumentListSyntax SetterImposterArguments(
         in ImposterPropertyMetadata property,
-        string argumentName
+        string argumentName,
+        bool useSetup = false
     )
     {
         var arguments = new List<ArgumentSyntax>();
-        if (property.SetterImposter.Builder.CriteriaField is { } criteriaField)
+        if (useSetup || property.SetterImposter.Builder.CriteriaField is not null)
         {
-            arguments.Add(Argument(IdentifierName(criteriaField.Name)));
+            arguments.Add(
+                Argument(
+                    IdentifierName(
+                        useSetup
+                            ? property.SetterImposter.Builder.SetupField.Name
+                            : property.SetterImposter.Builder.RuntimeCriteriaField.Name
+                    )
+                )
+            );
         }
 
         arguments.Add(Argument(IdentifierName(argumentName)));
@@ -174,7 +251,10 @@ internal static class SetterImposterBuilderBuilder
                         .Dot(
                             IdentifierName(property.SetterImposter.UseBaseImplementationMethod.Name)
                         )
-                        .Call()
+                        .Call(
+                            IdentifierName(property.SetterImposter.Builder.SetupField.Name)
+                                .ToSingleArgumentList()
+                        )
                         .ToStatementSyntax(),
                     ReturnThis
                 )

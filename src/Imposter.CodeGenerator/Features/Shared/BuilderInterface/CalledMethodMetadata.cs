@@ -11,10 +11,12 @@ internal readonly struct CalledMethodMetadata
     internal readonly TypeSyntax ReturnType;
 
     internal readonly ParameterMetadata CountParameter;
+    internal readonly ParameterMetadata BecauseParameter;
 
     public CalledMethodMetadata()
     {
         ReturnType = WellKnownTypes.Void;
         CountParameter = new ParameterMetadata("count", WellKnownTypes.Imposter.Abstractions.Count);
+        BecauseParameter = new ParameterMetadata("because", WellKnownTypes.String);
     }
 }

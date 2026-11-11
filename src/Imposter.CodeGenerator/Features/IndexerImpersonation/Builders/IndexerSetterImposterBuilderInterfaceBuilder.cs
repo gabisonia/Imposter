@@ -1,4 +1,5 @@
 ﻿using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,15 +25,22 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
                 indexer.SetterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                indexer.SetterBuilderInterface.ContinuationInterfaceName,
-                indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax,
-                indexer.SetterBuilderInterface.ThenMethod
-            ),
+                    indexer.SetterBuilderInterface.ContinuationInterfaceName,
+                    indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    indexer.SetterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        indexer.SetterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        "Lenient"
+                    )
+                ),
             BuildFluentInterface(indexer),
             VerificationInterface(
-                indexer.SetterBuilderInterface.VerificationInterfaceName,
-                indexer.SetterBuilderInterface.CalledMethod
-            ),
+                    indexer.SetterBuilderInterface.VerificationInterfaceName,
+                    indexer.SetterBuilderInterface.CalledMethod
+                )
+                .AddMembers(IndexerHistoryBuilder.Invocations(indexer, false, false)),
             BuildBuilderInterface(indexer),
         ];
     }
@@ -43,6 +51,7 @@ internal static class IndexerSetterImposterBuilderInterfaceBuilder
     {
         var builder = new InterfaceDeclarationBuilder(indexer.SetterBuilderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IInvocationStep))
             .AddBaseType(SimpleBaseType(indexer.SetterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddBaseType(
                 SimpleBaseType(indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax)

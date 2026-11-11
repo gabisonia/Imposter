@@ -17,6 +17,10 @@ internal static class IndexerImposterBuilder
     {
         var classBuilder = new ClassDeclarationBuilder(indexer.Builder.Name)
             .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, null))
             .AddMember(
                 indexer.Core.HasDefaultBehaviour
                     ? SinglePrivateReadonlyVariableField(
@@ -41,6 +45,52 @@ internal static class IndexerImposterBuilder
                     : null
             )
             .AddMember(BuildConstructor(indexer))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        WellKnownTypes.Imposter.Abstractions.IImposterInvocation
+                    ),
+                    "Snapshot"
+                )
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                WellKnownTypes
+                                    .Imposter.Abstractions.InvocationSnapshots.Dot(
+                                        IdentifierName("Combine")
+                                    )
+                                    .Call([
+                                        Argument(
+                                            indexer.Core.HasGetter
+                                                ? IdentifierName(
+                                                        indexer.Builder.GetterImposterField.Name
+                                                    )
+                                                    .Dot(IdentifierName("Snapshot"))
+                                                    .Call()
+                                                : Null
+                                        ),
+                                        Argument(
+                                            indexer.Core.HasSetter
+                                                ? IdentifierName(
+                                                        indexer.Builder.SetterImposterField.Name
+                                                    )
+                                                    .Dot(IdentifierName("Snapshot"))
+                                                    .Call()
+                                                : Null
+                                        ),
+                                    ])
+                            )
+                        )
+                    )
+                    .Build()
+            )
+            .AddMember(
+                InvocationLifecycleBuilder.ClearChildren(
+                    indexer.Core.HasGetter ? indexer.Builder.GetterImposterField.Name : null,
+                    indexer.Core.HasSetter ? indexer.Builder.SetterImposterField.Name : null
+                )
+            )
             .AddMember(indexer.Core.HasGetter ? BuildCreateGetterMethod(indexer) : null)
             .AddMember(indexer.Core.HasSetter ? BuildCreateSetterMethod(indexer) : null)
             .AddMember(BuildInvocationBuilder(indexer))
@@ -81,6 +131,7 @@ internal static class IndexerImposterBuilder
                             Argument(IdentifierName(indexer.Builder.DefaultBehaviourField.Name)),
                             Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)),
                             Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)),
+                            Argument(IdentifierName("owner")),
                         ])
                     )
                 )
@@ -98,6 +149,7 @@ internal static class IndexerImposterBuilder
 
         setterArguments.Add(Argument(IdentifierName(invocationBehaviorParameter.Identifier.Text)));
         setterArguments.Add(Argument(IdentifierName(propertyDisplayNameParameter.Identifier.Text)));
+        setterArguments.Add(Argument(IdentifierName("owner")));
         var setterInitialization = indexer.Core.HasSetter
             ? ThisExpression()
                 .Dot(IdentifierName(indexer.Builder.SetterImposterField.Name))
@@ -115,6 +167,7 @@ internal static class IndexerImposterBuilder
             .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
             .AddParameter(invocationBehaviorParameter)
             .AddParameter(propertyDisplayNameParameter)
+            .AddParameter(ParameterSyntax(WellKnownTypes.Imposter.Abstractions.IImposter, "owner"))
             .WithBody(bodyBuilder.Build())
             .Build();
     }

@@ -49,11 +49,16 @@ internal static class IndexerImposterBuilderCommon
         in IndexerAccessorBuilderMetadata builder,
         NameSyntax verificationInterface,
         in CalledMethodMetadata called,
-        string imposterMethodName
-    ) =>
-        new MethodDeclarationBuilder(called.ReturnType, called.Name)
+        string imposterMethodName,
+        bool withReason = false
+    )
+    {
+        var method = new MethodDeclarationBuilder(called.ReturnType, called.Name)
             .WithExplicitInterfaceSpecifier(verificationInterface)
-            .AddParameter(ParameterSyntax(called.CountParameter))
+            .AddParameter(ParameterSyntax(called.CountParameter));
+        if (withReason)
+            method.AddParameter(ParameterSyntax(called.BecauseParameter));
+        return method
             .WithBody(
                 Block(
                     IdentifierName(builder.ImposterFieldName)
@@ -61,11 +66,37 @@ internal static class IndexerImposterBuilderCommon
                         .Call([
                             Argument(IdentifierName(builder.CriteriaFieldName)),
                             Argument(IdentifierName(called.CountParameter.Name)),
+                            Argument(
+                                withReason ? IdentifierName(called.BecauseParameter.Name) : Null
+                            ),
                         ])
                         .ToStatementSyntax()
                 )
             )
             .Build();
+    }
+
+    internal static BinaryExpressionSyntax ExpectedIndices(
+        in ImposterIndexerMetadata indexer,
+        ExpressionSyntax criteria
+    )
+    {
+        ExpressionSyntax description = "[".StringLiteral();
+        var first = true;
+        foreach (var parameter in indexer.Core.MatchedParameters)
+        {
+            description = description
+                .Add(((first ? "" : ", ") + parameter.Name + ": ").StringLiteral())
+                .Add(
+                    criteria
+                        .Dot(IdentifierName(parameter.FieldName))
+                        .Dot(IdentifierName("ToString"))
+                        .Call()
+                );
+            first = false;
+        }
+        return description.Add("]".StringLiteral());
+    }
 
     private static ArgumentListSyntax BuildIndexerArgumentsArgumentList(
         in ImposterIndexerMetadata indexer
@@ -188,6 +219,10 @@ internal static class IndexerImposterBuilderCommon
             .AddParameter(
                 new ParameterMetadata(PropertyDisplayNameParameterName, WellKnownTypes.String),
                 propertyDisplayNameFieldName
+            )
+            .AddParameter(
+                new ParameterMetadata("owner", WellKnownTypes.Imposter.Abstractions.IImposter),
+                "Owner"
             )
             .Build();
     }

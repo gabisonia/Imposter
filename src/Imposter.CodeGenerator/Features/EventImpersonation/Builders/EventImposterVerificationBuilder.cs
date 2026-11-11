@@ -4,6 +4,7 @@ using System.Linq;
 using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Imposter.CodeGenerator.Features.Shared.Builders.FormatValueMethodBuilder;
@@ -15,8 +16,7 @@ namespace Imposter.CodeGenerator.Features.EventImpersonation.Builders;
 
 internal static class EventImposterVerificationBuilder
 {
-    // A history entry, as the verification predicates read it. The performed-invocations description reuses a
-    // predicate's body inside its own loop over the history, so both declare the entry by this one name.
+    // A history entry, as the verification predicates and failure-only descriptions read it.
     private static readonly IdentifierNameSyntax Entry = IdentifierName("entry");
 
     internal static MethodDeclarationSyntax BuildSubscribedVerificationMethod(
@@ -56,17 +56,92 @@ internal static class EventImposterVerificationBuilder
             .WithExplicitInterfaceSpecifier(@event.BuilderInterface.VerificationInterfaceTypeSyntax)
             .AddParameter(ParameterSyntax(method.CriteriaParameter))
             .AddParameter(ParameterSyntax(@event.Builder.Methods.CountParameter))
-            .WithBody(
-                BuildHistoryVerificationBody(
-                    @event,
-                    historyField: history,
-                    criteriaParameterNames: [criteriaName],
-                    predicate: Matches(criteriaName, Entry),
-                    descriptionFactory: handler =>
-                        BuildSubscriptionDescription(eventName, action, handler)
+            .WithBody(BuildSubscriptionVerificationBody(@event, method, history, eventName, action))
+            .Build();
+    }
+
+    private static BlockSyntax BuildSubscriptionVerificationBody(
+        in ImposterEventMetadata @event,
+        in CriteriaMethodMetadata method,
+        in FieldMetadata historyField,
+        string eventName,
+        string action
+    )
+    {
+        var history = IdentifierName(historyField.Name);
+        var snapshot = IdentifierName("snapshot");
+        var cursor = IdentifierName("cursor");
+        var actual = IdentifierName("actual");
+        var count = IdentifierName(@event.Builder.Methods.CountParameter.Name);
+        var predicate = Matches(
+            method.CriteriaParameter.Name,
+            Entry.Dot(IdentifierName("Handler"))
+        );
+        var loopCount = WhileStatement(
+            cursor.Dot(IdentifierName("MoveNext")).Call(),
+            Block(
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    Entry.Identifier.Text,
+                    cursor.Dot(IdentifierName("Current"))
+                ),
+                IfStatement(
+                    predicate,
+                    PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, actual)
+                        .ToStatementSyntax()
                 )
             )
-            .Build();
+        );
+        var loopCover = WhileStatement(
+            cursor.Dot(IdentifierName("MoveNext")).Call(),
+            Block(
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    Entry.Identifier.Text,
+                    cursor.Dot(IdentifierName("Current"))
+                ),
+                IfStatement(
+                    predicate,
+                    Entry.Dot(IdentifierName("MarkVerified")).Call().ToStatementSyntax()
+                )
+            )
+        );
+        return Block(
+            ThrowIfNull(method.CriteriaParameter.Name),
+            ThrowIfNull(@event.Builder.Methods.CountParameter.Name),
+            LocalVariableDeclarationSyntax(Var, "actual", NumericLiteral(0)),
+            LocalVariableDeclarationSyntax(
+                Var,
+                "snapshot",
+                ConditionalExpression(
+                    history.IsNull(),
+                    DefaultExpression(
+                        QualifiedName((NameSyntax)historyField.Type, IdentifierName("Enumerator"))
+                    ),
+                    history.Dot(IdentifierName("GetEnumerator")).Call()
+                )
+            ),
+            LocalVariableDeclarationSyntax(Var, "cursor", snapshot),
+            loopCount,
+            IfStatement(
+                CountDoesNotMatch(count, actual),
+                BuildHistoryFailureBody(
+                    historyField,
+                    handler =>
+                        BuildSubscriptionDescription(
+                            eventName,
+                            action,
+                            handler.Dot(IdentifierName("Handler"))
+                        ),
+                    @event.Builder.Methods.CountParameter.Name,
+                    eventName,
+                    Expected(eventName, action, [method.CriteriaParameter.Name])
+                )
+            ),
+            cursor.Assign(snapshot).ToStatementSyntax(),
+            loopCover,
+            ReturnThis
+        );
     }
 
     internal static MethodDeclarationSyntax BuildRaisedVerificationMethod(
@@ -178,7 +253,19 @@ internal static class EventImposterVerificationBuilder
             countParameterName,
             IdentifierName(historyField.Name),
             predicate,
-            BuildHistoryFailureBody(historyField, descriptionFactory, predicate, countParameterName)
+            BuildHistoryFailureBody(
+                historyField,
+                descriptionFactory,
+                countParameterName,
+                @event.Core.Name,
+                Expected(
+                    @event.Core.Name,
+                    historyField.Name == @event.Builder.Fields.History.Name
+                        ? "raised"
+                        : "handler invoked",
+                    criteriaParameterNames
+                )
+            )
         );
 
         blockBuilder.AddStatement(ReturnThis);
@@ -232,8 +319,9 @@ internal static class EventImposterVerificationBuilder
     private static BlockSyntax BuildHistoryFailureBody(
         in FieldMetadata historyField,
         Func<ExpressionSyntax, ExpressionSyntax> descriptionFactory,
-        ExpressionSyntax predicateBody,
-        string countParameterName
+        string countParameterName,
+        string member,
+        ExpressionSyntax expected
     )
     {
         var stringListType = WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String);
@@ -252,7 +340,7 @@ internal static class EventImposterVerificationBuilder
                     IdentifierName(historyField.Name),
                     Block(
                         IfStatement(
-                            predicateBody,
+                            True,
                             Block(
                                 performedInvocations
                                     .Dot(IdentifierName("Add"))
@@ -264,11 +352,75 @@ internal static class EventImposterVerificationBuilder
                 )
             ),
             performedInvocations.Dot(IdentifierName("Reverse")).Call().ToStatementSyntax(),
-            ThrowVerificationFailed(
-                IdentifierName(countParameterName),
-                IdentifierName("actual"),
-                JoinWithNewLines(performedInvocations)
+            ThrowStatement(
+                WellKnownTypes.Imposter.Abstractions.VerificationFailedException.New(
+                    ArgumentListSyntax([
+                        Argument(member.StringLiteral()),
+                        Argument(expected),
+                        Argument(IdentifierName(countParameterName)),
+                        Argument(IdentifierName("actual")),
+                        Argument(JoinWithNewLines(performedInvocations)),
+                        Argument(Null),
+                        Argument(
+                            ConditionalExpression(
+                                BinaryExpression(
+                                    SyntaxKind.EqualsExpression,
+                                    performedInvocations.Dot(IdentifierName("Count")),
+                                    NumericLiteral(0)
+                                ),
+                                WellKnownTypes
+                                    .Imposter.Abstractions.DiagnosticValue.Dot(
+                                        IdentifierName("OtherInteractions")
+                                    )
+                                    .Call(Argument(IdentifierName("Owner"))),
+                                Null
+                            )
+                        ),
+                    ])
+                )
             )
+        );
+    }
+
+    private static ExpressionSyntax Expected(
+        string member,
+        string action,
+        IEnumerable<string> criteria
+    )
+    {
+        ExpressionSyntax result = BuildActionDescription(member, action);
+        foreach (var name in criteria)
+            result = result
+                .Add(" ".StringLiteral())
+                .Add(IdentifierName(name).Dot(IdentifierName("ToString")).Call());
+        return result;
+    }
+
+    internal static MethodDeclarationSyntax WithReason(MethodDeclarationSyntax method)
+    {
+        var result = method.AddParameterListParameters(
+            ParameterSyntax(WellKnownTypes.String.ToNullableType(), "because")
+        );
+        var failures = result
+            .DescendantNodes()
+            .OfType<ObjectCreationExpressionSyntax>()
+            .Where(node =>
+                node.Type.IsEquivalentTo(
+                    WellKnownTypes.Imposter.Abstractions.VerificationFailedException
+                )
+            )
+            .ToArray();
+        return result.ReplaceNodes(
+            failures,
+            (original, _) =>
+                original.WithArgumentList(
+                    original.ArgumentList!.WithArguments(
+                        original.ArgumentList.Arguments.Replace(
+                            original.ArgumentList.Arguments[5],
+                            Argument(IdentifierName("because"))
+                        )
+                    )
+                )
         );
     }
 

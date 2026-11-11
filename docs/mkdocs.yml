@@ -87,6 +87,10 @@ nav:
   - Arguments Matching: arguments-matching.md
   - Interface-specific Setup: interface-setup.md
   - Verification: verification.md
+  - Completeness and Order: verification-completeness.md
+  - Invocation History: invocation-history.md
+  - Failure Messages: failure-messages.md
+  - Clear and Reset: clear-and-reset.md
   - Implicit vs Explicit: implicit-vs-explicit.md
   - Base Implementation: base-implementation.md
   - Generics: generics.md

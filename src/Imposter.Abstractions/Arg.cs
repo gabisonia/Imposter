@@ -76,6 +76,61 @@ public class Arg<T>
         _negated = negated;
     }
 
+    /// <summary>Returns a new matcher with a diagnostic description, preserving this matcher's behavior.</summary>
+    /// <param name="description">Text to display instead of the default description.</param>
+    /// <exception cref="ArgumentNullException">The description is null.</exception>
+    public Arg<T> Describe(string description) =>
+        new DescribedArg(this, description ?? throw new ArgumentNullException(nameof(description)));
+
+    /// <summary>Describes this matcher without evaluating its predicate or comparer.</summary>
+    public override string ToString()
+    {
+        var description = _kind switch
+        {
+            MatcherKind.Any => "any",
+            MatcherKind.Equality => DiagnosticValue.Format(_value),
+            _ => "<predicate>",
+        };
+        return _negated ? "not " + description : description;
+    }
+
+    // Only explicitly described and membership matchers need additional diagnostic storage.
+    // Ordinary matchers keep their allocation size and their matching fast path.
+    private sealed class DescribedArg : Arg<T>
+    {
+        private readonly string _description;
+
+        internal DescribedArg(Arg<T> original, string description)
+            : base(
+                original._kind,
+                original._value,
+                original._comparer,
+                original._predicate,
+                original._negated
+            )
+        {
+            _description = description;
+        }
+
+        public override string ToString() => _description;
+    }
+
+    private sealed class MembershipArg : Arg<T>
+    {
+        private readonly HashSet<T> _values;
+        private readonly bool _isNegated;
+
+        internal MembershipArg(HashSet<T> values, bool negated)
+            : base(MatcherKind.Predicate, predicate: values.Contains, negated: negated)
+        {
+            _values = values;
+            _isNegated = negated;
+        }
+
+        public override string ToString() =>
+            (_isNegated ? "not in " : "in ") + DiagnosticValue.Sequence(_values);
+    }
+
     /// <summary>
     /// Determines whether the provided value satisfies this matcher.
     /// </summary>
@@ -186,7 +241,7 @@ public class Arg<T>
             throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
-        return new(MatcherKind.Predicate, predicate: lookup.Contains);
+        return new MembershipArg(lookup, false);
     }
 
     /// <summary>
@@ -212,7 +267,7 @@ public class Arg<T>
             throw new ArgumentNullException(nameof(comparer));
 
         var lookup = new HashSet<T>(values, comparer);
-        return new(MatcherKind.Predicate, predicate: lookup.Contains, negated: true);
+        return new MembershipArg(lookup, true);
     }
 
     /// <summary>

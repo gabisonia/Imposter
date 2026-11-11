@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
+using Imposter.CodeGenerator.Features.Shared.Builders;
 using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
@@ -76,11 +77,32 @@ internal static partial class IndexerGetterBuilder
             .AddMember(LazyCollectionSyntaxHelper.Field(getter.InvocationHistoryField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.InvocationBehaviorField))
             .AddMember(SinglePrivateReadonlyVariableField(getter.PropertyDisplayNameField))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    "Owner",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.ReadOnlyKeyword))
+                )
+            )
             .AddMember(BuildGetterConstructor(indexer))
-            .AddMember(BuildGetterGetMethod(indexer))
+            .AddMember(
+                InvocationLifecycleBuilder.Clear([
+                    InvocationLifecycleBuilder.ClearStack(getter.InvocationHistoryField.Name),
+                ])
+            )
+            .AddMember(IndexerHistoryBuilder.Wrap(indexer, BuildGetterGetMethod(indexer), true))
+            .AddMember(IndexerHistoryBuilder.Snapshot(indexer, true))
+            .AddMember(IndexerHistoryBuilder.Matching(indexer, true))
             .AddMember(BuildFindGetterInvocationImposterMethod(indexer))
             .AddMember(BuildGetOrCreateMethod(indexer))
-            .AddMember(BuildGetterCalledMethod(indexer))
+            .AddBaseType(
+                SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource)
+            )
+            .AddMembers(IndexerVerificationBuilder.Source(indexer, true))
+            .AddMember(
+                IndexerVerificationBuilder.Cover(indexer, true, BuildGetterCalledMethod(indexer))
+            )
+            .AddMember(BuildGetterConfiguredSetups(indexer))
             .AddMember(BuildPropertyDisplayNameProperty(getter))
             .AddMember(BuildGetterBuilder(indexer))
             .AddMember(BuildGetterInvocationImposter(indexer))
@@ -178,7 +200,28 @@ internal static partial class IndexerGetterBuilder
             IfStatement(
                 IsExplicit(IdentifierName(getter.InvocationBehaviorField.Name)),
                 Block(
-                    ThrowMissingImposter(getter.PropertyDisplayNameField.Name, getter.GetterSuffix)
+                    ThrowStatement(
+                        WellKnownTypes.Imposter.Abstractions.MissingImposterException.New(
+                            ArgumentListSyntax([
+                                Argument(
+                                    IdentifierName(getter.PropertyDisplayNameField.Name)
+                                        .Add(getter.GetterSuffix.StringLiteral())
+                                ),
+                                Argument(
+                                    "get "
+                                        .StringLiteral()
+                                        .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
+                                        .Add(
+                                            BuildIndices(
+                                                indexer,
+                                                IdentifierName(getter.ArgumentsVariableName)
+                                            )
+                                        )
+                                ),
+                                Argument(IdentifierName(getter.ConfiguredSetupsMethodName).Call()),
+                            ])
+                        )
+                    )
                 )
             ),
             IfStatement(
@@ -353,11 +396,20 @@ internal static partial class IndexerGetterBuilder
                     .Dot(IdentifierName("Count"))
                     .Call(
                         Argument(
-                            IdentifierName(getter.CriteriaParameterName)
-                                .Dot(
-                                    IdentifierName(
-                                        IndexerArgumentsCriteriaMetadata.MatchesMethodName
-                                    )
+                            Identifier("candidate")
+                                .Lambda(
+                                    IdentifierName(getter.CriteriaParameterName)
+                                        .Dot(
+                                            IdentifierName(
+                                                IndexerArgumentsCriteriaMetadata.MatchesMethodName
+                                            )
+                                        )
+                                        .Call(
+                                            Argument(
+                                                IdentifierName("candidate")
+                                                    .Dot(IdentifierName("Arguments"))
+                                            )
+                                        )
                                 )
                         )
                     )
@@ -368,7 +420,7 @@ internal static partial class IndexerGetterBuilder
         var entryDescription = "get "
             .StringLiteral()
             .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
-            .Add(BuildIndices(indexer, entry));
+            .Add(BuildIndices(indexer, entry.Dot(IdentifierName("Arguments"))));
 
         return new MethodDeclarationBuilder(
             WellKnownTypes.Void,
@@ -379,6 +431,10 @@ internal static partial class IndexerGetterBuilder
                 ParameterSyntax(indexer.ArgumentsCriteria.TypeSyntax, getter.CriteriaParameterName)
             )
             .AddParameter(ParameterSyntax(countParameter))
+            .AddParameter(
+                ParameterSyntax(WellKnownTypes.String.ToNullableType(), "because")
+                    .WithDefault(EqualsValueClause(Null))
+            )
             .WithBody(
                 Block(
                     invocationCountDeclaration,
@@ -390,7 +446,19 @@ internal static partial class IndexerGetterBuilder
                             entry,
                             entryDescription,
                             IsHistoryNullable: true
-                        )
+                        ),
+                        IdentifierName(getter.PropertyDisplayNameField.Name),
+                        "get "
+                            .StringLiteral()
+                            .Add(IdentifierName(getter.PropertyDisplayNameField.Name))
+                            .Add(
+                                ExpectedIndices(
+                                    indexer,
+                                    IdentifierName(getter.CriteriaParameterName)
+                                )
+                            ),
+                        IdentifierName("because"),
+                        IdentifierName("Owner")
                     )
                 )
             )

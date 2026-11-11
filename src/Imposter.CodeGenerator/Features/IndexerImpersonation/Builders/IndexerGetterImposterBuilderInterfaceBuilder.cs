@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata;
 using Imposter.CodeGenerator.Features.IndexerImpersonation.Metadata.GetterImposterBuilderInterface;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,14 +28,21 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
                 indexer.GetterBuilderInterface.CallbackMethod
             ),
             ContinuationInterface(
-                indexer.GetterBuilderInterface.ContinuationInterfaceName,
-                indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax,
-                indexer.GetterBuilderInterface.ThenMethod
-            ),
+                    indexer.GetterBuilderInterface.ContinuationInterfaceName,
+                    indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax,
+                    indexer.GetterBuilderInterface.ThenMethod
+                )
+                .AddMembers(
+                    InterfaceMethod(
+                        indexer.GetterBuilderInterface.ContinuationInterfaceTypeSyntax,
+                        "Lenient"
+                    )
+                ),
             VerificationInterface(
-                indexer.GetterBuilderInterface.VerificationInterfaceName,
-                indexer.GetterBuilderInterface.CalledMethod
-            ),
+                    indexer.GetterBuilderInterface.VerificationInterfaceName,
+                    indexer.GetterBuilderInterface.CalledMethod
+                )
+                .AddMembers(IndexerHistoryBuilder.Invocations(indexer, true, false)),
             BuildFluentInterface(indexer),
             BuildBuilderInterface(indexer),
         ];
@@ -45,6 +53,7 @@ internal static class IndexerGetterImposterBuilderInterfaceBuilder
     ) =>
         new InterfaceDeclarationBuilder(indexer.GetterBuilderInterface.Name)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IInvocationStep))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.OutcomeInterfaceTypeSyntax))
             .AddBaseType(SimpleBaseType(indexer.GetterBuilderInterface.CallbackInterfaceTypeSyntax))
             .AddBaseType(

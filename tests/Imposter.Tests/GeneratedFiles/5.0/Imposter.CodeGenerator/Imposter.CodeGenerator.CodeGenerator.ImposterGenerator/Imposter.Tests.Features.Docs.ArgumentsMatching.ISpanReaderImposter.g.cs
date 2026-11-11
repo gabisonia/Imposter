@@ -13,15 +13,16 @@ using global::Imposter.Tests.Features.Docs.ArgumentsMatching;
 namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ISpanReaderImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader>, ISpanReaderImposter.ISpanReaderSetup
+	public sealed class ISpanReaderImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader>, ISpanReaderImposter.ISpanReaderSetup
 	{
-		private readonly TryReadMethodImposter _tryReadMethodImposter;
-		private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection();
+		private TryReadMethodImposter _tryReadMethodImposter;
+		private TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
 		public ITryReadMethodImposterBuilder TryRead(global::Imposter.Abstractions.OutReadOnlySpanArg<byte> data)
 		{
 			return new TryReadMethodImposter.Builder(_tryReadMethodImposter, _tryReadMethodInvocationHistoryCollection);
 		}
 
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.Docs.ArgumentsMatching.ISpanReader>.Instance()
 		{
@@ -32,45 +33,115 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		public delegate void TryReadCallbackDelegate(out global::System.ReadOnlySpan<byte> data);
 		public delegate global::System.Exception TryReadExceptionGeneratorDelegate(out global::System.ReadOnlySpan<byte> data);
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITryReadMethodInvocationHistory
+		internal interface ITryReadMethodInvocationHistory
 		{
 			bool Matches();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TryReadMethodInvocationHistory : TryReadMethodInvocationHistoryCollection.Node, ITryReadMethodInvocationHistory
+		public sealed class TryReadInvocation : TryReadMethodInvocationHistoryCollection.Node, ITryReadMethodInvocationHistory
 		{
-			internal readonly bool? Result;
-			internal readonly global::System.Exception? Exception;
-			public TryReadMethodInvocationHistory(bool? Result, global::System.Exception? Exception)
+			internal readonly byte[] captureddata;
+			internal readonly bool? _result;
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public global::System.ReadOnlyMemory<byte> Data
 			{
-				this.Result = Result;
-				this.Exception = Exception;
+				get
+				{
+					return captureddata;
+				}
 			}
 
-			public bool Matches()
+			public bool? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "TryRead";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public TryReadInvocation(byte[] captureddata, bool? _result, global::System.Exception? _exception, long _sequence)
+			{
+				this.captureddata = captureddata;
+				this._result = _result;
+				this._exception = _exception;
+				this._sequence = _sequence;
+			}
+
+			bool ITryReadMethodInvocationHistory.Matches()
 			{
 				return true;
 			}
 
 			public override string ToString()
 			{
-				return "TryRead(" + "" + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "TryRead(" + "" + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TryReadMethodInvocationHistoryCollection
+		public class TryReadMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal TryReadMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private TryReadMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal TryReadMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -105,6 +176,64 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((ITryReadMethodInvocationHistory)entry).Matches())
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((ITryReadMethodInvocationHistory)entry).Matches())
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<TryReadInvocation> MatchingInvocations()
+			{
+				var result = new global::System.Collections.Generic.List<TryReadInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ITryReadMethodInvocationHistory)entry).Matches())
+						result.Add((TryReadInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -124,6 +253,14 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		{
 			internal static TryReadMethodInvocationImposterGroup Default = new TryReadMethodInvocationImposterGroup();
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "TryRead(" + "data: " + "any" + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public TryReadMethodInvocationImposterGroup()
 			{
@@ -160,6 +297,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, out data);
 			}
 
@@ -247,6 +385,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		public interface ITryReadMethodInvocationImposterGroupContinuation : ITryReadMethodInvocationImposterGroupCallback
 		{
 			ITryReadMethodInvocationImposterGroup Then();
+			ITryReadMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -265,15 +404,18 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<TryReadInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier
+		public interface ITryReadMethodImposterBuilder : ITryReadMethodInvocationImposterGroup, ITryReadMethodInvocationImposterGroupCallback, TryReadInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class TryReadMethodImposter
+		internal class TryReadMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<TryReadMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<TryReadMethodInvocationImposterGroup>();
 			private readonly TryReadMethodInvocationHistoryCollection _tryReadMethodInvocationHistoryCollection;
@@ -295,27 +437,39 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public bool Invoke(out global::System.ReadOnlySpan<byte> data)
 			{
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("bool ISpanReader.TryRead(out ReadOnlySpan<byte> data)");
-					}
-
-					matchingInvocationImposterGroup = TryReadMethodInvocationImposterGroup.Default;
-				}
-
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+				data = default !;
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup();
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("TryRead", "TryRead(" + "data: " + "<unrecorded>" + ")", GetConfiguredSetups(), "bool ISpanReader.TryRead(out ReadOnlySpan<byte> data)");
+						matchingInvocationImposterGroup = TryReadMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "bool ISpanReader.TryRead(out ReadOnlySpan<byte> data)", out data);
-					_tryReadMethodInvocationHistoryCollection.Add(new TryReadMethodInvocationHistory(result, default));
+					_tryReadMethodInvocationHistoryCollection.Add(new TryReadInvocation(data.ToArray(), result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_tryReadMethodInvocationHistoryCollection.RecordFailure(new TryReadMethodInvocationHistory(default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_tryReadMethodInvocationHistoryCollection.RecordFailure(new TryReadInvocation(data.ToArray(), default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -340,6 +494,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -350,6 +505,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -360,6 +516,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 					{
 						throw exceptionGenerator.Invoke(out data);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -367,6 +524,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroupCallback.Callback(TryReadCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -374,6 +532,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroup.Returns(TryReadDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -381,6 +540,7 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroup.Returns(bool value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -393,10 +553,19 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 				void TryReadInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _tryReadMethodInvocationHistoryCollection.Count();
+					var invocationCount = _tryReadMethodInvocationHistoryCollection.Verify(count);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _tryReadMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("TryRead", "TryRead(" + "data: " + "any" + ")", count, invocationCount, _tryReadMethodInvocationHistoryCollection.ToString(), null, _tryReadMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_tryReadMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void TryReadInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _tryReadMethodInvocationHistoryCollection.Verify(count);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("TryRead", "TryRead(" + "data: " + "any" + ")", count, invocationCount, _tryReadMethodInvocationHistoryCollection.ToString(), because, _tryReadMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_tryReadMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -404,6 +573,48 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 				{
 					return _tryReadMethodInvocationHistoryCollection.Count();
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _tryReadMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "TryRead(" + "data: " + "any" + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _tryReadMethodInvocationHistoryCollection.MatchingInvocations();
+				}
+
+				ITryReadMethodInvocationImposterGroupContinuation ITryReadMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<TryReadInvocation> TryReadInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _tryReadMethodInvocationHistoryCollection.MatchingInvocations();
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_tryReadMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_tryReadMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -425,8 +636,46 @@ namespace Imposter.Tests.Features.Docs.ArgumentsMatching
 
 		public ISpanReaderImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
 			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_tryReadMethodInvocationHistoryCollection.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_tryReadMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_tryReadMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_tryReadMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_tryReadMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_tryReadMethodInvocationHistoryCollection.Clear();
+			this._tryReadMethodInvocationHistoryCollection = new TryReadMethodInvocationHistoryCollection(this);
+			this._tryReadMethodImposter = new TryReadMethodImposter(_tryReadMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

@@ -27,6 +27,24 @@ internal static class MethodImposterInvocationVerifierInterfaceBuilder
                 )
             )
             .AddMember(InterfaceMethod(called.ReturnType, called.Name, called.CountParameter))
+            .AddMember(
+                new PropertyDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.IReadOnlyList(
+                        method.InvocationVerifierInterface.InvocationRecordType
+                    ),
+                    "Invocations"
+                )
+                    .WithGetter()
+                    .Build()
+            )
+            .AddMember(
+                InterfaceMethod(
+                    called.ReturnType,
+                    called.Name,
+                    called.CountParameter,
+                    called.BecauseParameter
+                )
+            )
             .Build();
     }
 }

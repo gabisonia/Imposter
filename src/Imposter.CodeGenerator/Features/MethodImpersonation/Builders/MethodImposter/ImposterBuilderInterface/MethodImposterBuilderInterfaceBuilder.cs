@@ -1,11 +1,9 @@
 ﻿using Imposter.CodeGenerator.Features.MethodImpersonation.Metadata.ImposterTargetMethod;
+using Imposter.CodeGenerator.SyntaxHelpers;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-#if DEBUG
-using Imposter.CodeGenerator.SyntaxHelpers;
-#endif
 
 namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImposter.ImposterBuilderInterface;
 
@@ -22,6 +20,7 @@ internal static class MethodImposterBuilderInterfaceBuilder
                 SimpleBaseType(method.MethodInvocationImposterGroup.CallbackInterface.Syntax)
             )
             .AddBaseType(SimpleBaseType(method.InvocationVerifierInterface.Syntax))
+            .AddBaseType(SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IInvocationStep))
             .AddModifier(
                 Token(SyntaxKind.PublicKeyword)
 #if DEBUG

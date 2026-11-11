@@ -23,6 +23,9 @@ internal static partial class IndexerSetterBuilder
                 indexer.SetterBuilderInterface.FluentInterfaceTypeSyntax
             )
             .AddMember(BuildSetterBuilderCallbackMethod(indexer))
+            .AddMembers(IndexerVerificationBuilder.Step(indexer, false))
+            .AddMember(IndexerVerificationBuilder.Lenient(indexer, false))
+            .AddMember(IndexerHistoryBuilder.Invocations(indexer, false, true))
             .AddMember(
                 ForwardCalled(
                     builderMetadata,
@@ -32,6 +35,15 @@ internal static partial class IndexerSetterBuilder
                 )
             )
             .AddMember(ThenReturningThis(indexer.SetterBuilderInterface.ThenMethod))
+            .AddMember(
+                ForwardCalled(
+                    builderMetadata,
+                    indexer.SetterBuilderInterface.VerificationInterfaceTypeSyntax,
+                    indexer.SetterBuilderInterface.CalledMethod,
+                    IndexerSetterImposterMetadata.CalledMethodName,
+                    withReason: true
+                )
+            )
             .AddMember(
                 indexer.SetterBuilderInterface.UseBaseImplementationMethod is not null
                     ? BuildSetterBuilderUseBaseImplementationMethod(indexer)

@@ -19,6 +19,8 @@ internal readonly struct IndexerSetterImposterMetadata
     internal readonly NameSyntax TypeSyntax;
 
     internal readonly FieldMetadata CallbacksField;
+    internal readonly TypeSyntax CallbackRegistrationType;
+    internal readonly TypeSyntax BaseRegistrationType;
 
     internal readonly FieldMetadata InvocationHistoryField;
 
@@ -66,24 +68,19 @@ internal readonly struct IndexerSetterImposterMetadata
         CriteriaParameterName = names.Use("criteria");
         SetterSuffix = " (setter)";
         EnsureSetterConfiguredMethodName = names.Use("EnsureSetterConfigured");
+        CallbackRegistrationType = WellKnownTypes.Imposter.Abstractions.TrackedSetup(
+            BuildRegistrationTuple(indexer)
+        );
+        BaseRegistrationType = WellKnownTypes.Imposter.Abstractions.TrackedSetup(
+            indexer.ArgumentsCriteria.TypeSyntax
+        );
         CallbacksField = new FieldMetadata(
             names.Use("_callbacks"),
-            WellKnownTypes.Imposter.Abstractions.CallbackCollection(BuildRegistrationTuple(indexer))
+            WellKnownTypes.Imposter.Abstractions.CallbackCollection(CallbackRegistrationType)
         );
-        // A value passed through can't be kept, so the history keeps the keys alone.
-        TypeSyntax invocationHistoryEntryType = !indexer.Core.IsValuePassedThrough
-            ? TupleType(
-                SeparatedList<TupleElementSyntax>([
-                    TupleElement(indexer.Arguments.TypeSyntax)
-                        .WithIdentifier(Identifier(HistoryArgumentsElementName)),
-                    TupleElement(indexer.Core.NullableAwareKeptTypeSyntax)
-                        .WithIdentifier(Identifier(HistoryValueElementName)),
-                ])
-            )
-            : indexer.Arguments.TypeSyntax;
         InvocationHistoryField = new FieldMetadata(
             names.Use("_invocationHistory"),
-            WellKnownTypes.System.Collections.Concurrent.ConcurrentStack(invocationHistoryEntryType)
+            WellKnownTypes.Imposter.Abstractions.InvocationHistory(indexer.SetterRecord.Type)
         );
         DefaultBehaviourField = !indexer.Core.IsValuePassedThrough
             ? new FieldMetadata(
@@ -106,9 +103,7 @@ internal readonly struct IndexerSetterImposterMetadata
         BaseImplementationCriteriaField = indexer.Core.SetterSupportsBaseImplementation
             ? new FieldMetadata(
                 names.Use("_baseCriteria"),
-                WellKnownTypes.Imposter.Abstractions.CallbackCollection(
-                    indexer.ArgumentsCriteria.TypeSyntax
-                )
+                WellKnownTypes.Imposter.Abstractions.CallbackCollection(BaseRegistrationType)
             )
             : null;
         BaseImplementationParameter = indexer.Core.SetterBaseImplementationParameter(

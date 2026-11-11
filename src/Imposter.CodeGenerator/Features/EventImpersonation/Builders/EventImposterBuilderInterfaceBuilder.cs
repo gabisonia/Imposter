@@ -1,4 +1,5 @@
-﻿using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
+﻿using System.Linq;
+using Imposter.CodeGenerator.Features.EventImpersonation.Metadata;
 using Imposter.CodeGenerator.SyntaxHelpers.Builders;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -37,6 +38,7 @@ internal static class EventImposterBuilderInterfaceBuilder
 
         return new InterfaceDeclarationBuilder(@event.BuilderInterface.SetupInterfaceName)
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(InterfaceMethod(setupInterface, "Lenient"))
             .AddMember(
                 InterfaceMethod(
                     setupInterface,
@@ -69,8 +71,12 @@ internal static class EventImposterBuilderInterfaceBuilder
         var verificationInterface = @event.BuilderInterface.VerificationInterfaceTypeSyntax;
         var methods = @event.Builder.Methods;
 
-        return new InterfaceDeclarationBuilder(@event.BuilderInterface.VerificationInterfaceName)
+        var result = new InterfaceDeclarationBuilder(
+            @event.BuilderInterface.VerificationInterfaceName
+        )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(EventHistoryBuilder.Build(@event, true, false))
+            .AddMember(EventHistoryBuilder.Build(@event, false, false))
             .AddMember(
                 InterfaceMethod(
                     verificationInterface,
@@ -103,6 +109,12 @@ internal static class EventImposterBuilderInterfaceBuilder
                 )
             )
             .Build();
+        return result.AddMembers(
+            result
+                .Members.OfType<MethodDeclarationSyntax>()
+                .Select(EventImposterVerificationBuilder.WithReason)
+                .ToArray()
+        );
     }
 
     // Raise takes the event delegate's parameters, which the core metadata holds as syntax.

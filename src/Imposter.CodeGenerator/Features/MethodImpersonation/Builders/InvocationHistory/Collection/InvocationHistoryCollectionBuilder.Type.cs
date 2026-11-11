@@ -16,7 +16,40 @@ internal static partial class InvocationHistoryCollectionBuilder
         var historyType = method.InvocationHistory.Collection.NodeSyntax.ToNullableType();
 
         return new ClassDeclarationBuilder(method.InvocationHistory.Collection.Name)
-            .AddModifier(Token(SyntaxKind.InternalKeyword))
+            .AddModifier(Token(SyntaxKind.PublicKeyword))
+            .AddMember(
+                method.Model.IsGenericMethod
+                    ? SingleVariableField(
+                        method.MethodImposter.Collection.Syntax.ToNullableType(),
+                        InvocationHistoryCollectionMetadata.SetupSourceFieldName,
+                        SyntaxKind.InternalKeyword
+                    )
+                    : null
+            )
+            .AddMember(
+                new PropertyDeclarationBuilder(
+                    WellKnownTypes.Imposter.Abstractions.IImposter,
+                    "Owner"
+                )
+                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .WithGetter()
+                    .Build()
+            )
+            .AddMember(
+                new ConstructorBuilder(method.InvocationHistory.Collection.Name)
+                    .WithModifiers(TokenList(Token(SyntaxKind.InternalKeyword)))
+                    .AddParameter(
+                        ParameterSyntax(WellKnownTypes.Imposter.Abstractions.IImposter, "owner")
+                    )
+                    .WithBody(
+                        Block(
+                            IdentifierName("Owner")
+                                .Assign(IdentifierName("owner"))
+                                .ToStatementSyntax()
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(
                 SingleVariableField(
                     historyType,
@@ -26,8 +59,49 @@ internal static partial class InvocationHistoryCollectionBuilder
             )
             .AddMember(
                 new ClassDeclarationBuilder(InvocationHistoryCollectionMetadata.NodeTypeName)
-                    .AddModifier(Token(SyntaxKind.InternalKeyword))
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
                     .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                    .AddBaseType(
+                        SimpleBaseType(WellKnownTypes.Imposter.Abstractions.IVerifiableInvocation)
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.String, "Member")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.Long, "Sequence")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(
+                            WellKnownTypes.System.Exception.ToNullableType(),
+                            "Exception"
+                        )
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new PropertyDeclarationBuilder(WellKnownTypes.Bool, "IsVerified")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithGetter()
+                            .Build()
+                    )
+                    .AddMember(
+                        new MethodDeclarationBuilder(WellKnownTypes.Void, "MarkVerified")
+                            .AddModifier(Token(SyntaxKind.PublicKeyword))
+                            .AddModifier(Token(SyntaxKind.AbstractKeyword))
+                            .WithSemicolon()
+                            .Build()
+                    )
                     .AddMember(
                         SingleVariableField(
                             historyType,
@@ -40,6 +114,10 @@ internal static partial class InvocationHistoryCollectionBuilder
             .AddMember(BuildAddMethod(method))
             .AddMember(BuildRecordFailureMethod(method))
             .AddMember(BuildCountMethod(method))
+            .AddMember(BuildVerifyMethod(method))
+            .AddMember(BuildSnapshotMethod(method, false))
+            .AddMember(BuildSnapshotMethod(method, true))
+            .AddMember(BuildClearMethod())
             .AddMember(BuildToStringMethod())
             .Build();
     }

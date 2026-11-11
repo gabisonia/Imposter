@@ -23,9 +23,10 @@ internal readonly ref struct IndexerImposterMembersBuilder(
         var propertyDisplayLiteral = indexer.Core.DisplayName.StringLiteral();
 
         _imposterBuilder.AddMember(
-            SyntaxFactoryHelper.SinglePrivateReadonlyVariableField(
+            SyntaxFactoryHelper.SingleVariableField(
                 indexer.Builder.TypeSyntax,
-                indexer.BuilderField.Name
+                indexer.BuilderField.Name,
+                SyntaxKind.PrivateKeyword
             )
         );
 
@@ -85,6 +86,7 @@ internal readonly ref struct IndexerImposterMembersBuilder(
                         SyntaxFactoryHelper.ArgumentListSyntax([
                             Argument(IdentifierName(invocationBehaviorParameterName)),
                             Argument(propertyDisplayLiteral),
+                            Argument(ThisExpression()),
                         ])
                     )
                 )

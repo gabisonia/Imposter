@@ -68,13 +68,15 @@ internal static class EventImposterSubscriptionsBuilder
             .AddStatement(
                 UpdateActiveHandlers(@event, handlerIdentifier, method.ActiveHandlersOperation)
             )
-            .AddExpression(
-                LazyCollectionSyntaxHelper
-                    .EnsureInitialized(history.Name)
-                    .Dot(ConcurrentStackSyntaxHelper.Push)
-                    .Call(Argument(handlerIdentifier))
-            )
-            .AddStatement(ForEachInterceptor(interceptors, method.HandlerParameter.Name));
+            .AddStatement(
+                ForEachInterceptor(
+                    interceptors,
+                    method.HandlerParameter.Name,
+                    history.Name == @event.Builder.Fields.SubscribeHistory.Name
+                        ? @event.Builder.Fields.SubscribeUsed.Name
+                        : @event.Builder.Fields.UnsubscribeUsed.Name
+                )
+            );
 
         if (method.BaseImplementationParameter is { } baseImplementation)
         {
@@ -83,7 +85,74 @@ internal static class EventImposterSubscriptionsBuilder
             );
         }
 
-        return methodBuilder.WithBody(blockBuilder.Build()).Build();
+        var names = @event.Core.CreateParameterNameSet();
+        var sequence = IdentifierName(names.Use("invocationSequence"));
+        var failure = IdentifierName(names.Use("invocationFailure"));
+        var caught = IdentifierName(names.Use("caughtException"));
+        var recordType = WellKnownTypes.Imposter.Abstractions.EventSubscriptionInvocation(
+            @event.Core.HandlerTypeSyntax
+        );
+        return methodBuilder
+            .WithBody(
+                Block(
+                    LocalVariableDeclarationSyntax(
+                        WellKnownTypes.Long,
+                        sequence.Identifier.Text,
+                        WellKnownTypes
+                            .Imposter.Abstractions.InvocationSequence.Dot(IdentifierName("Next"))
+                            .Call()
+                    ),
+                    LocalVariableDeclarationSyntax(
+                        WellKnownTypes.System.Exception.ToNullableType(),
+                        failure.Identifier.Text,
+                        Null
+                    ),
+                    TryStatement(
+                        blockBuilder.Build(),
+                        SingletonList(
+                            CatchClause(
+                                CatchDeclaration(
+                                    WellKnownTypes.System.Exception,
+                                    caught.Identifier
+                                ),
+                                null,
+                                Block(failure.Assign(caught).ToStatementSyntax(), ThrowStatement())
+                            )
+                        ),
+                        FinallyClause(
+                            Block(
+                                LazyCollectionSyntaxHelper
+                                    .EnsureInitialized(history.Name)
+                                    .Dot(ConcurrentStackSyntaxHelper.Push)
+                                    .Call(
+                                        Argument(
+                                            recordType.New(
+                                                ArgumentListSyntax([
+                                                    Argument(@event.Core.Name.StringLiteral()),
+                                                    Argument(handlerIdentifier),
+                                                    Argument(
+                                                        history.Name
+                                                        == @event
+                                                            .Builder
+                                                            .Fields
+                                                            .SubscribeHistory
+                                                            .Name
+                                                            ? True
+                                                            : False
+                                                    ),
+                                                    Argument(sequence),
+                                                    Argument(failure),
+                                                ])
+                                            )
+                                        )
+                                    )
+                                    .ToStatementSyntax()
+                            )
+                        )
+                    )
+                )
+            )
+            .Build();
     }
 
     internal static MethodDeclarationSyntax BuildCallbackMethod(in ImposterEventMetadata @event)
@@ -141,19 +210,34 @@ internal static class EventImposterSubscriptionsBuilder
             .Call(Argument(handler))
             .ToStatementSyntax();
 
-    private static StatementSyntax ForEachInterceptor(
+    private static BlockSyntax ForEachInterceptor(
         in FieldMetadata interceptorsField,
-        string handlerIdentifier
+        string handlerIdentifier,
+        string usedCount
     ) =>
-        LazyCollectionSyntaxHelper.UnlessNull(
-            ForEachStatement(
-                Var,
-                Identifier("interceptor"),
-                IdentifierName(interceptorsField.Name),
-                Block(
-                    IdentifierName("interceptor")
-                        .Call(Argument(IdentifierName(handlerIdentifier)))
-                        .ToStatementSyntax()
+        Block(
+            LocalVariableDeclarationSyntax(
+                WellKnownTypes.Int,
+                "interceptorIndex",
+                LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(0))
+            ),
+            LazyCollectionSyntaxHelper.UnlessNull(
+                ForEachStatement(
+                    Var,
+                    Identifier("interceptor"),
+                    IdentifierName(interceptorsField.Name),
+                    Block(
+                        EventVerificationSourceBuilder.MarkUsed(
+                            usedCount,
+                            PrefixUnaryExpression(
+                                SyntaxKind.PreIncrementExpression,
+                                IdentifierName("interceptorIndex")
+                            )
+                        ),
+                        IdentifierName("interceptor")
+                            .Call(Argument(IdentifierName(handlerIdentifier)))
+                            .ToStatementSyntax()
+                    )
                 )
             )
         );
@@ -192,7 +276,10 @@ internal static class EventImposterSubscriptionsBuilder
         IdentifierNameSyntax baseImplementationIdentifier
     ) =>
         CallBaseImplementationIfUsed(
-            IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name),
+            ParenthesizedExpression(
+                IdentifierName(@event.Builder.Fields.BaseUsed.Name)
+                    .Assign(IdentifierName(@event.Builder.Fields.UseBaseImplementation.Name))
+            ),
             baseImplementationIdentifier,
             Block(baseImplementationIdentifier.Call().ToStatementSyntax()),
             ThrowMissingImposter(@event.Builder.Fields.EventDisplayName.Name, " (event)")

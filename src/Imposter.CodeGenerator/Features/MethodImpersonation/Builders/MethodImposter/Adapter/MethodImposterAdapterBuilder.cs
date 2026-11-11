@@ -17,6 +17,13 @@ namespace Imposter.CodeGenerator.Features.MethodImpersonation.Builders.MethodImp
 
 internal static class MethodImposterAdapterBuilder
 {
+    private static readonly string[] VerificationMemberNames =
+    [
+        "Interactions",
+        "UncoveredInteractions",
+        "UnusedSetups",
+    ];
+
     internal static ClassDeclarationSyntax? Build(in ImposterTargetMethodMetadata method)
     {
         if (!method.Model.HasAdapter)
@@ -62,10 +69,66 @@ internal static class MethodImposterAdapterBuilder
             .AddMember(BuildAdapterInvokeMethod(method, adapterNames))
             .AddMember(BuildAdapterHasMatchingInvocationImposterGroupMethod(method, adapterNames))
             .AddMember(BuildAdapterAsMethod(method))
+            .AddMember(
+                new MethodDeclarationBuilder(
+                    WellKnownTypes.System.Collections.Generic.List(WellKnownTypes.String),
+                    method.MethodImposter.ConfiguredSetupsMethodName
+                )
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                IdentifierName(adapterNames.TargetFieldName)
+                                    .Dot(
+                                        IdentifierName(
+                                            method.MethodImposter.ConfiguredSetupsMethodName
+                                        )
+                                    )
+                                    .Call()
+                            )
+                        )
+                    )
+                    .Build()
+            )
+            .AddMembers(BuildVerificationForwarders(adapterNames.TargetFieldName))
             .Build();
 
         return adapterClass;
     }
+
+    private static MemberDeclarationSyntax[] BuildVerificationForwarders(string targetFieldName) =>
+        VerificationMemberNames
+            .Select(name =>
+                (MemberDeclarationSyntax)
+                    new MethodDeclarationBuilder(
+                        WellKnownTypes.System.Collections.Generic.IEnumerable(
+                            WellKnownTypes.String
+                        ),
+                        name
+                    )
+                        .WithExplicitInterfaceSpecifier(
+                            WellKnownTypes.Imposter.Abstractions.IImposterVerificationSource
+                        )
+                        .WithBody(
+                            Block(
+                                ReturnStatement(
+                                    ParenthesizedExpression(
+                                            CastExpression(
+                                                WellKnownTypes
+                                                    .Imposter
+                                                    .Abstractions
+                                                    .IImposterVerificationSource,
+                                                IdentifierName(targetFieldName)
+                                            )
+                                        )
+                                        .Dot(IdentifierName(name))
+                                        .Call()
+                                )
+                            )
+                        )
+                        .Build()
+            )
+            .ToArray();
 
     private static MethodDeclarationSyntax BuildAdapterInvokeMethod(
         in ImposterTargetMethodMetadata method,
@@ -118,7 +181,9 @@ internal static class MethodImposterAdapterBuilder
                     postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKind.Out:
-                    invokeArguments.Add(PassThroughLocal(SyntaxKind.OutKeyword, initializer: null));
+                    invokeArguments.Add(
+                        PassThroughLocal(SyntaxKind.OutKeyword, DefaultNonNullable)
+                    );
                     postInvokeActions.Add(CastBackToCaller(method));
                     break;
                 case RefKinds.RefReadOnlyParameter:
@@ -170,23 +235,22 @@ internal static class MethodImposterAdapterBuilder
             .Dot(IdentifierName(MethodImposterInvokeMethodMetadata.Name))
             .Call(invokeArguments);
 
+        var invocation = new List<StatementSyntax>();
+
         if (method.HasReturnValue)
         {
-            body.Add(
+            invocation.Add(
                 LocalVariableDeclarationSyntax(
                     Var,
                     adapterNames.InvokeResultVariableName,
                     invokeExpression
                 )
             );
-            body.AddRange(postInvokeActions);
-
-            body.Add(ReturnStatement(AdaptedResult(method, adapterNames)));
+            invocation.Add(ReturnStatement(AdaptedResult(method, adapterNames)));
         }
         else
         {
-            body.Add(invokeExpression.ToStatementSyntax());
-            body.AddRange(postInvokeActions);
+            invocation.Add(invokeExpression.ToStatementSyntax());
         }
 
         return new MethodDeclarationBuilder(
@@ -195,7 +259,22 @@ internal static class MethodImposterAdapterBuilder
         )
             .AddModifier(Token(SyntaxKind.PublicKeyword))
             .WithParameterList(parameterList)
-            .WithBody(Block(body))
+            .WithBody(
+                Block(
+                    body.Concat(
+                        postInvokeActions.Count == 0
+                            ? invocation
+                            : new StatementSyntax[]
+                            {
+                                TryStatement(
+                                    Block(invocation),
+                                    default,
+                                    FinallyClause(Block(postInvokeActions))
+                                ),
+                            }
+                    )
+                )
+            )
             .Build();
     }
 

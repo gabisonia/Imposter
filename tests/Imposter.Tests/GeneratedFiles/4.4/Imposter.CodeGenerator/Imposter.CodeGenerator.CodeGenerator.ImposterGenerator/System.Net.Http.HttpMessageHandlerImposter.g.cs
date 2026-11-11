@@ -13,14 +13,14 @@ using global::System.Net.Http;
 namespace System.Net.Http
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class HttpMessageHandlerImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::System.Net.Http.HttpMessageHandler>
+	public sealed class HttpMessageHandlerImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::System.Net.Http.HttpMessageHandler>
 	{
-		private readonly DisposeMethodImposter _disposeMethodImposter;
-		private readonly SendMethodImposter _sendMethodImposter;
-		private readonly SendAsyncMethodImposter _sendAsyncMethodImposter;
-		private readonly DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection();
-		private readonly SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection();
-		private readonly SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection();
+		private DisposeMethodImposter _disposeMethodImposter;
+		private SendMethodImposter _sendMethodImposter;
+		private SendAsyncMethodImposter _sendAsyncMethodImposter;
+		private DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection;
+		private SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection;
+		private SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection;
 		public IDisposeMethodImposterBuilder Dispose(global::Imposter.Abstractions.Arg<bool> disposing)
 		{
 			return new DisposeMethodImposter.Builder(_disposeMethodImposter, _disposeMethodInvocationHistoryCollection, new DisposeArgumentsCriteria(disposing));
@@ -36,6 +36,7 @@ namespace System.Net.Http
 			return new SendAsyncMethodImposter.Builder(_sendAsyncMethodImposter, _sendAsyncMethodInvocationHistoryCollection, new SendAsyncArgumentsCriteria(request, cancellationToken));
 		}
 
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::System.Net.Http.HttpMessageHandler global::Imposter.Abstractions.IHaveImposterInstance<global::System.Net.Http.HttpMessageHandler>.Instance()
 		{
@@ -77,45 +78,105 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDisposeMethodInvocationHistory
+		internal interface IDisposeMethodInvocationHistory
 		{
 			bool Matches(DisposeArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DisposeMethodInvocationHistory : DisposeMethodInvocationHistoryCollection.Node, IDisposeMethodInvocationHistory
+		public sealed class DisposeInvocation : DisposeMethodInvocationHistoryCollection.Node, IDisposeMethodInvocationHistory
 		{
 			internal readonly bool captureddisposing;
-			internal readonly global::System.Exception? Exception;
-			public DisposeMethodInvocationHistory(bool captureddisposing, global::System.Exception? Exception)
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public bool Disposing
 			{
-				this.captureddisposing = captureddisposing;
-				this.Exception = Exception;
+				get
+				{
+					return captureddisposing;
+				}
 			}
 
-			public bool Matches(DisposeArgumentsCriteria criteria)
+			public override string Member
+			{
+				get
+				{
+					return "Dispose";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public DisposeInvocation(bool captureddisposing, global::System.Exception? _exception, long _sequence)
+			{
+				this.captureddisposing = captureddisposing;
+				this._exception = _exception;
+				this._sequence = _sequence;
+			}
+
+			bool IDisposeMethodInvocationHistory.Matches(DisposeArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(captureddisposing);
 			}
 
 			public override string ToString()
 			{
-				return "Dispose(" + global::System.String.Join(", ", new[] { "disposing: " + FormatValue(captureddisposing) }) + ")" + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Dispose(" + global::System.String.Join(", ", new[] { "disposing: " + FormatValue(captureddisposing) }) + ")" + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DisposeMethodInvocationHistoryCollection
+		public class DisposeMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal DisposeMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private DisposeMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal DisposeMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -150,6 +211,64 @@ namespace System.Net.Http
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected, DisposeArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((IDisposeMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((IDisposeMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<DisposeInvocation> MatchingInvocations(DisposeArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<DisposeInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((IDisposeMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((DisposeInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -171,6 +290,14 @@ namespace System.Net.Http
 			internal DisposeArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "Dispose(" + "disposing: " + ArgumentsCriteria.disposing.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public DisposeMethodInvocationImposterGroup(DisposeArgumentsCriteria argumentsCriteria)
 			{
@@ -209,6 +336,7 @@ namespace System.Net.Http
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				invocationImposter.Invoke(invocationBehavior, methodDisplayName, disposing, baseImplementation);
 			}
 
@@ -291,6 +419,7 @@ namespace System.Net.Http
 		public interface IDisposeMethodInvocationImposterGroupContinuation : IDisposeMethodInvocationImposterGroupCallback
 		{
 			IDisposeMethodInvocationImposterGroup Then();
+			IDisposeMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -308,15 +437,18 @@ namespace System.Net.Http
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<DisposeInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IDisposeMethodImposterBuilder : IDisposeMethodInvocationImposterGroup, IDisposeMethodInvocationImposterGroupCallback, DisposeInvocationVerifier
+		public interface IDisposeMethodImposterBuilder : IDisposeMethodInvocationImposterGroup, IDisposeMethodInvocationImposterGroupCallback, DisposeInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class DisposeMethodImposter
+		internal class DisposeMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<DisposeMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<DisposeMethodInvocationImposterGroup>();
 			private readonly DisposeMethodInvocationHistoryCollection _disposeMethodInvocationHistoryCollection;
@@ -338,27 +470,38 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public void Invoke(bool disposing, DisposeDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				bool captureddisposing = disposing;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureddisposing);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual void HttpMessageHandler.Dispose(bool disposing)");
-					}
-
-					matchingInvocationImposterGroup = DisposeMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(captureddisposing);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("Dispose", "Dispose(" + "disposing: " + global::Imposter.Abstractions.DiagnosticValue.Format(captureddisposing) + ")", GetConfiguredSetups(), "virtual void HttpMessageHandler.Dispose(bool disposing)");
+						matchingInvocationImposterGroup = DisposeMethodInvocationImposterGroup.Default;
+					}
+
 					matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual void HttpMessageHandler.Dispose(bool disposing)", disposing, baseImplementation);
-					_disposeMethodInvocationHistoryCollection.Add(new DisposeMethodInvocationHistory(captureddisposing, default));
+					_disposeMethodInvocationHistoryCollection.Add(new DisposeInvocation(captureddisposing, default, invocationSequence));
 				}
-				catch (global::System.Exception ex) when (_disposeMethodInvocationHistoryCollection.RecordFailure(new DisposeMethodInvocationHistory(captureddisposing, ex)))
+				catch (global::System.Exception ex)
 				{
+					_disposeMethodInvocationHistoryCollection.RecordFailure(new DisposeInvocation(captureddisposing, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -385,6 +528,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -395,6 +539,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -405,6 +550,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(disposing);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -412,6 +558,7 @@ namespace System.Net.Http
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroupCallback.Callback(DisposeCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -419,6 +566,7 @@ namespace System.Net.Http
 				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -431,10 +579,19 @@ namespace System.Net.Http
 
 				void DisposeInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _disposeMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _disposeMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Dispose", "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")", count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString(), null, _disposeMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_disposeMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void DisposeInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _disposeMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Dispose", "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")", count, invocationCount, _disposeMethodInvocationHistoryCollection.ToString(), because, _disposeMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_disposeMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -442,6 +599,48 @@ namespace System.Net.Http
 				{
 					return _disposeMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _disposeMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "Dispose(" + "disposing: " + _argumentsCriteria.disposing.ToString() + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _disposeMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+				}
+
+				IDisposeMethodInvocationImposterGroupContinuation IDisposeMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<DisposeInvocation> DisposeInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _disposeMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_disposeMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_disposeMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -484,49 +683,125 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendMethodInvocationHistory
+		internal interface ISendMethodInvocationHistory
 		{
 			bool Matches(SendArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendMethodInvocationHistory : SendMethodInvocationHistoryCollection.Node, ISendMethodInvocationHistory
+		public sealed class SendInvocation : SendMethodInvocationHistoryCollection.Node, ISendMethodInvocationHistory
 		{
 			internal readonly global::System.Net.Http.HttpRequestMessage capturedrequest;
 			internal readonly global::System.Threading.CancellationToken capturedcancellationToken;
-			internal readonly global::System.Net.Http.HttpResponseMessage? Result;
-			internal readonly global::System.Exception? Exception;
-			public SendMethodInvocationHistory(global::System.Net.Http.HttpRequestMessage capturedrequest, global::System.Threading.CancellationToken capturedcancellationToken, global::System.Net.Http.HttpResponseMessage? Result, global::System.Exception? Exception)
+			internal readonly global::System.Net.Http.HttpResponseMessage? _result;
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public global::System.Net.Http.HttpRequestMessage Request
+			{
+				get
+				{
+					return capturedrequest;
+				}
+			}
+
+			public global::System.Threading.CancellationToken CancellationToken
+			{
+				get
+				{
+					return capturedcancellationToken;
+				}
+			}
+
+			public global::System.Net.Http.HttpResponseMessage? Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "Send";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public SendInvocation(global::System.Net.Http.HttpRequestMessage capturedrequest, global::System.Threading.CancellationToken capturedcancellationToken, global::System.Net.Http.HttpResponseMessage? _result, global::System.Exception? _exception, long _sequence)
 			{
 				this.capturedrequest = capturedrequest;
 				this.capturedcancellationToken = capturedcancellationToken;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = _result;
+				this._exception = _exception;
+				this._sequence = _sequence;
 			}
 
-			public bool Matches(SendArgumentsCriteria criteria)
+			bool ISendMethodInvocationHistory.Matches(SendArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedrequest, capturedcancellationToken);
 			}
 
 			public override string ToString()
 			{
-				return "Send(" + global::System.String.Join(", ", new[] { "request: " + FormatValue(capturedrequest), "cancellationToken: " + FormatValue(capturedcancellationToken) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "Send(" + global::System.String.Join(", ", new[] { "request: " + FormatValue(capturedrequest), "cancellationToken: " + FormatValue(capturedcancellationToken) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendMethodInvocationHistoryCollection
+		public class SendMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SendMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SendMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal SendMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -561,6 +836,64 @@ namespace System.Net.Http
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected, SendArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((ISendMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((ISendMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<SendInvocation> MatchingInvocations(SendArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<SendInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ISendMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((SendInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -582,6 +915,14 @@ namespace System.Net.Http
 			internal SendArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "Send(" + "request: " + ArgumentsCriteria.request.ToString() + ", cancellationToken: " + ArgumentsCriteria.cancellationToken.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public SendMethodInvocationImposterGroup(SendArgumentsCriteria argumentsCriteria)
 			{
@@ -619,6 +960,7 @@ namespace System.Net.Http
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, request, cancellationToken, baseImplementation);
 			}
 
@@ -714,6 +1056,7 @@ namespace System.Net.Http
 		public interface ISendMethodInvocationImposterGroupContinuation : ISendMethodInvocationImposterGroupCallback
 		{
 			ISendMethodInvocationImposterGroup Then();
+			ISendMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -733,15 +1076,18 @@ namespace System.Net.Http
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<SendInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendMethodImposterBuilder : ISendMethodInvocationImposterGroup, ISendMethodInvocationImposterGroupCallback, SendInvocationVerifier
+		public interface ISendMethodImposterBuilder : ISendMethodInvocationImposterGroup, ISendMethodInvocationImposterGroupCallback, SendInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendMethodImposter
+		internal class SendMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<SendMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SendMethodInvocationImposterGroup>();
 			private readonly SendMethodInvocationHistoryCollection _sendMethodInvocationHistoryCollection;
@@ -763,29 +1109,40 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Net.Http.HttpResponseMessage Invoke(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken, SendDelegate? baseImplementation = null)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				global::System.Net.Http.HttpRequestMessage capturedrequest = request;
 				global::System.Threading.CancellationToken capturedcancellationToken = cancellationToken;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedrequest, capturedcancellationToken);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("virtual HttpResponseMessage HttpMessageHandler.Send(HttpRequestMessage request, CancellationToken cancellationToken)");
-					}
-
-					matchingInvocationImposterGroup = SendMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedrequest, capturedcancellationToken);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("Send", "Send(" + "request: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedrequest) + ", cancellationToken: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedcancellationToken) + ")", GetConfiguredSetups(), "virtual HttpResponseMessage HttpMessageHandler.Send(HttpRequestMessage request, CancellationToken cancellationToken)");
+						matchingInvocationImposterGroup = SendMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "virtual HttpResponseMessage HttpMessageHandler.Send(HttpRequestMessage request, CancellationToken cancellationToken)", request, cancellationToken, baseImplementation);
-					_sendMethodInvocationHistoryCollection.Add(new SendMethodInvocationHistory(capturedrequest, capturedcancellationToken, result, default));
+					_sendMethodInvocationHistoryCollection.Add(new SendInvocation(capturedrequest, capturedcancellationToken, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_sendMethodInvocationHistoryCollection.RecordFailure(new SendMethodInvocationHistory(capturedrequest, capturedcancellationToken, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_sendMethodInvocationHistoryCollection.RecordFailure(new SendInvocation(capturedrequest, capturedcancellationToken, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -812,6 +1169,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -822,6 +1180,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -832,6 +1191,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -839,6 +1199,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroupCallback.Callback(SendCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -846,6 +1207,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(SendDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -853,6 +1215,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.Returns(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -860,6 +1223,7 @@ namespace System.Net.Http
 				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroup.UseBaseImplementation()
 				{
 					_currentInvocationImposter.UseBaseImplementation();
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "UseBaseImplementation");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -872,10 +1236,19 @@ namespace System.Net.Http
 
 				void SendInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _sendMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _sendMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _sendMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("Send", "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendMethodInvocationHistoryCollection.ToString(), null, _sendMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SendInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _sendMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("Send", "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendMethodInvocationHistoryCollection.ToString(), because, _sendMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -883,6 +1256,48 @@ namespace System.Net.Http
 				{
 					return _sendMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _sendMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "Send(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _sendMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+				}
+
+				ISendMethodInvocationImposterGroupContinuation ISendMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<SendInvocation> SendInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _sendMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sendMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sendMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
@@ -925,49 +1340,125 @@ namespace System.Net.Http
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendAsyncMethodInvocationHistory
+		internal interface ISendAsyncMethodInvocationHistory
 		{
 			bool Matches(SendAsyncArgumentsCriteria criteria);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendAsyncMethodInvocationHistory : SendAsyncMethodInvocationHistoryCollection.Node, ISendAsyncMethodInvocationHistory
+		public sealed class SendAsyncInvocation : SendAsyncMethodInvocationHistoryCollection.Node, ISendAsyncMethodInvocationHistory
 		{
 			internal readonly global::System.Net.Http.HttpRequestMessage capturedrequest;
 			internal readonly global::System.Threading.CancellationToken capturedcancellationToken;
-			internal readonly global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Result;
-			internal readonly global::System.Exception? Exception;
-			public SendAsyncMethodInvocationHistory(global::System.Net.Http.HttpRequestMessage capturedrequest, global::System.Threading.CancellationToken capturedcancellationToken, global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Result, global::System.Exception? Exception)
+			internal readonly global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> _result;
+			internal readonly global::System.Exception? _exception;
+			private long _sequence;
+			public global::System.Net.Http.HttpRequestMessage Request
+			{
+				get
+				{
+					return capturedrequest;
+				}
+			}
+
+			public global::System.Threading.CancellationToken CancellationToken
+			{
+				get
+				{
+					return capturedcancellationToken;
+				}
+			}
+
+			public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Result
+			{
+				get
+				{
+					return _result;
+				}
+			}
+
+			public override string Member
+			{
+				get
+				{
+					return "SendAsync";
+				}
+			}
+
+			public override long Sequence
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) & long.MaxValue;
+				}
+			}
+
+			public override bool IsVerified
+			{
+				get
+				{
+					return global::System.Threading.Volatile.Read(ref _sequence) < 0;
+				}
+			}
+
+			public override void MarkVerified()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _sequence, global::System.Threading.Volatile.Read(ref _sequence) | long.MinValue);
+			}
+
+			public override global::System.Exception? Exception
+			{
+				get
+				{
+					return _exception;
+				}
+			}
+
+			public SendAsyncInvocation(global::System.Net.Http.HttpRequestMessage capturedrequest, global::System.Threading.CancellationToken capturedcancellationToken, global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> _result, global::System.Exception? _exception, long _sequence)
 			{
 				this.capturedrequest = capturedrequest;
 				this.capturedcancellationToken = capturedcancellationToken;
-				this.Result = Result;
-				this.Exception = Exception;
+				this._result = _result;
+				this._exception = _exception;
+				this._sequence = _sequence;
 			}
 
-			public bool Matches(SendAsyncArgumentsCriteria criteria)
+			bool ISendAsyncMethodInvocationHistory.Matches(SendAsyncArgumentsCriteria criteria)
 			{
 				return criteria.MatchesCaptured(capturedrequest, capturedcancellationToken);
 			}
 
 			public override string ToString()
 			{
-				return "SendAsync(" + global::System.String.Join(", ", new[] { "request: " + FormatValue(capturedrequest), "cancellationToken: " + FormatValue(capturedcancellationToken) }) + ")" + " => " + FormatValue(Result) + (Exception == null ? "" : " threw " + FormatValue(Exception));
+				return "SendAsync(" + global::System.String.Join(", ", new[] { "request: " + FormatValue(capturedrequest), "cancellationToken: " + FormatValue(capturedcancellationToken) }) + ")" + " => " + FormatValue(_result) + (_exception == null ? "" : " threw " + FormatValue(_exception));
 			}
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendAsyncMethodInvocationHistoryCollection
+		public class SendAsyncMethodInvocationHistoryCollection
 		{
+			internal global::Imposter.Abstractions.IImposter Owner { get; }
+
+			internal SendAsyncMethodInvocationHistoryCollection(global::Imposter.Abstractions.IImposter owner)
+			{
+				Owner = owner;
+			}
+
 			private SendAsyncMethodInvocationHistoryCollection.Node? _invocationHistory;
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			internal abstract class Node
+			public abstract class Node : global::Imposter.Abstractions.IVerifiableInvocation
 			{
+				public abstract string Member { get; }
+				public abstract long Sequence { get; }
+				public abstract global::System.Exception? Exception { get; }
+				public abstract bool IsVerified { get; }
+
+				public abstract void MarkVerified();
 				internal SendAsyncMethodInvocationHistoryCollection.Node? Next;
 			}
 
@@ -1002,6 +1493,64 @@ namespace System.Net.Http
 				return count;
 			}
 
+			internal int Verify(global::Imposter.Abstractions.Count expected, SendAsyncArgumentsCriteria criteria)
+			{
+				var head = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				var entry = head;
+				var count = 0;
+				while (entry != null)
+				{
+					if (((ISendAsyncMethodInvocationHistory)entry).Matches(criteria))
+						count++;
+					entry = entry.Next;
+				}
+
+				if (expected.Matches(count))
+				{
+					entry = head;
+					while (entry != null)
+					{
+						if (((ISendAsyncMethodInvocationHistory)entry).Matches(criteria))
+							entry.MarkVerified();
+						entry = entry.Next;
+					}
+				}
+
+				return count;
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				var result = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					result.Add((global::Imposter.Abstractions.IImposterInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<SendAsyncInvocation> MatchingInvocations(SendAsyncArgumentsCriteria criteria)
+			{
+				var result = new global::System.Collections.Generic.List<SendAsyncInvocation>();
+				var entry = global::System.Threading.Volatile.Read(ref _invocationHistory);
+				while (entry != null)
+				{
+					if (((ISendAsyncMethodInvocationHistory)entry).Matches(criteria))
+						result.Add((SendAsyncInvocation)entry);
+					entry = entry.Next;
+				}
+
+				return global::Imposter.Abstractions.InvocationSnapshots.Order(result);
+			}
+
+			internal void Clear()
+			{
+				global::System.Threading.Interlocked.Exchange(ref _invocationHistory, null);
+			}
+
 			public override string ToString()
 			{
 				var descriptions = new global::System.Collections.Generic.List<string?>();
@@ -1023,6 +1572,14 @@ namespace System.Net.Http
 			internal SendAsyncArgumentsCriteria ArgumentsCriteria { get; }
 
 			private readonly global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?> _invocationImposters = new global::Imposter.Abstractions.ReturnValueSequence<MethodInvocationImposter?>();
+			internal volatile bool IsUsed;
+			internal volatile bool IsLenient;
+			internal object? _outcomeDescriptions;
+			public override string ToString()
+			{
+				return "SendAsync(" + "request: " + ArgumentsCriteria.request.ToString() + ", cancellationToken: " + ArgumentsCriteria.cancellationToken.ToString() + ")" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+			}
+
 			internal volatile bool HasConfiguredOutcome;
 			public SendAsyncMethodInvocationImposterGroup(SendAsyncArgumentsCriteria argumentsCriteria)
 			{
@@ -1060,6 +1617,7 @@ namespace System.Net.Http
 					invocationImposter = MethodInvocationImposter.Default;
 				}
 
+				this.IsUsed = true;
 				return invocationImposter.Invoke(invocationBehavior, methodDisplayName, request, cancellationToken);
 			}
 
@@ -1166,6 +1724,7 @@ namespace System.Net.Http
 		public interface ISendAsyncMethodInvocationImposterGroupContinuation : ISendAsyncMethodInvocationImposterGroupCallback
 		{
 			ISendAsyncMethodInvocationImposterGroup Then();
+			ISendAsyncMethodInvocationImposterGroupContinuation Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -1186,15 +1745,18 @@ namespace System.Net.Http
 		{
 			int CallCount();
 			void Called(global::Imposter.Abstractions.Count count);
+			global::System.Collections.Generic.IReadOnlyList<SendAsyncInvocation> Invocations { get; }
+
+			void Called(global::Imposter.Abstractions.Count count, string because);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface ISendAsyncMethodImposterBuilder : ISendAsyncMethodInvocationImposterGroup, ISendAsyncMethodInvocationImposterGroupCallback, SendAsyncInvocationVerifier
+		public interface ISendAsyncMethodImposterBuilder : ISendAsyncMethodInvocationImposterGroup, ISendAsyncMethodInvocationImposterGroupCallback, SendAsyncInvocationVerifier, global::Imposter.Abstractions.IInvocationStep
 		{
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class SendAsyncMethodImposter
+		internal class SendAsyncMethodImposter : global::Imposter.Abstractions.IImposterVerificationSource
 		{
 			private readonly global::Imposter.Abstractions.SetupCollection<SendAsyncMethodInvocationImposterGroup> _invocationImposters = new global::Imposter.Abstractions.SetupCollection<SendAsyncMethodInvocationImposterGroup>();
 			private readonly SendAsyncMethodInvocationHistoryCollection _sendAsyncMethodInvocationHistoryCollection;
@@ -1216,29 +1778,40 @@ namespace System.Net.Http
 				return null;
 			}
 
+			public global::System.Collections.Generic.List<string> GetConfiguredSetups()
+			{
+				var setups = new global::System.Collections.Generic.List<string>();
+				foreach (var group in _invocationImposters)
+				{
+					if (group.HasConfiguredOutcome)
+						setups.Add(group.ToString());
+				}
+
+				return setups;
+			}
+
 			public global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> Invoke(global::System.Net.Http.HttpRequestMessage request, global::System.Threading.CancellationToken cancellationToken)
 			{
+				long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
 				global::System.Net.Http.HttpRequestMessage capturedrequest = request;
 				global::System.Threading.CancellationToken capturedcancellationToken = cancellationToken;
-				var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedrequest, capturedcancellationToken);
-				if (matchingInvocationImposterGroup == default)
-				{
-					if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
-					{
-						throw new global::Imposter.Abstractions.MissingImposterException("abstract Task<HttpResponseMessage> HttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)");
-					}
-
-					matchingInvocationImposterGroup = SendAsyncMethodInvocationImposterGroup.Default;
-				}
-
 				try
 				{
+					var matchingInvocationImposterGroup = FindMatchingInvocationImposterGroup(capturedrequest, capturedcancellationToken);
+					if (matchingInvocationImposterGroup == default)
+					{
+						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
+							throw new global::Imposter.Abstractions.MissingImposterException("SendAsync", "SendAsync(" + "request: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedrequest) + ", cancellationToken: " + global::Imposter.Abstractions.DiagnosticValue.Format(capturedcancellationToken) + ")", GetConfiguredSetups(), "abstract Task<HttpResponseMessage> HttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)");
+						matchingInvocationImposterGroup = SendAsyncMethodInvocationImposterGroup.Default;
+					}
+
 					var result = matchingInvocationImposterGroup.Invoke(_invocationBehavior, "abstract Task<HttpResponseMessage> HttpMessageHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)", request, cancellationToken);
-					_sendAsyncMethodInvocationHistoryCollection.Add(new SendAsyncMethodInvocationHistory(capturedrequest, capturedcancellationToken, result, default));
+					_sendAsyncMethodInvocationHistoryCollection.Add(new SendAsyncInvocation(capturedrequest, capturedcancellationToken, result, default, invocationSequence));
 					return result;
 				}
-				catch (global::System.Exception ex) when (_sendAsyncMethodInvocationHistoryCollection.RecordFailure(new SendAsyncMethodInvocationHistory(capturedrequest, capturedcancellationToken, default !, ex)))
+				catch (global::System.Exception ex)
 				{
+					_sendAsyncMethodInvocationHistoryCollection.RecordFailure(new SendAsyncInvocation(capturedrequest, capturedcancellationToken, default !, ex, invocationSequence));
 					throw;
 				}
 			}
@@ -1265,6 +1838,7 @@ namespace System.Net.Http
 					{
 						throw new TException();
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1275,6 +1849,7 @@ namespace System.Net.Http
 					{
 						throw exception;
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1285,6 +1860,7 @@ namespace System.Net.Http
 					{
 						throw exceptionGenerator.Invoke(request, cancellationToken);
 					});
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Throws");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1292,6 +1868,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroupCallback.Callback(SendAsyncCallbackDelegate callback)
 				{
 					_currentInvocationImposter.Callback(callback);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Callback");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1299,6 +1876,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(SendAsyncDelegate resultGenerator)
 				{
 					_currentInvocationImposter.Returns(resultGenerator);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1306,6 +1884,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.Returns(global::System.Threading.Tasks.Task<global::System.Net.Http.HttpResponseMessage> value)
 				{
 					_currentInvocationImposter.Returns(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "Returns");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1313,6 +1892,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ReturnsAsync(global::System.Net.Http.HttpResponseMessage value)
 				{
 					_currentInvocationImposter.ReturnsAsync(value);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ReturnsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1320,6 +1900,7 @@ namespace System.Net.Http
 				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroup.ThrowsAsync(global::System.Exception exception)
 				{
 					_currentInvocationImposter.ThrowsAsync(exception);
+					global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref _invocationImposterGroup._outcomeDescriptions, "ThrowsAsync");
 					_invocationImposterGroup.AddInvocationImposter(_currentInvocationImposter);
 					return this;
 				}
@@ -1332,10 +1913,19 @@ namespace System.Net.Http
 
 				void SendAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count)
 				{
-					var invocationCount = _sendAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
+					var invocationCount = _sendAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
 					if (!count.Matches(invocationCount))
 					{
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString());
+						throw new global::Imposter.Abstractions.VerificationFailedException("SendAsync", "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString(), null, _sendAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendAsyncMethodInvocationHistoryCollection.Owner) : null);
+					}
+				}
+
+				void SendAsyncInvocationVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+				{
+					var invocationCount = _sendAsyncMethodInvocationHistoryCollection.Verify(count, _argumentsCriteria);
+					if (!count.Matches(invocationCount))
+					{
+						throw new global::Imposter.Abstractions.VerificationFailedException("SendAsync", "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")", count, invocationCount, _sendAsyncMethodInvocationHistoryCollection.ToString(), because, _sendAsyncMethodInvocationHistoryCollection.Snapshot().Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(_sendAsyncMethodInvocationHistoryCollection.Owner) : null);
 					}
 				}
 
@@ -1343,15 +1933,107 @@ namespace System.Net.Http
 				{
 					return _sendAsyncMethodInvocationHistoryCollection.Count(_argumentsCriteria);
 				}
+
+				global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _sendAsyncMethodInvocationHistoryCollection.Owner;
+
+				string global::Imposter.Abstractions.IInvocationStep.Description => "SendAsync(" + "request: " + _argumentsCriteria.request.ToString() + ", cancellationToken: " + _argumentsCriteria.cancellationToken.ToString() + ")";
+
+				global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+				{
+					return _sendAsyncMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+				}
+
+				ISendAsyncMethodInvocationImposterGroupContinuation ISendAsyncMethodInvocationImposterGroupContinuation.Lenient()
+				{
+					_invocationImposterGroup.IsLenient = true;
+					return this;
+				}
+
+				global::System.Collections.Generic.IReadOnlyList<SendAsyncInvocation> SendAsyncInvocationVerifier.Invocations
+				{
+					get
+					{
+						return _sendAsyncMethodInvocationHistoryCollection.MatchingInvocations(_argumentsCriteria);
+					}
+				}
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sendAsyncMethodInvocationHistoryCollection.Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(_sendAsyncMethodInvocationHistoryCollection.Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				var findings = new global::System.Collections.Generic.List<string>();
+				foreach (var item in _invocationImposters)
+					if ((item.HasConfiguredOutcome && !item.IsUsed) && !item.IsLenient)
+						findings.Add(item.ToString());
+				return findings;
 			}
 		}
 
 		public HttpMessageHandlerImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
+			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection(this);
+			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection(this);
+			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection(this);
 			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, invocationBehavior);
 			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, invocationBehavior);
 			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_disposeMethodInvocationHistoryCollection.Snapshot());
+			invocations.AddRange(_sendMethodInvocationHistoryCollection.Snapshot());
+			invocations.AddRange(_sendAsyncMethodInvocationHistoryCollection.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_disposeMethodImposter, _sendMethodImposter, _sendAsyncMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_disposeMethodImposter, _sendMethodImposter, _sendAsyncMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_disposeMethodImposter, _sendMethodImposter, _sendAsyncMethodImposter);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_disposeMethodInvocationHistoryCollection.Clear();
+			_sendMethodInvocationHistoryCollection.Clear();
+			_sendAsyncMethodInvocationHistoryCollection.Clear();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_disposeMethodInvocationHistoryCollection.Clear();
+			_sendMethodInvocationHistoryCollection.Clear();
+			_sendAsyncMethodInvocationHistoryCollection.Clear();
+			this._disposeMethodInvocationHistoryCollection = new DisposeMethodInvocationHistoryCollection(this);
+			this._sendMethodInvocationHistoryCollection = new SendMethodInvocationHistoryCollection(this);
+			this._sendAsyncMethodInvocationHistoryCollection = new SendAsyncMethodInvocationHistoryCollection(this);
+			this._disposeMethodImposter = new DisposeMethodImposter(_disposeMethodInvocationHistoryCollection, invocationBehavior);
+			this._sendMethodImposter = new SendMethodImposter(_sendMethodInvocationHistoryCollection, invocationBehavior);
+			this._sendAsyncMethodImposter = new SendAsyncMethodImposter(_sendAsyncMethodInvocationHistoryCollection, invocationBehavior);
+			this._imposterMode = invocationBehavior;
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

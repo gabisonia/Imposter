@@ -24,9 +24,63 @@ internal static partial class IndexerGetterBuilder
         return new ClassDeclarationBuilder(invocation.Name)
             .AddModifier(Token(SyntaxKind.PrivateKeyword))
             .AddModifier(Token(SyntaxKind.SealedKeyword))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    "IsUsed",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Bool,
+                    "IsLenient",
+                    TokenList(Token(SyntaxKind.InternalKeyword), Token(SyntaxKind.VolatileKeyword))
+                )
+            )
             .AddMember(SinglePrivateReadonlyVariableField(invocation.DefaultBehaviourField))
             .AddMember(LazyCollectionSyntaxHelper.Field(invocation.ReturnValuesField))
             .AddMember(LazyCollectionSyntaxHelper.Field(invocation.CallbacksField))
+            .AddMember(
+                SingleVariableField(
+                    WellKnownTypes.Object.ToNullableType(),
+                    OutcomeDescriptionsFieldName,
+                    SyntaxKind.InternalKeyword
+                )
+            )
+            .AddMember(
+                new MethodDeclarationBuilder(WellKnownTypes.String, "ToString")
+                    .AddModifier(Token(SyntaxKind.PublicKeyword))
+                    .AddModifier(Token(SyntaxKind.OverrideKeyword))
+                    .WithBody(
+                        Block(
+                            ReturnStatement(
+                                "get "
+                                    .StringLiteral()
+                                    .Add(IdentifierName(invocation.PropertyDisplayNameField.Name))
+                                    .Add(
+                                        ExpectedIndices(
+                                            indexer,
+                                            IdentifierName(invocation.CriteriaField.Name)
+                                        )
+                                    )
+                                    .Add(" -> ".StringLiteral())
+                                    .Add(
+                                        WellKnownTypes
+                                            .Imposter.Abstractions.DiagnosticValue.Dot(
+                                                IdentifierName("Outcomes")
+                                            )
+                                            .Call(
+                                                Argument(
+                                                    IdentifierName(OutcomeDescriptionsFieldName)
+                                                )
+                                            )
+                                    )
+                            )
+                        )
+                    )
+                    .Build()
+            )
             .AddMember(
                 SingleVariableField(invocation.PropertyDisplayNameField, SyntaxKind.PrivateKeyword)
             )
@@ -196,6 +250,10 @@ internal static partial class IndexerGetterBuilder
                             Identifier(IndexerGetterImposterMetadata.CallbackVariableName),
                             IdentifierName(getter.Invocation.CallbacksField.Name),
                             Block(
+                                ThisExpression()
+                                    .Dot(IdentifierName("IsUsed"))
+                                    .Assign(True)
+                                    .ToStatementSyntax(),
                                 IdentifierName(IndexerGetterImposterMetadata.CallbackVariableName)
                                     .Call(
                                         BuildDelegateInvocationArguments(
@@ -256,7 +314,14 @@ internal static partial class IndexerGetterBuilder
             )
             .AddParameters(PassedThroughKeyParameters(indexer, indexer.GetterPassedThroughKeyNames))
             .AddParameter(ParameterSyntax(getter.BaseImplementationParameter))
-            .WithBody(Block(invokeCallbacks, generatorDeclaration, returnGenerated))
+            .WithBody(
+                Block(
+                    ThisExpression().Dot(IdentifierName("IsUsed")).Assign(True).ToStatementSyntax(),
+                    invokeCallbacks,
+                    generatorDeclaration,
+                    returnGenerated
+                )
+            )
             .Build();
     }
 

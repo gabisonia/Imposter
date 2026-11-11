@@ -13,15 +13,16 @@ using global::Imposter.Tests.Features.IndexerImpersonation;
 namespace Imposter.Tests.Features.IndexerImpersonation
 {
 	[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-	public sealed class ClassWithCollidingIndexerParametersImposter : global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters>
+	public sealed class ClassWithCollidingIndexerParametersImposter : global::Imposter.Abstractions.IImposter, global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters>
 	{
+		private global::Imposter.Abstractions.ImposterMode _imposterMode;
 		private ImposterTargetInstance _imposterInstance;
 		global::Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters global::Imposter.Abstractions.IHaveImposterInstance<global::Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters>.Instance()
 		{
 			return _imposterInstance;
 		}
 
-		private readonly IndexerIndexerBuilder _IndexerIndexer;
+		private IndexerIndexerBuilder _IndexerIndexer;
 		public IIndexerIndexerBuilder this[global::Imposter.Abstractions.Arg<int> arguments, global::Imposter.Abstractions.Arg<int> baseImplementation, global::Imposter.Abstractions.Arg<int> invokedBaseImplementation, global::Imposter.Abstractions.Arg<int> matchedCallback, global::Imposter.Abstractions.Arg<int> registration, global::Imposter.Abstractions.Arg<int> getterInvocationImposter, global::Imposter.Abstractions.Arg<int> criteria] => new IndexerIndexerBuilder.InvocationBuilder(_IndexerIndexer, new IndexerIndexerArgumentsCriteria(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria));
 		public delegate int IndexerIndexerDelegate(int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria);
 		public delegate void IndexerIndexerGetterCallback(int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria);
@@ -81,6 +82,184 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class IndexerGetterInvocation : global::Imposter.Abstractions.InvocationRecord
+		{
+			public override string Member
+			{
+				get
+				{
+					return "Indexer (getter)";
+				}
+			}
+
+			internal readonly IndexerIndexerArguments Arguments;
+			public int Arguments_1
+			{
+				get
+				{
+					return Arguments.arguments;
+				}
+			}
+
+			public int BaseImplementation
+			{
+				get
+				{
+					return Arguments.baseImplementation;
+				}
+			}
+
+			public int InvokedBaseImplementation
+			{
+				get
+				{
+					return Arguments.invokedBaseImplementation;
+				}
+			}
+
+			public int MatchedCallback
+			{
+				get
+				{
+					return Arguments.matchedCallback;
+				}
+			}
+
+			public int Registration
+			{
+				get
+				{
+					return Arguments.registration;
+				}
+			}
+
+			public int GetterInvocationImposter
+			{
+				get
+				{
+					return Arguments.getterInvocationImposter;
+				}
+			}
+
+			public int Criteria
+			{
+				get
+				{
+					return Arguments.criteria;
+				}
+			}
+
+			private readonly int _value;
+			public int Result
+			{
+				get
+				{
+					return _value;
+				}
+			}
+
+			internal IndexerGetterInvocation(IndexerIndexerArguments arguments, int value, long sequence, global::System.Exception? exception) : base(sequence, exception)
+			{
+				Arguments = arguments;
+				_value = value;
+			}
+
+			public override string ToString()
+			{
+				return "get " + Member + "(" + "arguments: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.arguments) + ", baseImplementation: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.baseImplementation) + ", invokedBaseImplementation: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.invokedBaseImplementation) + ", matchedCallback: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.matchedCallback) + ", registration: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.registration) + ", getterInvocationImposter: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.getterInvocationImposter) + ", criteria: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.criteria) + ")" + " => " + global::Imposter.Abstractions.DiagnosticValue.Format(_value);
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
+		public sealed class IndexerSetterInvocation : global::Imposter.Abstractions.InvocationRecord
+		{
+			public override string Member
+			{
+				get
+				{
+					return "Indexer (setter)";
+				}
+			}
+
+			internal readonly IndexerIndexerArguments Arguments;
+			public int Arguments_1
+			{
+				get
+				{
+					return Arguments.arguments;
+				}
+			}
+
+			public int BaseImplementation
+			{
+				get
+				{
+					return Arguments.baseImplementation;
+				}
+			}
+
+			public int InvokedBaseImplementation
+			{
+				get
+				{
+					return Arguments.invokedBaseImplementation;
+				}
+			}
+
+			public int MatchedCallback
+			{
+				get
+				{
+					return Arguments.matchedCallback;
+				}
+			}
+
+			public int Registration
+			{
+				get
+				{
+					return Arguments.registration;
+				}
+			}
+
+			public int GetterInvocationImposter
+			{
+				get
+				{
+					return Arguments.getterInvocationImposter;
+				}
+			}
+
+			public int Criteria
+			{
+				get
+				{
+					return Arguments.criteria;
+				}
+			}
+
+			private readonly int _value;
+			public int Value
+			{
+				get
+				{
+					return _value;
+				}
+			}
+
+			internal IndexerSetterInvocation(IndexerIndexerArguments arguments, int value, long sequence, global::System.Exception? exception) : base(sequence, exception)
+			{
+				Arguments = arguments;
+				_value = value;
+			}
+
+			public override string ToString()
+			{
+				return "set " + Member + "(" + "arguments: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.arguments) + ", baseImplementation: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.baseImplementation) + ", invokedBaseImplementation: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.invokedBaseImplementation) + ", matchedCallback: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.matchedCallback) + ", registration: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.registration) + ", getterInvocationImposter: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.getterInvocationImposter) + ", criteria: " + global::Imposter.Abstractions.DiagnosticValue.Format(Arguments.criteria) + ")" + " = " + global::Imposter.Abstractions.DiagnosticValue.Format(_value);
+			}
+		}
+
+		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		internal class IndexerIndexerArgumentsCriteria
 		{
 			public global::Imposter.Abstractions.Arg<int> arguments;
@@ -102,6 +281,8 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				this.criteria = criteria;
 			}
 
+			internal volatile bool SetterLenient;
+			internal volatile bool SetterUsed;
 			public bool Matches(IndexerIndexerArguments arguments)
 			{
 				return (((((this.arguments.Matches(arguments.arguments) && this.baseImplementation.Matches(arguments.baseImplementation)) && this.invokedBaseImplementation.Matches(arguments.invokedBaseImplementation)) && this.matchedCallback.Matches(arguments.matchedCallback)) && this.registration.Matches(arguments.registration)) && this.getterInvocationImposter.Matches(arguments.getterInvocationImposter)) && this.criteria.Matches(arguments.criteria);
@@ -109,8 +290,26 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		internal class IndexerIndexerBuilder
+		internal class IndexerIndexerBuilder : global::Imposter.Abstractions.IImposterVerificationSource
 		{
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+			{
+				return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+			}
+
+			global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+			{
+				foreach (var unused in ((global::Imposter.Abstractions.IImposterVerificationSource)_getterImposter).UnusedSetups())
+					yield return unused;
+				foreach (var unused in ((global::Imposter.Abstractions.IImposterVerificationSource)_setterImposter).UnusedSetups())
+					yield return unused;
+			}
+
 			private readonly DefaultIndexerIndexerBehaviour _IndexerDefaultIndexerBehaviour = new DefaultIndexerIndexerBehaviour();
 			private readonly GetterImposter _getterImposter;
 			private readonly SetterImposter _setterImposter;
@@ -147,10 +346,21 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				}
 			}
 
-			internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+			internal IndexerIndexerBuilder(global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 			{
-				this._getterImposter = new GetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
-				this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName);
+				this._getterImposter = new GetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName, owner);
+				this._setterImposter = new SetterImposter(_IndexerDefaultIndexerBehaviour, invocationBehavior, propertyDisplayName, owner);
+			}
+
+			internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+			{
+				return global::Imposter.Abstractions.InvocationSnapshots.Combine(_getterImposter.Snapshot(), _setterImposter.Snapshot());
+			}
+
+			internal void ClearInvocations()
+			{
+				_getterImposter.ClearInvocations();
+				_setterImposter.ClearInvocations();
 			}
 
 			internal IIndexerIndexerGetterBuilder CreateGetter(IndexerIndexerArgumentsCriteria criteria)
@@ -196,43 +406,73 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			private sealed class GetterImposter
+			private sealed class GetterImposter : global::Imposter.Abstractions.IImposterVerificationSource
 			{
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter> _getterInvocationImposters = new global::Imposter.Abstractions.SetupCollection<GetterInvocationImposter>();
-				private global::System.Collections.Concurrent.ConcurrentStack<IndexerIndexerArguments>? _invocationHistory;
+				private global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>? _invocationHistory;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
-				internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal readonly global::Imposter.Abstractions.IImposter Owner;
+				internal GetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 				{
 					this._defaultBehaviour = defaultBehaviour;
 					this._invocationBehavior = invocationBehavior;
 					this._propertyDisplayName = propertyDisplayName;
+					this.Owner = owner;
+				}
+
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
 				}
 
 				internal int Get(int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria, global::System.Func<int>? baseImplementation_1 = null)
 				{
+					long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+					global::System.Exception? invocationException = null;
+					int invocationResult = default !;
 					IndexerIndexerArguments arguments_1 = new IndexerIndexerArguments(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria);
 					try
 					{
 						var getterInvocationImposter_1 = FindGetterInvocationImposter(arguments_1);
 						if ((getterInvocationImposter_1 != null) && getterInvocationImposter_1.HasConfiguredReturn)
-							return getterInvocationImposter_1.Invoke(arguments_1, baseImplementation_1);
+							return invocationResult = getterInvocationImposter_1.Invoke(arguments_1, baseImplementation_1);
 						if (_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit)
 						{
-							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)");
+							throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (getter)", "get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(arguments_1.arguments), FormatValue(arguments_1.baseImplementation), FormatValue(arguments_1.invokedBaseImplementation), FormatValue(arguments_1.matchedCallback), FormatValue(arguments_1.registration), FormatValue(arguments_1.getterInvocationImposter), FormatValue(arguments_1.criteria) }) + "]", GetConfiguredSetups());
 						}
 
 						if (getterInvocationImposter_1 != null)
 							getterInvocationImposter_1.InvokeCallbacks(arguments_1);
 						if (_defaultBehaviour.IsOn)
-							return _defaultBehaviour.Get(arguments_1, baseImplementation_1);
-						return default !;
+							return invocationResult = _defaultBehaviour.Get(arguments_1, baseImplementation_1);
+						return invocationResult = default !;
+					}
+					catch (global::System.Exception caughtInvocationException)
+					{
+						invocationException = caughtInvocationException;
+						throw;
 					}
 					finally
 					{
-						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(arguments_1);
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(new IndexerGetterInvocation(arguments_1, invocationResult, invocationSequence, invocationException));
 					}
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+				{
+					return global::Imposter.Abstractions.InvocationSnapshots.Combine(_invocationHistory, null);
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> MatchingInvocations(IndexerIndexerArgumentsCriteria criteria)
+				{
+					var matches = new global::System.Collections.Generic.List<IndexerGetterInvocation>();
+					if (_invocationHistory != null)
+						foreach (var entry in _invocationHistory)
+							if (criteria.Matches(entry.Arguments))
+								matches.Add(entry);
+					return global::Imposter.Abstractions.InvocationSnapshots.Order(matches);
 				}
 
 				private GetterInvocationImposter? FindGetterInvocationImposter(IndexerIndexerArguments arguments_1)
@@ -267,9 +507,34 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 					}
 				}
 
-				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count)
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
-					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(criteria.Matches) : 0;
+					return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+				{
+					return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+				{
+					foreach (var setup in _getterInvocationImposters)
+						if ((!setup.IsUsed && !setup.IsLenient) && (setup._outcomeDescriptions != null))
+							yield return setup.ToString();
+				}
+
+				private void Called(IndexerIndexerArgumentsCriteria criteria, global::Imposter.Abstractions.Count count, string? because = null)
+				{
+					global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>.Enumerator snapshot = _invocationHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<IndexerGetterInvocation>.Enumerator) : _invocationHistory.GetEnumerator();
+					var cursor = snapshot;
+					int invocationCount = 0;
+					while (cursor.MoveNext())
+					{
+						if (criteria.Matches(cursor.Current.Arguments))
+							invocationCount++;
+					}
+
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
@@ -277,12 +542,32 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						{
 							foreach (var entry in _invocationHistory)
 							{
-								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.arguments), FormatValue(entry.baseImplementation), FormatValue(entry.invokedBaseImplementation), FormatValue(entry.matchedCallback), FormatValue(entry.registration), FormatValue(entry.getterInvocationImposter), FormatValue(entry.criteria) }) + "]");
+								performedInvocations.Add("get " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(entry.Arguments.arguments), FormatValue(entry.Arguments.baseImplementation), FormatValue(entry.Arguments.invokedBaseImplementation), FormatValue(entry.Arguments.matchedCallback), FormatValue(entry.Arguments.registration), FormatValue(entry.Arguments.getterInvocationImposter), FormatValue(entry.Arguments.criteria) }) + "]");
 							}
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(_propertyDisplayName, "get " + _propertyDisplayName + "[" + "arguments: " + criteria.arguments.ToString() + ", baseImplementation: " + criteria.baseImplementation.ToString() + ", invokedBaseImplementation: " + criteria.invokedBaseImplementation.ToString() + ", matchedCallback: " + criteria.matchedCallback.ToString() + ", registration: " + criteria.registration.ToString() + ", getterInvocationImposter: " + criteria.getterInvocationImposter.ToString() + ", criteria: " + criteria.criteria.ToString() + "]", count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
 					}
+
+					cursor = snapshot;
+					while (cursor.MoveNext())
+					{
+						if (criteria.Matches(cursor.Current.Arguments))
+							cursor.Current.MarkVerified();
+					}
+				}
+
+				private global::System.Collections.Generic.List<string> GetConfiguredSetups()
+				{
+					var result = new global::System.Collections.Generic.List<string>();
+					if (_getterInvocationImposters != null)
+						foreach (var setup in _getterInvocationImposters)
+					{
+						if (setup._outcomeDescriptions != null)
+							result.Add(setup.ToString());
+					}
+
+					return result;
 				}
 
 				internal string PropertyDisplayName => _propertyDisplayName;
@@ -300,51 +585,81 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					private GetterInvocationImposter InvocationImposter => _imposter.GetOrCreate(_criteria);
 
+					global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _imposter.Owner;
+
+					string global::Imposter.Abstractions.IInvocationStep.Description => "get Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]" + "[" + "arguments: " + _criteria.arguments.ToString() + ", baseImplementation: " + _criteria.baseImplementation.ToString() + ", invokedBaseImplementation: " + _criteria.invokedBaseImplementation.ToString() + ", matchedCallback: " + _criteria.matchedCallback.ToString() + ", registration: " + _criteria.registration.ToString() + ", getterInvocationImposter: " + _criteria.getterInvocationImposter.ToString() + ", criteria: " + _criteria.criteria.ToString() + "]";
+
+					global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+					{
+						return _imposter.MatchingInvocations(_criteria);
+					}
+
+					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterContinuationBuilder.Lenient()
+					{
+						InvocationImposter.IsLenient = true;
+						return this;
+					}
+
+					global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> IIndexerIndexerGetterVerifier.Invocations
+					{
+						get
+						{
+							return _imposter.MatchingInvocations(_criteria);
+						}
+					}
+
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(int value)
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => value);
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Returns");
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(global::System.Func<int> valueGenerator)
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => valueGenerator());
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Returns");
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Returns(IndexerIndexerDelegate valueGenerator)
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => valueGenerator(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria));
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Returns");
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(global::System.Exception exception)
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => throw exception);
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Throws");
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws<TException>()
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => throw new TException());
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, global::Imposter.Abstractions.DiagnosticValue.Throws<TException>());
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.Throws(IndexerIndexerExceptionGenerator exceptionGenerator)
 					{
 						InvocationImposter.AddReturnValue(arguments_1 => throw exceptionGenerator(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria));
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Throws");
 						return this;
 					}
 
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterCallbackBuilder.Callback(IndexerIndexerGetterCallback callback)
 					{
 						InvocationImposter.AddCallback(callback);
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "Callback");
 						return this;
 					}
 
 					void IIndexerIndexerGetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_imposter.Called(_criteria, count);
+						_imposter.Called(_criteria, count, null);
 					}
 
 					IIndexerIndexerGetterFluentBuilder IIndexerIndexerGetterContinuationBuilder.Then()
@@ -352,9 +667,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						return this;
 					}
 
+					void IIndexerIndexerGetterVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+					{
+						_imposter.Called(_criteria, count, because);
+					}
+
 					IIndexerIndexerGetterContinuationBuilder IIndexerIndexerGetterOutcomeBuilder.UseBaseImplementation()
 					{
 						InvocationImposter.UseBaseImplementation();
+						global::Imposter.Abstractions.DiagnosticValue.AddOutcome(ref InvocationImposter._outcomeDescriptions, "UseBaseImplementation");
 						return this;
 					}
 				}
@@ -362,9 +683,17 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 				[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 				private sealed class GetterInvocationImposter
 				{
+					internal volatile bool IsUsed;
+					internal volatile bool IsLenient;
 					private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 					private global::Imposter.Abstractions.ReturnValueSequence<global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int>?>? _returnValues;
 					private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerGetterCallback>? _callbacks;
+					internal object? _outcomeDescriptions;
+					public override string ToString()
+					{
+						return "get " + _propertyDisplayName + "[" + "arguments: " + Criteria.arguments.ToString() + ", baseImplementation: " + Criteria.baseImplementation.ToString() + ", invokedBaseImplementation: " + Criteria.invokedBaseImplementation.ToString() + ", matchedCallback: " + Criteria.matchedCallback.ToString() + ", registration: " + Criteria.registration.ToString() + ", getterInvocationImposter: " + Criteria.getterInvocationImposter.ToString() + ", criteria: " + Criteria.criteria.ToString() + "]" + " -> " + global::Imposter.Abstractions.DiagnosticValue.Outcomes(_outcomeDescriptions);
+					}
+
 					private string _propertyDisplayName;
 					internal volatile bool HasConfiguredReturn;
 					internal IndexerIndexerArgumentsCriteria Criteria { get; private set; }
@@ -394,6 +723,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						{
 							foreach (var callback in _callbacks)
 							{
+								this.IsUsed = true;
 								callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria);
 							}
 						}
@@ -401,6 +731,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 					internal int Invoke(IndexerIndexerArguments arguments_1, global::System.Func<int>? baseImplementation_1 = null)
 					{
+						this.IsUsed = true;
 						this.InvokeCallbacks(arguments_1);
 						global::System.Func<IndexerIndexerArguments, global::System.Func<int>?, int> generator = ResolveNextGenerator(arguments_1);
 						return generator(arguments_1, baseImplementation_1);
@@ -441,31 +772,68 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 			}
 
 			[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-			private sealed class SetterImposter
+			private sealed class SetterImposter : global::Imposter.Abstractions.IImposterVerificationSource
 			{
-				private global::Imposter.Abstractions.CallbackCollection<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>? _callbacks;
-				private global::System.Collections.Concurrent.ConcurrentStack<(IndexerIndexerArguments Arguments, int Value)>? _invocationHistory;
-				private global::Imposter.Abstractions.CallbackCollection<IndexerIndexerArgumentsCriteria>? _baseCriteria;
+				private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Abstractions.TrackedSetup<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>>? _callbacks;
+				private global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>? _invocationHistory;
+				private global::Imposter.Abstractions.CallbackCollection<global::Imposter.Abstractions.TrackedSetup<IndexerIndexerArgumentsCriteria>>? _baseCriteria;
 				private readonly DefaultIndexerIndexerBehaviour _defaultBehaviour;
 				private readonly global::Imposter.Abstractions.ImposterMode _invocationBehavior;
 				private readonly string _propertyDisplayName;
 				private bool _hasConfiguredSetter;
-				internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName)
+				internal readonly global::Imposter.Abstractions.IImposter Owner;
+				internal SetterImposter(DefaultIndexerIndexerBehaviour defaultBehaviour, global::Imposter.Abstractions.ImposterMode invocationBehavior, string propertyDisplayName, global::Imposter.Abstractions.IImposter owner)
 				{
 					this._defaultBehaviour = defaultBehaviour;
 					this._invocationBehavior = invocationBehavior;
 					this._propertyDisplayName = propertyDisplayName;
+					this.Owner = owner;
+				}
+
+				internal void ClearInvocations()
+				{
+					_invocationHistory?.Clear();
 				}
 
 				public void Callback(IndexerIndexerArgumentsCriteria criteria_1, IndexerIndexerSetterCallback callback)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add((criteria_1, callback));
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _callbacks).Add(new global::Imposter.Abstractions.TrackedSetup<(IndexerIndexerArgumentsCriteria Criteria, IndexerIndexerSetterCallback Callback)>((criteria_1, callback)));
 					MarkConfigured();
 				}
 
-				public void Called(IndexerIndexerArgumentsCriteria criteria_1, global::Imposter.Abstractions.Count count)
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.Interactions()
 				{
-					int invocationCount = _invocationHistory != null ? _invocationHistory.Count(entry => criteria_1.Matches(entry.Arguments)) : 0;
+					return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), false);
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UncoveredInteractions()
+				{
+					return global::Imposter.Abstractions.ImposterVerification.Describe(Snapshot(), true);
+				}
+
+				global::System.Collections.Generic.IEnumerable<string> global::Imposter.Abstractions.IImposterVerificationSource.UnusedSetups()
+				{
+					if (_callbacks != null)
+						foreach (var setup in _callbacks)
+							if (!setup.Value.Criteria.SetterUsed && !setup.Value.Criteria.SetterLenient)
+								yield return "set Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]" + "[" + "arguments: " + setup.Value.Criteria.arguments.ToString() + ", baseImplementation: " + setup.Value.Criteria.baseImplementation.ToString() + ", invokedBaseImplementation: " + setup.Value.Criteria.invokedBaseImplementation.ToString() + ", matchedCallback: " + setup.Value.Criteria.matchedCallback.ToString() + ", registration: " + setup.Value.Criteria.registration.ToString() + ", getterInvocationImposter: " + setup.Value.Criteria.getterInvocationImposter.ToString() + ", criteria: " + setup.Value.Criteria.criteria.ToString() + "]" + " -> Callback";
+					if (_baseCriteria != null)
+						foreach (var setup in _baseCriteria)
+							if (!setup.Value.SetterUsed && !setup.Value.SetterLenient)
+								yield return "set Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]" + "[" + "arguments: " + setup.Value.arguments.ToString() + ", baseImplementation: " + setup.Value.baseImplementation.ToString() + ", invokedBaseImplementation: " + setup.Value.invokedBaseImplementation.ToString() + ", matchedCallback: " + setup.Value.matchedCallback.ToString() + ", registration: " + setup.Value.registration.ToString() + ", getterInvocationImposter: " + setup.Value.getterInvocationImposter.ToString() + ", criteria: " + setup.Value.criteria.ToString() + "]" + " -> UseBaseImplementation";
+				}
+
+				public void Called(IndexerIndexerArgumentsCriteria criteria_1, global::Imposter.Abstractions.Count count, string? because = null)
+				{
+					global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>.Enumerator snapshot = _invocationHistory == null ? default(global::Imposter.Abstractions.InvocationHistory<IndexerSetterInvocation>.Enumerator) : _invocationHistory.GetEnumerator();
+					var cursor = snapshot;
+					int invocationCount = 0;
+					while (cursor.MoveNext())
+					{
+						if (criteria_1.Matches(cursor.Current.Arguments))
+							invocationCount++;
+					}
+
 					if (!count.Matches(invocationCount))
 					{
 						var performedInvocations = new global::System.Collections.Generic.List<string>();
@@ -477,58 +845,98 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 							}
 						}
 
-						throw new global::Imposter.Abstractions.VerificationFailedException(count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations));
+						throw new global::Imposter.Abstractions.VerificationFailedException(_propertyDisplayName, "set " + _propertyDisplayName + "[" + "arguments: " + criteria_1.arguments.ToString() + ", baseImplementation: " + criteria_1.baseImplementation.ToString() + ", invokedBaseImplementation: " + criteria_1.invokedBaseImplementation.ToString() + ", matchedCallback: " + criteria_1.matchedCallback.ToString() + ", registration: " + criteria_1.registration.ToString() + ", getterInvocationImposter: " + criteria_1.getterInvocationImposter.ToString() + ", criteria: " + criteria_1.criteria.ToString() + "]", count, invocationCount, string.Join(global::System.Environment.NewLine, performedInvocations), because, performedInvocations.Count == 0 ? global::Imposter.Abstractions.DiagnosticValue.OtherInteractions(Owner) : null);
+					}
+
+					cursor = snapshot;
+					while (cursor.MoveNext())
+					{
+						if (criteria_1.Matches(cursor.Current.Arguments))
+							cursor.Current.MarkVerified();
 					}
 				}
 
 				internal void Set(int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria, int value, global::System.Action? baseImplementation_1 = null)
 				{
-					EnsureSetterConfigured();
+					long invocationSequence = global::Imposter.Abstractions.InvocationSequence.Next();
+					global::System.Exception? invocationException = null;
 					IndexerIndexerArguments arguments_1 = new IndexerIndexerArguments(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria);
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push((arguments_1, value));
-					bool matchedCallback_1 = false;
-					if (_callbacks != null)
+					try
 					{
-						foreach (var registration_1 in _callbacks)
+						EnsureSetterConfigured(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria, value);
+						bool matchedCallback_1 = false;
+						if (_callbacks != null)
 						{
-							if (registration_1.Criteria.Matches(arguments_1))
+							foreach (var registration_1 in _callbacks)
 							{
-								registration_1.Callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria, value);
-								matchedCallback_1 = true;
-							}
-						}
-					}
-
-					bool invokedBaseImplementation_1 = false;
-					if (_baseCriteria != null)
-					{
-						foreach (var criteria_1 in _baseCriteria)
-						{
-							if (criteria_1.Matches(arguments_1))
-							{
-								if (baseImplementation_1 == null)
+								if (registration_1.Value.Criteria.Matches(arguments_1))
 								{
-									throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+									registration_1.Value.Criteria.SetterUsed = true;
+									registration_1.MarkUsed();
+									registration_1.Value.Callback(arguments_1.arguments, arguments_1.baseImplementation, arguments_1.invokedBaseImplementation, arguments_1.matchedCallback, arguments_1.registration, arguments_1.getterInvocationImposter, arguments_1.criteria, value);
+									matchedCallback_1 = true;
 								}
-
-								baseImplementation_1();
-								invokedBaseImplementation_1 = true;
-								break;
 							}
 						}
-					}
 
-					if (!invokedBaseImplementation_1 && (!matchedCallback_1 && _defaultBehaviour.IsOn))
+						bool invokedBaseImplementation_1 = false;
+						if (_baseCriteria != null)
+						{
+							foreach (var criteria_1 in _baseCriteria)
+							{
+								if (criteria_1.Value.Matches(arguments_1))
+								{
+									criteria_1.Value.SetterUsed = true;
+									criteria_1.MarkUsed();
+									if (baseImplementation_1 == null)
+									{
+										throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+									}
+
+									baseImplementation_1();
+									invokedBaseImplementation_1 = true;
+									break;
+								}
+							}
+						}
+
+						if (!invokedBaseImplementation_1 && (!matchedCallback_1 && _defaultBehaviour.IsOn))
+						{
+							_defaultBehaviour.Set(arguments_1, value);
+						}
+					}
+					catch (global::System.Exception caughtInvocationException)
 					{
-						_defaultBehaviour.Set(arguments_1, value);
+						invocationException = caughtInvocationException;
+						throw;
+					}
+					finally
+					{
+						global::System.Threading.LazyInitializer.EnsureInitialized(ref _invocationHistory).Push(new IndexerSetterInvocation(arguments_1, value, invocationSequence, invocationException));
 					}
 				}
 
-				private void EnsureSetterConfigured()
+				internal global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> Snapshot()
+				{
+					return global::Imposter.Abstractions.InvocationSnapshots.Combine(_invocationHistory, null);
+				}
+
+				internal global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> MatchingInvocations(IndexerIndexerArgumentsCriteria criteria)
+				{
+					var matches = new global::System.Collections.Generic.List<IndexerSetterInvocation>();
+					if (_invocationHistory != null)
+						foreach (var entry in _invocationHistory)
+							if (criteria.Matches(entry.Arguments))
+								matches.Add(entry);
+					return global::Imposter.Abstractions.InvocationSnapshots.Order(matches);
+				}
+
+				private void EnsureSetterConfigured(int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria, int value)
 				{
 					if ((_invocationBehavior == global::Imposter.Abstractions.ImposterMode.Explicit) && !global::System.Threading.Volatile.Read(ref _hasConfiguredSetter))
 					{
-						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)");
+						IndexerIndexerArguments arguments_1 = new IndexerIndexerArguments(arguments, baseImplementation, invokedBaseImplementation, matchedCallback, registration, getterInvocationImposter, criteria);
+						throw new global::Imposter.Abstractions.MissingImposterException(_propertyDisplayName + " (setter)", "set " + _propertyDisplayName + "[" + string.Join(", ", new[] { FormatValue(arguments_1.arguments), FormatValue(arguments_1.baseImplementation), FormatValue(arguments_1.invokedBaseImplementation), FormatValue(arguments_1.matchedCallback), FormatValue(arguments_1.registration), FormatValue(arguments_1.getterInvocationImposter), FormatValue(arguments_1.criteria) }) + "]" + " = " + FormatValue(value), new global::System.Collections.Generic.List<string>());
 					}
 				}
 
@@ -539,7 +947,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 				public void UseBaseImplementation(IndexerIndexerArgumentsCriteria criteria_1)
 				{
-					global::System.Threading.LazyInitializer.EnsureInitialized(ref _baseCriteria).Add(criteria_1);
+					global::System.Threading.LazyInitializer.EnsureInitialized(ref _baseCriteria).Add(new global::Imposter.Abstractions.TrackedSetup<IndexerIndexerArgumentsCriteria>(criteria_1));
 					MarkConfigured();
 				}
 
@@ -560,14 +968,42 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 						return this;
 					}
 
+					global::Imposter.Abstractions.IImposter global::Imposter.Abstractions.IInvocationStep.Imposter => _setterImposter.Owner;
+
+					string global::Imposter.Abstractions.IInvocationStep.Description => "set Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]" + "[" + "arguments: " + _criteria.arguments.ToString() + ", baseImplementation: " + _criteria.baseImplementation.ToString() + ", invokedBaseImplementation: " + _criteria.invokedBaseImplementation.ToString() + ", matchedCallback: " + _criteria.matchedCallback.ToString() + ", registration: " + _criteria.registration.ToString() + ", getterInvocationImposter: " + _criteria.getterInvocationImposter.ToString() + ", criteria: " + _criteria.criteria.ToString() + "]";
+
+					global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IInvocationStep.MatchingInvocations()
+					{
+						return _setterImposter.MatchingInvocations(_criteria);
+					}
+
+					IIndexerIndexerSetterContinuationBuilder IIndexerIndexerSetterContinuationBuilder.Lenient()
+					{
+						_criteria.SetterLenient = true;
+						return this;
+					}
+
+					global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> IIndexerIndexerSetterVerifier.Invocations
+					{
+						get
+						{
+							return _setterImposter.MatchingInvocations(_criteria);
+						}
+					}
+
 					void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count)
 					{
-						_setterImposter.Called(_criteria, count);
+						_setterImposter.Called(_criteria, count, null);
 					}
 
 					IIndexerIndexerSetterFluentBuilder IIndexerIndexerSetterContinuationBuilder.Then()
 					{
 						return this;
+					}
+
+					void IIndexerIndexerSetterVerifier.Called(global::Imposter.Abstractions.Count count, string because)
+					{
+						_setterImposter.Called(_criteria, count, because);
 					}
 
 					IIndexerIndexerSetterFluentBuilder IIndexerIndexerSetterBuilder.UseBaseImplementation()
@@ -580,7 +1016,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 			private static string FormatValue(object? value)
 			{
-				return "<" + (value?.ToString() ?? "null") + ">";
+				return global::Imposter.Abstractions.DiagnosticValue.Format(value);
 			}
 		}
 
@@ -607,12 +1043,15 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		public interface IIndexerIndexerGetterContinuationBuilder : IIndexerIndexerGetterCallbackBuilder
 		{
 			IIndexerIndexerGetterFluentBuilder Then();
+			IIndexerIndexerGetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
 		public interface IIndexerIndexerGetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string because);
+			global::System.Collections.Generic.IReadOnlyList<IndexerGetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -621,7 +1060,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IIndexerIndexerGetterBuilder : IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
+		public interface IIndexerIndexerGetterBuilder : global::Imposter.Abstractions.IInvocationStep, IIndexerIndexerGetterOutcomeBuilder, IIndexerIndexerGetterCallbackBuilder, IIndexerIndexerGetterVerifier
 		{
 		}
 
@@ -635,6 +1074,7 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		public interface IIndexerIndexerSetterContinuationBuilder : IIndexerIndexerSetterCallbackBuilder
 		{
 			IIndexerIndexerSetterFluentBuilder Then();
+			IIndexerIndexerSetterContinuationBuilder Lenient();
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
@@ -646,10 +1086,12 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 		public interface IIndexerIndexerSetterVerifier
 		{
 			void Called(global::Imposter.Abstractions.Count count);
+			void Called(global::Imposter.Abstractions.Count count, string because);
+			global::System.Collections.Generic.IReadOnlyList<IndexerSetterInvocation> Invocations { get; }
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]
-		public interface IIndexerIndexerSetterBuilder : IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
+		public interface IIndexerIndexerSetterBuilder : global::Imposter.Abstractions.IInvocationStep, IIndexerIndexerSetterCallbackBuilder, IIndexerIndexerSetterVerifier
 		{
 			IIndexerIndexerSetterFluentBuilder UseBaseImplementation();
 		}
@@ -663,8 +1105,44 @@ namespace Imposter.Tests.Features.IndexerImpersonation
 
 		public ClassWithCollidingIndexerParametersImposter(global::Imposter.Abstractions.ImposterMode invocationBehavior = global::Imposter.Abstractions.ImposterMode.Implicit)
 		{
-			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]");
+			this._imposterMode = invocationBehavior;
+			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]", this);
 			this._imposterInstance = new ImposterTargetInstance(this);
+		}
+
+		global::System.Collections.Generic.IReadOnlyList<global::Imposter.Abstractions.IImposterInvocation> global::Imposter.Abstractions.IImposter.Invocations()
+		{
+			var invocations = new global::System.Collections.Generic.List<global::Imposter.Abstractions.IImposterInvocation>();
+			invocations.AddRange(_IndexerIndexer.Snapshot());
+			return global::Imposter.Abstractions.InvocationSnapshots.Order(invocations);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoOtherCalls()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoOtherCalls(_IndexerIndexer);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyNoInteractions()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyNoInteractions(_IndexerIndexer);
+		}
+
+		void global::Imposter.Abstractions.IImposter.VerifyAllSetupsUsed()
+		{
+			global::Imposter.Abstractions.ImposterVerification.VerifyAllSetupsUsed(_IndexerIndexer);
+		}
+
+		void global::Imposter.Abstractions.IImposter.ClearInvocations()
+		{
+			_IndexerIndexer.ClearInvocations();
+		}
+
+		void global::Imposter.Abstractions.IImposter.Reset()
+		{
+			global::Imposter.Abstractions.ImposterMode invocationBehavior = this._imposterMode;
+			_IndexerIndexer.ClearInvocations();
+			this._imposterMode = invocationBehavior;
+			this._IndexerIndexer = new IndexerIndexerBuilder(invocationBehavior, "Imposter.Tests.Features.IndexerImpersonation.ClassWithCollidingIndexerParameters.this[int arguments, int baseImplementation, int invokedBaseImplementation, int matchedCallback, int registration, int getterInvocationImposter, int criteria]", this);
 		}
 
 		[global::System.CodeDom.Compiler.GeneratedCode("Imposter.CodeGenerator", "0.1.0.0")]

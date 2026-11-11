@@ -17,6 +17,8 @@ internal readonly ref struct ImposterIndexerMetadata
     internal readonly ImposterIndexerCoreMetadata Core;
 
     internal readonly IndexerArgumentsMetadata Arguments;
+    internal readonly IndexerInvocationMetadata GetterRecord;
+    internal readonly IndexerInvocationMetadata SetterRecord;
 
     internal readonly IndexerArgumentsCriteriaMetadata ArgumentsCriteria;
 
@@ -65,6 +67,8 @@ internal readonly ref struct ImposterIndexerMetadata
     )
     {
         Core = new ImposterIndexerCoreMetadata(indexer, uniqueName);
+        GetterRecord = new IndexerInvocationMetadata(Core, true);
+        SetterRecord = new IndexerInvocationMetadata(Core, false);
         Arguments = new IndexerArgumentsMetadata(Core);
         ArgumentsCriteria = new IndexerArgumentsCriteriaMetadata(Core);
         DefaultIndexerBehaviour = new DefaultIndexerBehaviourMetadata(Core, Arguments);

@@ -90,7 +90,11 @@ internal readonly ref struct ImposterInstanceBuilder
             : null;
         var setterArguments = new List<ArgumentSyntax>
         {
-            Argument(property.Core.KeptValue(IdentifierName("value"))),
+            Argument(
+                property.Core.SetterRequiresDirectBaseAssignment && !property.Core.IsPassedThrough
+                    ? IdentifierName("assignmentValue")
+                    : property.Core.KeptValue(IdentifierName("value"))
+            ),
         };
         if (basePropertyAccess is not null && !property.Core.SetterRequiresDirectBaseAssignment)
         {
@@ -109,6 +113,74 @@ internal readonly ref struct ImposterInstanceBuilder
                 )
             )
             : Block(setterCall.ToStatementSyntax());
+
+        if (property.Core.SetterRequiresDirectBaseAssignment)
+        {
+            var setter = MemberBuilder(property.BuilderField.Name)
+                .Dot(IdentifierName(property.ImposterBuilder.SetterImposterField.Name));
+            var sequence = IdentifierName("assignmentSequence");
+            var failure = IdentifierName("assignmentFailure");
+            var caught = IdentifierName("assignmentException");
+            var recordArguments = new List<ArgumentSyntax>();
+            if (!property.Core.IsPassedThrough)
+                recordArguments.Add(Argument(IdentifierName("assignmentCapturedValue")));
+            recordArguments.Add(Argument(sequence));
+            recordArguments.Add(Argument(failure));
+            setterBody = Block(
+                LocalVariableDeclarationSyntax(
+                    Var,
+                    sequence.Identifier.Text,
+                    WellKnownTypes
+                        .Imposter.Abstractions.InvocationSequence.Dot(IdentifierName("Next"))
+                        .Call()
+                ),
+                LocalVariableDeclarationSyntax(
+                    WellKnownTypes.System.Exception.ToNullableType(),
+                    failure.Identifier.Text,
+                    Null
+                ),
+                TryStatement(
+                    setterBody,
+                    SingletonList(
+                        CatchClause(
+                            CatchDeclaration(WellKnownTypes.System.Exception, caught.Identifier),
+                            null,
+                            Block(failure.Assign(caught).ToStatementSyntax(), ThrowStatement())
+                        )
+                    ),
+                    FinallyClause(
+                        Block(
+                            setter
+                                .Dot(IdentifierName("RecordInvocation"))
+                                .Call(ArgumentListSyntax(recordArguments))
+                                .ToStatementSyntax()
+                        )
+                    )
+                )
+            );
+            if (!property.Core.IsPassedThrough)
+                setterBody = setterBody.WithStatements(
+                    setterBody
+                        .Statements.Insert(
+                            0,
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                "assignmentCapturedValue",
+                                setter
+                                    .Dot(IdentifierName("CaptureInvocationValue"))
+                                    .Call(Argument(IdentifierName("assignmentValue")))
+                            )
+                        )
+                        .Insert(
+                            0,
+                            LocalVariableDeclarationSyntax(
+                                Var,
+                                "assignmentValue",
+                                property.Core.KeptValue(IdentifierName("value"))
+                            )
+                        )
+                );
+        }
 
         return WithConstructorFallback(
             setterBody,
@@ -604,6 +676,12 @@ internal readonly ref struct ImposterInstanceBuilder
                     ? ReturnStatement(invokeMethodInvocationExpression)
                     : invokeMethodInvocationExpression.ToStatementSyntax()
             );
+            if (imposterMethod.Model.IsGenericMethod)
+                body = GenericMethodHistoryBuilder.Build(
+                    imposterMethod,
+                    invokeMethodInvocationExpression,
+                    imposterFieldName
+                );
             if (isClass)
             {
                 body = ConstructorDispatchBuilder.WithFallback(
